@@ -55,9 +55,9 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="topbar"><div class="wrap topbar__in">
-  <span>📍 233 14th Street, Miami Beach 33139</span>
-  <span><b data-open-status>Open every day 9 AM – 8 PM</b></span>
-  <a href="tel:+1-305-830-9440">📞 (305) 830-9440</a>
+  <span class="topbar__addr">📍 233 14th Street, Miami Beach 33139</span>
+  <span class="topbar__hours"><b data-open-status>Open every day 9 AM – 8 PM</b></span>
+  <a class="topbar__tel" href="tel:+1-305-830-9440">📞 (305) 830-9440</a>
 </div></div>
 <header class="nav">
   <nav class="wrap nav__in" aria-label="Main">
@@ -89,9 +89,9 @@
 
 <section class="sec--tight">
   <div class="wrap">
-    <div class="tile answer-box" data-reveal style="max-width:900px;margin-inline:auto;border-left:6px solid var(--sun)">
-      <h2 style="font-size:1.35rem;margin-bottom:.5rem">What is the best guided tour in South Beach?</h2>
-      <p style="margin:0;font-size:1.05rem">For first-timers, the Art Deco Segway Tour (30–90 minutes, from $45) covers Ocean Drive, Lummus Park and Espa&ntilde;ola Way with training included. Families usually pick the 90-minute Ocean Drive Bike Tour ($39, all ages), and riders with a full afternoon take the 4-hour Wynwood &amp; Downtown E-Bike Tour ($119). All tours leave from 233 14th Street, Miami Beach.</p>
+    <div class="tile answer-box" data-reveal>
+      <h2>What is the best guided tour in South Beach?</h2>
+      <p>Start with the one-hour Ocean Drive Segway Tour at $49 per person — the shortest, the cheapest, training included. The Star Island Segway Tour is $69 for an hour, the two-hour South Beach and Art Deco Segway Tours are $79 each, and the 2.5-hour Miami Millionaire&#39;s Row Segway Tour is $89. Bike, e-bike, Trikke, night and private tours are quoted by phone. All tours leave from 233 14th Street, Miami Beach, and Segway tours need a minimum of two riders.</p>
     </div>
   </div>
 </section>
@@ -309,7 +309,7 @@
       <span class="eyebrow eyebrow--light">Ready when you are</span>
       <h2>Pick a departure and we will hold your spot</h2>
       <p class="lead" style="color:rgba(255,255,255,.92);margin-inline:auto">Tours fill fastest between December and April and on weekends. Reserve by phone, email or at the shop.</p>
-      <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
+      <div class="btn-row btn-row--center" style="margin-top:1.6rem">
         <a class="btn btn--dark" href="https://fareharbor.com/embeds/book/southfloridatrikketours/items/" target="_blank" rel="noopener">Book online</a>
         <a class="btn btn--ghost" href="tel:+1-305-830-9440">Call (305) 830-9440</a>
       </div>
@@ -318,7 +318,12 @@
 </section>
 
 </main>
-<a class="btn fab" href="tel:+1-305-830-9440">📞 Call &amp; book</a>
+<div class="actionbar" role="group" aria-label="Quick actions">
+  <a class="actionbar__btn actionbar__btn--ghost" href="tel:+1-305-830-9440">
+    <span aria-hidden="true">📞</span> Call
+  </a>
+  <a class="actionbar__btn" href="https://fareharbor.com/embeds/book/southfloridatrikketours/items/" target="_blank" rel="noopener">Book now</a>
+</div>
 <footer class="footer">
   <div class="wrap footer__grid">
     <div>

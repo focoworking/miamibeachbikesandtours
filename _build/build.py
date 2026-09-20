@@ -131,7 +131,7 @@ def cta_section(title, text, primary=None, external=True):
       <span class="eyebrow eyebrow--light">Ready when you are</span>
       <h2>{title}</h2>
       <p class="lead" style="color:rgba(255,255,255,.92);margin-inline:auto">{text}</p>
-      <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
+      <div class="btn-row btn-row--center" style="margin-top:1.6rem">
         <a class="btn btn--dark" href="{primary[1]}"{tgt}>{primary[0]}</a>
         <a class="btn btn--ghost" href="tel:{BIZ['phone']}">Call {BIZ['phone_pretty']}</a>
       </div>
@@ -144,9 +144,9 @@ def answer_box(question, answer):
     return f'''
 <section class="sec--tight">
   <div class="wrap">
-    <div class="tile answer-box" data-reveal style="max-width:900px;margin-inline:auto;border-left:6px solid var(--sun)">
-      <h2 style="font-size:1.35rem;margin-bottom:.5rem">{question}</h2>
-      <p style="margin:0;font-size:1.05rem">{answer}</p>
+    <div class="tile answer-box" data-reveal>
+      <h2>{question}</h2>
+      <p>{answer}</p>
     </div>
   </div>
 </section>'''
@@ -211,7 +211,7 @@ def page_index():
   <div class="wrap hero__in">
     <span class="eyebrow eyebrow--light">South Beach · 233 14th Street</span>
     <h1>Ride more.<br><em>Worry less.</em></h1>
-    <p class="hero__sub">Bikes, e-bikes, Trikkes, Segways and skates one block from Ocean Drive — plus Segway tours of the Art Deco District and Star Island, Everglades airboats, Key West day trips, jet skis and parasailing. Family-friendly, sun-powered, unreasonably fun.</p>
+    <p class="hero__sub">Bikes, e-bikes, Trikkes, Segways and skates one block from Ocean Drive — plus <span class="hero__sub--long">Segway tours of the Art Deco District and Star Island, Everglades airboats, Key West day trips, jet skis and parasailing. Family-friendly, sun-powered, unreasonably fun.</span><span class="hero__sub--short">guided tours, Everglades airboats and Key West day trips.</span></p>
     <div class="hero__cta">
       <a class="btn" href="rentals.html">Rent a ride · from $12</a>
       <a class="btn btn--ghost" href="tours.html">See the tours</a>
@@ -513,9 +513,10 @@ def page_tours():
 </section>
 
 {answer_box("What is the best guided tour in South Beach?",
- "For first-timers, the Art Deco Segway Tour (30–90 minutes, from $45) covers Ocean Drive, Lummus Park and Espa&ntilde;ola Way with training included. "
- "Families usually pick the 90-minute Ocean Drive Bike Tour ($39, all ages), and riders with a full afternoon take the 4-hour "
- "Wynwood &amp; Downtown E-Bike Tour ($119). All tours leave from 233 14th Street, Miami Beach.")}
+ "Start with the one-hour Ocean Drive Segway Tour at $49 per person — the shortest, the cheapest, training included. "
+ "The Star Island Segway Tour is $69 for an hour, the two-hour South Beach and Art Deco Segway Tours are $79 each, and the "
+ "2.5-hour Miami Millionaire&#39;s Row Segway Tour is $89. Bike, e-bike, Trikke, night and private tours are quoted by phone. "
+ "All tours leave from 233 14th Street, Miami Beach, and Segway tours need a minimum of two riders.")}
 
 <section class="sec">
   <div class="wrap">
@@ -884,7 +885,7 @@ def page_contact():
       <span class="eyebrow">Reserve</span>
       <h2>Tell us what you need</h2>
       <p class="lead">Send this and we reply within the hour during shop hours. For same-day rentals, just call — or book instantly online.</p>
-      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.6rem">
+      <div class="btn-row" style="margin-bottom:1.6rem">
         <a class="btn btn--ocean" href="{BOOKING_URL}" target="_blank" rel="noopener">Book online now</a>
         <a class="btn btn--ghost" style="border-color:var(--line);color:var(--ink)" href="tel:{BIZ['phone']}">Call {BIZ['phone_pretty']}</a>
       </div>
@@ -951,7 +952,7 @@ def page_404():
   <div class="wrap phead__in center">
     <h1>Wrong turn on Ocean Drive</h1>
     <p class="lead" style="margin-inline:auto">That page is not here, but the bikes are.</p>
-    <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
+    <div class="btn-row btn-row--center" style="margin-top:1.6rem">
       <a class="btn" href="index.html">Back home</a>
       <a class="btn btn--ghost" href="rentals.html">See rentals</a>
     </div>

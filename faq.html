@@ -55,9 +55,9 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="topbar"><div class="wrap topbar__in">
-  <span>📍 233 14th Street, Miami Beach 33139</span>
-  <span><b data-open-status>Open every day 9 AM – 8 PM</b></span>
-  <a href="tel:+1-305-830-9440">📞 (305) 830-9440</a>
+  <span class="topbar__addr">📍 233 14th Street, Miami Beach 33139</span>
+  <span class="topbar__hours"><b data-open-status>Open every day 9 AM – 8 PM</b></span>
+  <a class="topbar__tel" href="tel:+1-305-830-9440">📞 (305) 830-9440</a>
 </div></div>
 <header class="nav">
   <nav class="wrap nav__in" aria-label="Main">
@@ -116,7 +116,7 @@
       <span class="eyebrow eyebrow--light">Ready when you are</span>
       <h2>Still not sure which ride is right?</h2>
       <p class="lead" style="color:rgba(255,255,255,.92);margin-inline:auto">Tell us who is riding, how long you have and what you want to see. We will pick it for you in one phone call.</p>
-      <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
+      <div class="btn-row btn-row--center" style="margin-top:1.6rem">
         <a class="btn btn--dark" href="https://fareharbor.com/embeds/book/southfloridatrikketours/items/" target="_blank" rel="noopener">Book online</a>
         <a class="btn btn--ghost" href="tel:+1-305-830-9440">Call (305) 830-9440</a>
       </div>
@@ -125,7 +125,12 @@
 </section>
 
 </main>
-<a class="btn fab" href="tel:+1-305-830-9440">📞 Call &amp; book</a>
+<div class="actionbar" role="group" aria-label="Quick actions">
+  <a class="actionbar__btn actionbar__btn--ghost" href="tel:+1-305-830-9440">
+    <span aria-hidden="true">📞</span> Call
+  </a>
+  <a class="actionbar__btn" href="https://fareharbor.com/embeds/book/southfloridatrikketours/items/" target="_blank" rel="noopener">Book now</a>
+</div>
 <footer class="footer">
   <div class="wrap footer__grid">
     <div>

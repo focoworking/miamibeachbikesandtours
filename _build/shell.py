@@ -177,9 +177,9 @@ def nav(current):
         return "".join(out)
     return f'''
 <div class="topbar"><div class="wrap topbar__in">
-  <span>📍 {BIZ['street']}, {BIZ['city']} {BIZ['zip']}</span>
-  <span><b data-open-status>Open every day 9 AM – 8 PM</b></span>
-  <a href="tel:{BIZ['phone']}">📞 {BIZ['phone_pretty']}</a>
+  <span class="topbar__addr">📍 {BIZ['street']}, {BIZ['city']} {BIZ['zip']}</span>
+  <span class="topbar__hours"><b data-open-status>Open every day 9 AM – 8 PM</b></span>
+  <a class="topbar__tel" href="tel:{BIZ['phone']}">📞 {BIZ['phone_pretty']}</a>
 </div></div>
 <header class="nav">
   <nav class="wrap nav__in" aria-label="Main">
@@ -205,7 +205,12 @@ def nav(current):
 def footer():
     return f'''
 </main>
-<a class="btn fab" href="tel:{BIZ['phone']}">📞 Call &amp; book</a>
+<div class="actionbar" role="group" aria-label="Quick actions">
+  <a class="actionbar__btn actionbar__btn--ghost" href="tel:{BIZ['phone']}">
+    <span aria-hidden="true">📞</span> Call
+  </a>
+  <a class="actionbar__btn" href="{BOOKING_URL}" target="_blank" rel="noopener">Book now</a>
+</div>
 <footer class="footer">
   <div class="wrap footer__grid">
     <div>
