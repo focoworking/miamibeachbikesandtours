@@ -6,6 +6,7 @@ from data import BIZ, SITE
 NAV = [
     ("rentals.html", "Rentals"),
     ("tours.html", "Tours"),
+    ("adventures.html", "Adventures"),
     ("routes.html", "Routes"),
     ("about.html", "About"),
     ("faq.html", "FAQ"),
@@ -46,6 +47,16 @@ LOCALBUSINESS_LD = {
     "areaServed": [{"@type": "Place", "name": a} for a in BIZ["areas"]],
     "knowsLanguage": ["en", "es", "pt"],
     "slogan": BIZ["tagline"],
+    "description": ("Bicycle, fat tire, electric bike, electric tandem, Trikke, Segway, tricycle and rollerblade "
+                    "rentals in South Beach, plus guided Segway tours of Ocean Drive, Star Island, the Art Deco "
+                    "District and Millionaire's Row, Everglades airboat adventures, Key West day trips, Miami city "
+                    "tours, jet skis, parasailing and helicopter rides."),
+    "makesOffer": [
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n}} for n in
+        ["Bicycle rental", "Electric bike rental", "Fat tire bike rental", "Trikke rental",
+         "Segway guided tour", "Rollerblade rental", "Tricycle rental", "Tandem bike rental",
+         "Everglades airboat adventure", "Key West day trip", "Miami city tour",
+         "Jet ski rental", "Parasailing", "Helicopter ride", "Bicycle and e-bike repair"]],
     "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.8",
                         "reviewCount": "131", "bestRating": "5"},
     "amenityFeature": [
@@ -147,8 +158,8 @@ def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach"):
 
 
 def nav(current):
-    left = NAV[:3]
-    right = NAV[3:]
+    left = NAV[:4]
+    right = NAV[4:]
     def links(items):
         out = []
         for u, n in items:
@@ -189,7 +200,7 @@ def footer():
         <span class="brand__mark">Miami Beach <span>Bikes &amp; Tours</span></span>
         <span class="brand__sub">South Beach · Since 2009</span>
       </a>
-      <p style="margin-top:1.1rem;max-width:34ch">Bikes, e-bikes, Segways, skates and guided tours, one block from Ocean Drive. {BIZ['tagline']}</p>
+      <p style="margin-top:1.1rem;max-width:34ch">Bikes, e-bikes, Trikkes, Segways, skates, guided tours and day trips, one block from Ocean Drive. {BIZ['tagline']}</p>
       <div class="badge-row">
         <span class="badge">★ 4.8 · 131 reviews</span>
         <span class="badge">🛠️ On-site repairs</span>
@@ -201,6 +212,7 @@ def footer():
         <li><a href="rentals.html">Bike rentals</a></li>
         <li><a href="rentals.html?ride=electric">Electric bikes</a></li>
         <li><a href="rentals.html?ride=segways">Segways</a></li>
+        <li><a href="rentals.html?ride=trikke">Trikkes</a></li>
         <li><a href="rentals.html?ride=skates">Rollerblades</a></li>
         <li><a href="rentals.html?ride=family">Family &amp; kids</a></li>
       </ul>
@@ -210,6 +222,8 @@ def footer():
       <ul>
         <li><a href="tours.html">All tours</a></li>
         <li><a href="tours.html?ride=segway">Segway tours</a></li>
+        <li><a href="adventures.html">Adventures &amp; day trips</a></li>
+        <li><a href="adventures.html?ride=water">Jet ski &amp; parasailing</a></li>
         <li><a href="routes.html">South Beach routes</a></li>
         <li><a href="about.html">Our story</a></li>
         <li><a href="faq.html">FAQ</a></li>
@@ -218,7 +232,7 @@ def footer():
     <div>
       <h4>Visit</h4>
       <ul>
-        <li>{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</li>
+        <li>{BIZ['street']} {BIZ['cross']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</li>
         <li><a href="tel:{BIZ['phone']}">{BIZ['phone_pretty']}</a></li>
         <li><a href="mailto:{BIZ['email']}">{BIZ['email']}</a></li>
         <li>{BIZ['hours_pretty']}</li>
@@ -227,7 +241,7 @@ def footer():
   </div>
   <div class="wrap footer__bottom">
     <span>© <span data-year></span> {BIZ['legal']}. All rights reserved.</span>
-    <span>Bikes · E-bikes · Segways · Skates · Trikes · Tours · South Beach, Florida</span>
+    <span>Bikes · E-bikes · Trikkes · Segways · Skates · Tours · Everglades · Key West · South Beach, Florida</span>
   </div>
 </footer>
 <script src="assets/js/main.js" defer></script>

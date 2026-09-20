@@ -15,9 +15,10 @@ sunset coral, Art Deco gold, palm green and sand.
 ## Structure
 
 ```
-index.html          Home: hero, finder, fleet, tours, routes, reviews, FAQ
-rentals.html        Full fleet + complete price table
-tours.html          6 guided tours + price table + tour FAQ
+index.html          Home: hero, finder, fleet, tours, adventures, routes, reviews, FAQ
+rentals.html        10 rentals + complete price table
+tours.html          6 guided Segway / night tours + price table + tour FAQ
+adventures.html     Everglades, Key West, Miami city tour, jet ski, parasailing, helicopter
 routes.html         6 free cycling route guides (local-intent content)
 about.html          Shop story, workshop, stats
 faq.html            10 FAQs + cancellation policy table
@@ -104,11 +105,37 @@ canonical URL, Open Graph tag, sitemap entry and JSON-LD `@id`.
 
 ---
 
-## Before going live — two things to confirm with the client
+## Catalogue: what is confirmed and what is not
 
-1. **Prices.** The rate tables in `_build/data.py` (`FLEET`, `TOURS`) are South Beach market rates, not
-   confirmed from the client's own price list. Replace them with the real numbers and rebuild.
-   Same for the review quotes in `REVIEWS` and the "since 2009" / fleet-size figures.
+The catalogue mirrors the operator's own booking feed (FareHarbor: `southfloridatrikketours`),
+the same business as Miami Beach Bike Rental / South Florida Trikke — same shop, same phone.
+
+**Confirmed prices** (published by the operator):
+
+| Item | Price |
+|---|---|
+| Ocean Drive Segway Tour | $49 / person, 1 h |
+| Star Island Segway Tour | $69 / person, 1 h |
+| South Beach Segway Tour | $79 / person, 2 h |
+| Miami Beach Art Deco Segway Tour | $79 / person, 2 h |
+| Miami Millionaire's Row Segway Tour | $89 / person, 2.5 h |
+| Everglades Airboat Adventure | $69 / person, 4.5 h |
+
+Also confirmed: happy hour 1–4 PM adds one free hour; Segway tours need a minimum of two riders and
+take no deposit; the cancellation ladder (100 / 50 / 25 / 0%); baskets and baby seats $5.
+
+**Still to confirm with the client** — the rental rate table (`FLEET` in `_build/data.py`), the prices
+for Key West, the Miami City Tour, the night chariot tour, jet ski, parasailing and helicopter
+(`ADVENTURES`), the review quotes in `REVIEWS`, and the "since 2009" / rating figures.
+Everything sits in one file; replace the numbers and run the build.
+
+## Before going live
+
+1. **Swap the unconfirmed prices above** in `_build/data.py`, then `python3 _build/build.py`.
 2. **The booking form** on `contact.html` currently uses a `mailto:` action, which is unreliable across
-   browsers. Point it at a form backend (Formspree, Netlify Forms, or the client's booking system) or
-   embed the existing reservation widget.
+   browsers. Point it at the operator's FareHarbor booking flow
+   (`https://fareharbor.com/embeds/book/southfloridatrikketours/items/`) or a form backend —
+   FareHarbor also ships a lightbox embed that drops straight into the "Book now" buttons.
+3. **Address.** Listings disagree between 233 14th St, 226 14th St and 1401 Washington Ave (the corner
+   building). The site uses 233 14th Street; confirm and make it identical everywhere, including the
+   Google Business Profile, since NAP consistency is what local ranking runs on.

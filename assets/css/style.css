@@ -182,7 +182,7 @@ section{position:relative}
 /* ---------- Marquee ---------- */
 .marquee{background:var(--ocean-ink);color:#fff;overflow:hidden;padding:.85rem 0;
   border-top:3px solid transparent;border-image:var(--grad-neon) 1}
-.marquee__track{display:flex;gap:2.5rem;width:max-content;animation:slide 38s linear infinite}
+.marquee__track{display:flex;gap:2.5rem;width:max-content;animation:slide 60s linear infinite}
 .marquee:hover .marquee__track{animation-play-state:paused}
 .marquee span{font-family:var(--font-display);font-weight:800;letter-spacing:.14em;text-transform:uppercase;
   font-size:.92rem;display:flex;align-items:center;gap:2.5rem;white-space:nowrap}
