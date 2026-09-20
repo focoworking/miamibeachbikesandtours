@@ -129,6 +129,32 @@
     var T = (window.ASSIST_CONFIG && window.ASSIST_CONFIG.t) || {};
     el.textContent = open ? (T.open_now || 'Open now · until 8 PM')
                           : (T.closed_now || 'Closed · opens 9 AM');
-    el.style.color = open ? '#39d98a' : '#ffc531';
+    el.style.color = open ? '#136b45' : '#9a5b00';   // readable on the tan bar
   });
+
+  /* ---- Header height: the nav sits under the address bar ----
+     Both are sticky, so the nav's `top` has to be the address bar's real
+     height — which changes with the font size, the language and whether the
+     opening hours are showing. Measured here instead of guessed in CSS. */
+  var topbar = document.querySelector('.topbar');
+  if (topbar) {
+    var setTopbarH = function () {
+      document.documentElement.style.setProperty(
+        '--topbar-h', Math.round(topbar.getBoundingClientRect().height) + 'px');
+    };
+    setTopbarH();
+    window.addEventListener('resize', setTopbarH, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(setTopbarH).observe(topbar);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setTopbarH);
+  }
+
+  /* ---- Every page opens at the top ----
+     Browsers restore the previous scroll position on a back/forward and, on
+     some, when following a link to a page you have already seen. Landing
+     halfway down a page you just clicked into reads as a broken link. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!window.location.hash) {
+    // after layout, so a late-loading image cannot drag the page down with it
+    requestAnimationFrame(function () { window.scrollTo(0, 0); });
+  }
 })();

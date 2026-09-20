@@ -19,6 +19,7 @@
   --lime:         #39d98a;   /* palm */
   --sand:         #fff6e9;
   --sand-2:       #ffeed6;
+  --sand-3:       #e6d0ab;   /* the tan the hero sand ends on */
   --white:        #ffffff;
   --ink:          #14232b;
   --ink-soft:     #4a5f69;
@@ -37,6 +38,7 @@
   --shadow-l: 0 28px 70px rgba(4,48,61,.22);
   --maxw: 1240px;
   --nav-h: 82px;
+  --topbar-h: 40px;   /* measured at runtime; this is the fallback */
   --ease: cubic-bezier(.22,1,.36,1);
 }
 
@@ -1213,3 +1215,41 @@ p{max-width:72ch}
 /* two columns all the way down: one column turned the footer into a
    twelve-flick scroll on a phone */
 @media(max-width:340px){ .footer__grid{grid-template-columns:1fr} }
+
+/* ============================================================
+   The header holds the top of the screen
+   The address bar used to scroll away and only the nav stuck.
+   Now both stay, stacked, and --topbar-h is measured at runtime
+   so the nav sits exactly under it whatever the address wraps to.
+   ============================================================ */
+.topbar{
+  position:sticky;top:0;z-index:92;
+  background:var(--sand-3);color:var(--ocean-ink);
+  border-bottom:1px solid rgba(4,48,61,.1);
+}
+.topbar a{color:var(--ocean-ink)}
+.topbar a:hover{color:var(--ocean-deep)}
+.topbar b{color:#136b45;font-weight:700}
+.topbar__addr,.topbar__hours,.topbar__tel{color:var(--ocean-ink)}
+
+/* language pills, repainted for a light bar */
+.lang{color:rgba(4,48,61,.62);background:rgba(4,48,61,.07)}
+.lang:hover{background:rgba(4,48,61,.14);color:var(--ocean-ink)}
+.lang.is-on{background:var(--sun);color:#3a2a00}
+
+.nav{top:var(--topbar-h)}
+
+/* the hero fits between the header and the fold, so the two buttons
+   under it are on screen without scrolling */
+.hero{min-height:min(calc(100svh - var(--nav-h) - var(--topbar-h)),880px)}
+.hero__in{padding-bottom:clamp(1.6rem,3vw,2.4rem)}
+
+@media(max-width:760px){
+  .hero{min-height:calc(78svh - var(--nav-h) - var(--topbar-h))}
+}
+
+/* With both bars pinned, an in-page anchor would land under them. Reserve
+   their combined height so #stop-espanola, #repairs-service and the rest
+   arrive just below the header instead of behind it. */
+html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
+:target{scroll-margin-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
