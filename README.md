@@ -120,12 +120,25 @@ the sitemap lists every URL with its alternates, and the switcher sits top-right
 - `LANGS` in `_build/data.py` drives directories, locales and the switcher. Adding a fifth language
   means adding a row there and a column in `i18n.py`.
 
-**Translation status:** the interface is complete in all four. The editorial content — product
-descriptions, tour and adventure copy, POI stories, FAQ answers, page headlines and meta
-descriptions — is still English in `/es/`, `/pt/` and `/it/`. That content lives in `_build/data.py`
-and needs the same treatment: a per-language dictionary keyed by slug. Until it is done, do not
-submit the translated directories to Search Console — duplicate English under a Spanish URL is
-worse than no Spanish URL.
+**Translation status: complete.** Interface, catalogue and page copy are translated in all four
+languages, including the structured data — a Spanish `Product` description, `FAQPage` answer and
+`TouristAttraction` story all render in Spanish, which is what makes the translated URLs worth
+indexing.
+
+Three layers:
+
+- `_build/i18n.py` — interface strings (navigation, buttons, the assistant, footer) plus page copy
+  from `_build/pages_i18n.py` (titles, meta descriptions, H1s, leads, answer boxes).
+- `_build/content.py` — catalogue localisation. Two tables per language in `t_es.py`, `t_pt.py`,
+  `t_it.py`: `PHRASES` for short fragments that repeat across the catalogue ("1 hour", "Ages 14+"),
+  and `TEXTS` for unique prose keyed by dotted path (`fleet.beach-cruiser.hook`,
+  `poi.versace.story`, `faq.12.a`).
+- Proper nouns are deliberately untranslated in every language. Ocean Drive, Española Way, Lummus
+  Park, Star Island and the rest stay as they are — translating a street name breaks both the map
+  and the search intent.
+
+`content.audit()` reports any key still falling through to English. It currently returns nothing;
+run it after adding catalogue items, because a new product silently renders in English otherwise.
 
 ## Editing content
 

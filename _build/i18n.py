@@ -262,6 +262,10 @@ UI = {
 }
 
 
+from pages_i18n import PAGES as _PAGES
+UI.update(_PAGES)
+
+
 def t(key, lang="en"):
     """Look up a UI string, falling back to English."""
     row = UI.get(key)

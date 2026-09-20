@@ -4,9 +4,11 @@ import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from data import (BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, SHOP, ROUTES,
                   FAQ, REVIEWS, POI, MODES, INTERESTS, DURATIONS)
+import data
 import shell
 from shell import head, nav, footer, ld, breadcrumbs, ADDRESS_LD
 from i18n import t as _t, pack as _pack
+import content as _content
 from data import LANGS, WHATSAPP_URL
 
 LANG = "en"   # rebound once per language pass in __main__
@@ -22,11 +24,24 @@ def nav(current, page=None):
 
 
 def footer():
-    return shell.footer(lang=LANG)
+    return shell.footer(lang=LANG, poi=POI, modes=MODES,
+                        interests=INTERESTS, durations=DURATIONS)
 
 
 def T(key):
     return _t(key, LANG)
+
+
+def use_language(code):
+    """Rebind LANG and swap every catalogue for its localised copy."""
+    global LANG, FLEET, TOURS, ADVENTURES, SHOP, ROUTES, FAQ, POI
+    global MODES, INTERESTS, DURATIONS, REVIEWS
+    LANG = code
+    loc = _content.localise(data, code)
+    FLEET = loc["FLEET"]; TOURS = loc["TOURS"]; ADVENTURES = loc["ADVENTURES"]
+    SHOP = loc["SHOP"]; ROUTES = loc["ROUTES"]; FAQ = loc["FAQ"]; POI = loc["POI"]
+    MODES = loc["MODES"]; INTERESTS = loc["INTERESTS"]; DURATIONS = loc["DURATIONS"]
+    REVIEWS = loc["REVIEWS"]
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def write(name, html):
@@ -210,10 +225,8 @@ def page_index():
                   "url": SITE + "/adventures.html#" + a["slug"]} for i, a in enumerate(ADVENTURES)]}),
     ])
     h = head("index.html",
-             "Miami Beach Bikes | Bike, E-Bike & Segway Rentals and Tours · South Beach",
-             "Rent bikes, e-bikes, Trikkes, Segways, longboards and skates in South Beach from $12/hour. "
-             "Segway tours from $49, free Wynwood and Coconut Grove bike tours, Everglades and Key West day trips, "
-             "Segway sales and same-day repairs. Open daily 9 AM – 8 PM at 233 14th Street.",
+             T("t.index"),
+             T("d.index"),
              "miami beach bike rental, south beach bike rental, segway tour miami, electric bike rental miami beach, "
              "rollerblade rental south beach, miami beach bike tours, ocean drive bike rental, "
              "segway dealer miami, trikke miami beach, free bike tour wynwood",
@@ -235,15 +248,15 @@ def page_index():
   <div class="hero__scrim"></div>
   <div class="wrap hero__in">
     <span class="eyebrow eyebrow--light">South Beach · 233 14th Street</span>
-    <h1>Ride more.<br><em>Worry less.</em></h1>
-    <p class="hero__sub">Bikes, e-bikes, Trikkes, Segways and skates one block from Ocean Drive — plus <span class="hero__sub--long">Segway tours of the Art Deco District and Star Island, Everglades airboats, Key West day trips, jet skis and parasailing. Family-friendly, sun-powered, unreasonably fun.</span><span class="hero__sub--short">guided tours, Everglades airboats and Key West day trips.</span></p>
+    <h1>{T("h.hero1")}<br><em>{T("h.hero2")}</em></h1>
+    <p class="hero__sub">{T("h.hero_sub_a")}<span class="hero__sub--long">{T("h.hero_sub_long")}</span><span class="hero__sub--short">{T("h.hero_sub_short")}</span></p>
     <div class="hero__cta">
-      <a class="btn" href="rentals.html">Rent a ride · from $12</a>
-      <a class="btn btn--ghost" href="tours.html">See the tours</a>
+      <a class="btn" href="rentals.html">{T("h.cta_rent")}</a>
+      <a class="btn btn--ghost" href="tours.html">{T("h.cta_tours")}</a>
     </div>
 
   </div>
-  <span class="hero__scroll">Scroll</span>
+  
 </section>
 
 <div class="wrap finder">
@@ -285,20 +298,18 @@ def page_index():
 <section class="sec--tight" style="padding-top:2.2rem;padding-bottom:0">
   <div class="wrap">
     <div class="trust" data-reveal>
-      <span class="trust__i">&#9733; 4.8 &middot; 131 reviews</span>
-      <span class="trust__i">&#128690; Helmet, lock &amp; water included</span>
-      <span class="trust__i">&#127976; Free hotel delivery 24h+</span>
-      <span class="trust__i">&#9200; Happy hour 1&ndash;4 PM &middot; +1 free hour</span>
-      <span class="trust__i">&#127912; Free Wynwood &amp; Coconut Grove tours</span>
+      <span class="trust__i">&#9733; {T("tr.reviews")}</span>
+      <span class="trust__i">&#128690; {T("tr.included")}</span>
+      <span class="trust__i">&#127976; {T("tr.delivery")}</span>
+      <span class="trust__i">&#9200; {T("tr.happy")}</span>
+      <span class="trust__i">&#127912; {T("tr.freetours")}</span>
     </div>
   </div>
 </section>
 
 {marquee()}
 
-{answer_box("Where can I rent a bike in South Beach?",
- "At Miami Beach Bikes · Rentals &amp; Tours, 233 14th Street, Miami Beach, FL 33139 — one block from Ocean Drive and the Beachwalk. "
- "We are open every day from 9 AM to 8 PM, rent by the hour, day, week or month from $12/hour, run a happy hour from 1 to 4 PM that adds a free extra hour, and deliver free to South Beach hotels on rentals of 24 hours or more. Call " + BIZ["phone_pretty"] + ".")}
+{answer_box(T("ab.index_q"), T("ab.index_a"))}
 
 <section class="sec band-ocean">
   <div class="wrap split">
@@ -450,10 +461,8 @@ def page_rentals():
                               "Do you deliver bikes to my hotel?")]),
                      breadcrumbs([("Home", ""), ("Rentals", "rentals.html")])])
     h = head("rentals.html",
-             "Rentals | Bikes, E-Bikes, Trikkes, Segways & Skates in South Beach from $12/hr",
-             "Full price list for beach cruiser, fat tire, electric bike, electric tandem, Trikke, side-by-side, tricycle, "
-             "rollerblade and kids' bike rentals in South Beach. Hourly, all-day and weekly rates, happy hour 1-4 PM, "
-             "helmet and lock included, free South Beach hotel delivery.",
+             T("t.rentals"),
+             T("d.rentals"),
              "bike rental miami beach prices, fat tire bike rental south beach, electric bike rental south beach, "
              "trikke rental miami, electric tandem rental miami beach, side by side bike rental, "
              "rollerblade rental miami beach, kids bike rental miami beach",
@@ -463,16 +472,12 @@ def page_rentals():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · Rentals</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Rentals</h1>
-    <p class="lead">Ten kinds of wheels, from one hour to sixty days. Helmet, lock, cold water and a route map come with every single one — and an extra free hour if you start between 1 and 4 PM.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.rentals_h")}</h1>
+    <p class="lead">{T("p.rentals_lead")}</p>
   </div>
 </section>
 
-{answer_box("How much does it cost to rent a bike in Miami Beach?",
- "Beach cruisers start at $12 per hour and $28 for all day (9 AM to 8 PM). Fat tire beach bikes start at $18/hour, "
- "electric bikes at $25/hour, electric tandems at $45/hour, Trikkes at $25 for 30 minutes, adult tricycles at $18/hour, "
- "tandems at $22/hour, rollerblades at $12/hour and kids&#39; bikes at $10/hour. Rent between 1 PM and 4 PM and you get "
- "an extra hour free. Helmet, lock, bottled water and a route map are included with every rental.")}
+{answer_box(T("ab.rentals_q"), T("ab.rentals_a"))}
 
 <section class="sec">
   <div class="wrap">
@@ -544,10 +549,8 @@ def page_tours():
                               "How much are the Segway tours?", "What is a Trikke?",
                               "Do I need to book in advance?", "What is your cancellation policy?")])] + tour_lds)
     h = head("tours.html",
-             "Tours | Segway, Bike, E-Bike & Trikke Guided Tours in Miami Beach",
-             "Guided Segway tours of Ocean Drive ($49), Star Island ($69), South Beach and the Art Deco District ($79) and "
-             "Millionaire's Row ($89), plus bike, e-bike and Trikke tours, private night tours, and free guided "
-             "Wynwood and Coconut Grove bike tours with any rental.",
+             T("t.tours"),
+             T("d.tours"),
              "segway tour miami beach, art deco segway tour, ocean drive segway tour, star island segway tour, "
              "millionaires row tour miami, night tour miami beach, south beach segway tour price",
              extra, og_img="tour-segway-deco")
@@ -560,16 +563,12 @@ def page_tours():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · Tours</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Guided tours</h1>
-    <p class="lead">Twelve guided rides: Segway, bike, e-bike and Trikke, one hour to a full afternoon, from $49. Training always included, and a private version of any of them.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.tours_h")}</h1>
+    <p class="lead">{T("p.tours_lead")}</p>
   </div>
 </section>
 
-{answer_box("What is the best guided tour in South Beach?",
- "Start with the one-hour Ocean Drive Segway Tour at $49 per person — the shortest, the cheapest, training included. "
- "The Star Island Segway Tour is $69 for an hour, the two-hour South Beach and Art Deco Segway Tours are $79 each, and the "
- "2.5-hour Miami Millionaire&#39;s Row Segway Tour is $89. Bike, e-bike, Trikke, night and private tours are quoted by phone. "
- "All tours leave from 233 14th Street, Miami Beach, and Segway tours need a minimum of two riders.")}
+{answer_box(T("ab.tours_q"), T("ab.tours_a"))}
 
 <section class="sec">
   <div class="wrap">
@@ -648,10 +647,8 @@ def page_adventures():
                               "Do I need to book in advance?",
                               "What is your cancellation policy?")])] + adv_lds)
     h = head("adventures.html",
-             "Everglades Airboats, Key West Day Trips, Jet Ski & Parasailing | Miami Beach",
-             "Book Everglades airboat adventures from $69, Key West day trips, Miami city tours, jet ski rentals, "
-             "South Beach parasailing and helicopter rides — all from our shop at 233 14th Street, South Beach. "
-             "Most include hotel pickup.",
+             T("t.adventures"),
+             T("d.adventures"),
              "everglades airboat tour miami, key west day trip from miami, jet ski rental miami beach, "
              "parasailing south beach, miami helicopter tour, miami city tour",
              extra, og_img="tour-parasail")
@@ -664,16 +661,12 @@ def page_adventures():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> &middot; Adventures</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Adventures &amp; day trips</h1>
-    <p class="lead">Everything that does not fit on two wheels: airboats through the sawgrass, the Overseas Highway to Key West, jet skis on the bay, 600 feet of parasail and the city from a helicopter.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.adv_h")}</h1>
+    <p class="lead">{T("p.adv_lead")}</p>
   </div>
 </section>
 
-{answer_box("What day trips can you book from South Beach?",
- "From our shop at 233 14th Street you can book the Everglades Airboat Adventure (4.5 hours, $69 per person, hotel pickup included), "
- "a full-day Key West trip over the Seven Mile Bridge, a half-day Miami City Tour through Little Havana and Wynwood, "
- "jet ski rentals on Biscayne Bay from $99, South Beach parasailing from $95 and helicopter rides over the city from $149. "
- "Call " + BIZ["phone_pretty"] + " to check the next departure.")}
+{answer_box(T("ab.adv_q"), T("ab.adv_a"))}
 
 <section class="sec">
   <div class="wrap">
@@ -775,28 +768,20 @@ def page_shop():
                               "Do you repair bikes, e-bikes and scooters?",
                               "Can I try a Segway or Trikke before buying one?")])])
     h = head("shop.html",
-             "Segway Dealer Miami | Buy Segways, Trikkes, E-Bikes & Parts · South Beach",
-             "Miami's factory authorized Segway dealer. Buy Segway personal transporters, electric "
-             "Trikkes, e-bikes and genuine Segway i2 parts — cargo frames, reflective shields, "
-             "lighting, patroller bags. Same-day repairs for bikes, e-bikes and Segways.",
-             "segway dealer miami, buy segway miami, segway sales miami beach, trikke for sale, "
-             "segway i2 parts, electric bike for sale miami, bike repair miami beach",
+             T("t.shop"),
+             T("d.shop"),
              extra, og_img="fleet-segway")
     cards = "".join(shop_card(p, i % 3 + 1) for i, p in enumerate(SHOP))
     return h + nav("shop.html") + f'''
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> &middot; Shop</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Buy, service, ride</h1>
-    <p class="lead">Miami's factory authorized Segway dealer. We also sell the Trikkes we are named after, electric bikes, genuine parts — and we fix all of it, including yours.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.shop_h")}</h1>
+    <p class="lead">{T("p.shop_lead")}</p>
   </div>
 </section>
 
-{answer_box("Where can I buy a Segway in Miami?",
- "At Miami Beach Bikes, 233 14th Street, Miami Beach, FL 33139 — Miami's factory authorized Segway dealer. "
- "We sell new Segway personal transporters with full warranty, electric and pedal Trikkes, electric bikes and the "
- "complete Segway i2 parts range, and you can test ride before you buy. Call " + BIZ["phone_pretty"] +
- " for current models and pricing.")}
+{answer_box(T("ab.shop_q"), T("ab.shop_a"))}
 
 <section class="sec">
   <div class="wrap">
@@ -910,13 +895,8 @@ def page_live_route():
                               "Does Live Route cost anything?")])])
 
     h = head("live-route.html",
-             "Live Route | Free Self-Guided South Beach Tour · Virtual Tour Guide",
-             "A free virtual tour guide for South Beach. Pick how you travel — on foot, bike, "
-             "e-bike, Segway, Trikke or skates — how long you have and what you like, and it "
-             "builds a route from 233 14th Street through the Art Deco district, Ocean Drive, "
-             "Lummus Park and South Pointe, then guides you stop by stop.",
-             "self guided tour south beach, free walking tour miami beach, virtual tour guide miami, "
-             "south beach bike route planner, art deco self guided tour, things to do south beach map",
+             T("t.live"),
+             T("d.live"),
              extra, og_img="routes-map")
 
     modes = "".join(
@@ -946,18 +926,13 @@ def page_live_route():
 <section class="phead phead--live">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> &middot; Live Route</p>
-    <span class="lr-badge">Free &middot; no app &middot; works on your phone</span>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Live Route</h1>
-    <p class="lead">A virtual tour guide that starts at our door on Washington and 14th and takes you to the South Beach worth seeing. Tell it how you are moving, how long you have and what you like — it builds the route and then talks you through it, stop by stop, while you ride.</p>
+    <span class="lr-badge">{T("p.live_badge")}</span>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.live_h")}</h1>
+    <p class="lead">{T("p.live_lead")}</p>
   </div>
 </section>
 
-{answer_box("What is a self-guided tour of South Beach?",
- "Live Route is a free self-guided tour of South Beach from Miami Beach Bikes at 233 14th Street. "
- "You choose how you are travelling — on foot, beach cruiser, electric bike, Segway, Trikke or skates — "
- "how much time you have, from 30 minutes to half a day, and what you want to see. It then orders the "
- "nearest landmarks into a loop, tells you the distance and riding time between each one, and in live "
- "mode uses your phone's location to announce each stop as you reach it. No app, no sign-up, no charge.")}
+{answer_box(T("ab.live_q"), T("ab.live_a"))}
 
 <section class="sec" id="plan">
   <div class="wrap">
@@ -1034,9 +1009,8 @@ def page_routes():
     extra = "".join([speakable(), route_ld, breadcrumbs([("Home", ""), ("Routes", "routes.html")]),
                      faq_ld([f for f in FAQ if f[0] in ("Is Miami Beach safe for cycling?",)])])
     h = head("routes.html",
-             "Best Bike Routes in Miami Beach & South Beach | Free Route Guide",
-             "Six tried-and-tested cycling routes from South Beach: the Beachwalk, the Art Deco neon loop, Star Island, "
-             "the Venetian Islands, Wynwood and North Beach. Distances, times, difficulty and what to see along the way.",
+             T("t.routes"),
+             T("d.routes"),
              "bike routes miami beach, south beach bike path, beachwalk miami beach, venetian causeway cycling, "
              "star island bike ride, best places to bike in miami",
              extra, og_img="routes-map")
@@ -1044,15 +1018,12 @@ def page_routes():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · Routes</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Where to ride</h1>
-    <p class="lead">Free route guides written by people who ride this island every day. Print them, screenshot them, or grab the paper version at the shop.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.routes_h")}</h1>
+    <p class="lead">{T("p.routes_lead")}</p>
   </div>
 </section>
 
-{answer_box("Where is the best place to bike in Miami Beach?",
- "The Miami Beach Beachwalk — a flat, paved, car-free path running along the sand from South Pointe Park to North Beach — is the best ride on the island for all ages. "
- "For skyline views, cross the Venetian Causeway to the Venetian Islands; for mansions, take the protected path on the MacArthur Causeway to Star Island; "
- "and for street art, ride an e-bike to Wynwood. All four start within a block of 233 14th Street.")}
+{answer_box(T("ab.routes_q"), T("ab.routes_a"))}
 
 <section class="sec">
   <div class="wrap">
@@ -1090,17 +1061,16 @@ def page_about():
                      ld({"@context": "https://schema.org", "@type": "AboutPage",
                          "url": SITE + "/about.html", "mainEntity": {"@id": SITE + "/#business"}})])
     h = head("about.html",
-             "About Miami Beach Bikes | South Beach Bike Shop, Segway Dealer & Tour Operator",
-             "A family-run bike shop, Segway dealer and tour operator at 233 14th Street, South Beach. Rentals, guided Segway "
-             "tours, Everglades and Key West day trips, and a full repair workshop. Open every day, 9 AM to 8 PM.",
+             T("t.about"),
+             T("d.about"),
              "miami beach bike shop, south beach bike rental company, bike repair miami beach, segway dealer miami beach",
              extra, og_img="about-shop")
     return h + nav("about.html") + f'''
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · About</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">A shop, not a kiosk</h1>
-    <p class="lead">Real mechanics, real guides, a restroom, cold water and Wi-Fi — one block from Ocean Drive.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.about_h")}</h1>
+    <p class="lead">{T("p.about_lead")}</p>
   </div>
 </section>
 
@@ -1152,9 +1122,8 @@ def page_about():
 def page_faq():
     extra = "".join([speakable(), faq_ld(FAQ), breadcrumbs([("Home", ""), ("FAQ", "faq.html")])])
     h = head("faq.html",
-             "FAQ | Bike Rental & Tours in Miami Beach — Prices, Delivery, Policies",
-             "Answers on bike rental prices in Miami Beach, hotel delivery, minimum ages, Segway tour rules, "
-             "rental durations, what is included, cycling safety and our cancellation policy.",
+             T("t.faq"),
+             T("d.faq"),
              "miami beach bike rental faq, bike rental policy, segway age requirement, "
              "bike delivery miami beach, cancellation policy bike rental",
              extra)
@@ -1162,8 +1131,8 @@ def page_faq():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · FAQ</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Frequently asked</h1>
-    <p class="lead">Short answers first. If yours is not here, call {BIZ['phone_pretty']} — a human picks up between 9 AM and 8 PM.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.faq_h")}</h1>
+    <p class="lead">{T("p.faq_lead")}</p>
   </div>
 </section>
 
@@ -1200,9 +1169,8 @@ def page_contact():
                      ld({"@context": "https://schema.org", "@type": "ContactPage",
                          "url": SITE + "/contact.html", "mainEntity": {"@id": SITE + "/#business"}})])
     h = head("contact.html",
-             "Contact & Booking | Miami Beach Bikes, 233 14th Street South Beach",
-             "Book a bike, e-bike, Trikke, Segway tour, Everglades airboat, Key West day trip, jet ski or parasailing in "
-             "South Beach. Call (305) 830-9440 or walk in at 233 14th Street, Miami Beach, FL 33139. Open daily 9 AM – 8 PM.",
+             T("t.contact"),
+             T("d.contact"),
              "book bike rental miami beach, contact miami beach bike rental, 233 14th street miami beach, "
              "bike delivery south beach hotel",
              extra, og_img="delivery")
@@ -1211,8 +1179,8 @@ def page_contact():
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · Contact</p>
-    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Book your ride</h1>
-    <p class="lead">Fastest way is the phone. Second fastest is walking in — we are one block off Ocean Drive.</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">{T("p.contact_h")}</h1>
+    <p class="lead">{T("p.contact_lead")}</p>
   </div>
 </section>
 
@@ -1277,8 +1245,8 @@ def page_contact():
 
 
 def page_404():
-    h = head("404.html", "Page not found | Miami Beach Bikes",
-             "That page took a wrong turn on Ocean Drive. Head back to rentals, tours or routes.",
+    h = head("404.html", T("t.404"),
+             T("d.404"),
              "404")
     # a 404 must not be indexed — replace the site-wide robots directive
     h = h.replace('<meta name="robots" content="index,follow,max-image-preview:large,'
@@ -1287,11 +1255,11 @@ def page_404():
     return h + nav("") + f'''
 <section class="phead" style="min-height:52vh;display:grid;place-items:center">
   <div class="wrap phead__in center">
-    <h1>Wrong turn on Ocean Drive</h1>
-    <p class="lead" style="margin-inline:auto">That page is not here, but the bikes are.</p>
+    <h1>{T("p.404_h")}</h1>
+    <p class="lead" style="margin-inline:auto">{T("p.404_lead")}</p>
     <div class="btn-row btn-row--center" style="margin-top:1.6rem">
-      <a class="btn" href="index.html">Back home</a>
-      <a class="btn btn--ghost" href="rentals.html">See rentals</a>
+      <a class="btn" href="index.html">{T("p.404_home")}</a>
+      <a class="btn btn--ghost" href="rentals.html">{T("p.404_rent")}</a>
     </div>
   </div>
 </section>
@@ -1502,8 +1470,7 @@ if __name__ == "__main__":
     import builtins
     print("Building Miami Beach Bikes in %d languages..." % len(LANGS))
     for lg in LANGS:
-        LANG = lg["code"]
-        globals()["LANG"] = LANG
+        use_language(lg["code"])
         outdir = os.path.join(ROOT, lg["dir"]) if lg["dir"] else ROOT
         os.makedirs(outdir, exist_ok=True)
         print(" [%s] -> %s" % (lg["short"], lg["dir"] or "/"))

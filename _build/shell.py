@@ -228,7 +228,11 @@ def nav(current, lang="en", page=None):
 '''
 
 
-def footer(lang="en"):
+def footer(lang="en", poi=None, modes=None, interests=None, durations=None):
+    poi = POI if poi is None else poi
+    modes = MODES if modes is None else modes
+    interests = INTERESTS if interests is None else interests
+    durations = DURATIONS if durations is None else durations
     T = _pack(lang)
     t_live = T["bar_live"]
     t_book = T["bar_book"]
@@ -237,10 +241,10 @@ def footer(lang="en"):
     booking = _j(BOOKING_URL)
     phone = _j(BIZ["phone"])
     phone_pretty = _j(BIZ["phone_pretty"])
-    poi = _j(POI)
-    modes = _j(MODES)
-    interests = _j(INTERESTS)
-    durations = _j(DURATIONS)
+    poi_j = _j(poi)
+    modes_j = _j(modes)
+    interests_j = _j(interests)
+    durations_j = _j(durations)
     blocks = _j(EXTEND_BLOCKS)
     rates = _j(EXTEND_RATES)
     pay = _j(PAY_METHODS)
@@ -337,10 +341,10 @@ window.ASSIST_CONFIG={{
   links:{{rentals:"rentals.html",tours:"tours.html",adventures:"adventures.html"}},
   t:{ui}
 }};
-window.LR_POI={poi};
-window.LR_MODES={modes};
-window.LR_INTERESTS={interests};
-window.LR_DURATIONS={durations};
+window.LR_POI={poi_j};
+window.LR_MODES={modes_j};
+window.LR_INTERESTS={interests_j};
+window.LR_DURATIONS={durations_j};
 window.LR_EXTEND={{blocks:{blocks},rates:{rates},pay:{pay}}};
 </script>
 <script src="{prefix}assets/js/main.js" defer></script>
