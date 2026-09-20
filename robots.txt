@@ -1,4 +1,4 @@
-# Miami Beach Bikes & Tours
+# Miami Beach Bikes · Rentals & Tours
 User-agent: *
 Allow: /
 

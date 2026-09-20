@@ -187,7 +187,7 @@ def page_index():
                   "url": SITE + "/adventures.html#" + a["slug"]} for i, a in enumerate(ADVENTURES)]}),
     ])
     h = head("index.html",
-             "Miami Beach Bike Rental & Tours | Bikes, E-Bikes, Segways · South Beach",
+             "Miami Beach Bikes | Bike, E-Bike & Segway Rentals and Tours · South Beach",
              "Rent bikes, e-bikes, Segways, rollerblades and trikes in South Beach from $12/hour. "
              "Guided Art Deco and Ocean Drive tours, free hotel delivery, open daily 9 AM – 8 PM at 233 14th Street.",
              "miami beach bike rental, south beach bike rental, segway tour miami, electric bike rental miami beach, "
@@ -265,7 +265,7 @@ def page_index():
 {marquee()}
 
 {answer_box("Where can I rent a bike in South Beach?",
- "At Miami Beach Bikes &amp; Tours, 233 14th Street, Miami Beach, FL 33139 — one block from Ocean Drive and the Beachwalk. "
+ "At Miami Beach Bikes · Rentals &amp; Tours, 233 14th Street, Miami Beach, FL 33139 — one block from Ocean Drive and the Beachwalk. "
  "We are open every day from 9 AM to 8 PM, rent by the hour, day, week or month from $12/hour, run a happy hour from 1 to 4 PM that adds a free extra hour, and deliver free to South Beach hotels on rentals of 24 hours or more. Call " + BIZ["phone_pretty"] + ".")}
 
 <section class="sec">
@@ -302,7 +302,7 @@ def page_index():
       </div>
       <a class="btn btn--sun" href="tours.html">Browse every tour</a>
     </div>
-    <div class="split__media" data-reveal data-delay="2">{img("tour-artdeco", "Guided Segway tour passing the Art Deco hotels of Ocean Drive")}</div>
+    <div class="split__media" data-reveal data-delay="2">{img("tour-segway-deco", "Guided Segway tour passing the Art Deco hotels of Ocean Drive")}</div>
   </div>
 </section>
 
@@ -398,7 +398,7 @@ def page_rentals():
                               "Do you deliver bikes to my hotel?")]),
                      breadcrumbs([("Home", ""), ("Rentals", "rentals.html")])])
     h = head("rentals.html",
-             "Bike, E-Bike, Segway & Skate Rentals in South Beach | From $12/hour",
+             "Rentals | Bikes, E-Bikes, Trikkes, Segways & Skates in South Beach from $12/hr",
              "Full price list for beach cruiser, fat tire, electric bike, electric tandem, Trikke, side-by-side, tricycle, "
              "rollerblade and kids' bike rentals in South Beach. Hourly, all-day and weekly rates, happy hour 1-4 PM, "
              "helmet and lock included, free South Beach hotel delivery.",
@@ -492,12 +492,12 @@ def page_tours():
                               "How much are the Segway tours?", "What is a Trikke?",
                               "Do I need to book in advance?", "What is your cancellation policy?")])] + tour_lds)
     h = head("tours.html",
-             "Miami Beach Tours | Segway, Bike & E-Bike Guided Tours in South Beach",
+             "Tours | Segway, Bike, E-Bike & Trikke Guided Tours in Miami Beach",
              "Guided Segway tours of Ocean Drive ($49), Star Island ($69), South Beach and the Art Deco District ($79) and "
              "Millionaire's Row ($89), plus private night tours. One to 2.5 hours, training included, minimum two riders.",
              "segway tour miami beach, art deco segway tour, ocean drive segway tour, star island segway tour, "
              "millionaires row tour miami, night tour miami beach, south beach segway tour price",
-             extra, og_img="tour-artdeco")
+             extra, og_img="tour-segway-deco")
     cards = "".join(tour_card(t, i % 3 + 1) for i, t in enumerate(TOURS))
     opts = ""
     for t in TOURS:
@@ -738,7 +738,7 @@ def page_routes():
         <li>Hydrate. The sun here is stronger than it feels with an ocean breeze on you.</li>
       </ul>
     </div>
-    <div class="split__media" data-reveal data-delay="2">{img("tour-oceandrive", "Cyclists on the Miami Beach Beachwalk next to the Atlantic Ocean")}</div>
+    <div class="split__media" data-reveal data-delay="2">{img("tour-bike-coastal", "Cyclists on the Miami Beach Beachwalk next to the Atlantic Ocean")}</div>
   </div>
 </section>
 
@@ -752,7 +752,7 @@ def page_about():
                      ld({"@context": "https://schema.org", "@type": "AboutPage",
                          "url": SITE + "/about.html", "mainEntity": {"@id": SITE + "/#business"}})])
     h = head("about.html",
-             "About Miami Beach Bikes & Tours | South Beach Bike Shop Since 2009",
+             "About Miami Beach Bikes | South Beach Bike Shop, Segway Dealer & Tour Operator",
              "A family-run bike shop, Segway dealer and tour operator at 233 14th Street, South Beach. Rentals, guided Segway "
              "tours, Everglades and Key West day trips, and a full repair workshop. Open every day, 9 AM to 8 PM.",
              "miami beach bike shop, south beach bike rental company, bike repair miami beach, segway dealer miami beach",
@@ -862,7 +862,7 @@ def page_contact():
                      ld({"@context": "https://schema.org", "@type": "ContactPage",
                          "url": SITE + "/contact.html", "mainEntity": {"@id": SITE + "/#business"}})])
     h = head("contact.html",
-             "Contact & Booking | Miami Beach Bikes & Tours, 233 14th Street South Beach",
+             "Contact & Booking | Miami Beach Bikes, 233 14th Street South Beach",
              "Book a bike, e-bike, Trikke, Segway tour, Everglades airboat, Key West day trip, jet ski or parasailing in "
              "South Beach. Call (305) 830-9440 or walk in at 233 14th Street, Miami Beach, FL 33139. Open daily 9 AM – 8 PM.",
              "book bike rental miami beach, contact miami beach bike rental, 233 14th street miami beach, "
@@ -925,7 +925,7 @@ def page_contact():
 <section class="sec--tight" id="find-us">
   <div class="wrap" data-reveal>
     <div style="border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-m)">
-      <iframe title="Map to Miami Beach Bikes &amp; Tours, 233 14th Street, Miami Beach, FL 33139"
+      <iframe title="Map to Miami Beach Bikes, 233 14th Street, Miami Beach, FL 33139"
         src="{maps}" width="100%" height="460" style="border:0;display:block" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
@@ -939,7 +939,7 @@ def page_contact():
 
 
 def page_404():
-    h = head("404.html", "Page not found | Miami Beach Bikes & Tours",
+    h = head("404.html", "Page not found | Miami Beach Bikes",
              "That page took a wrong turn on Ocean Drive. Head back to rentals, tours or routes.",
              "404")
     # a 404 must not be indexed — replace the site-wide robots directive
@@ -976,7 +976,7 @@ def build_sitemap():
 
 
 def build_robots():
-    return f"""# Miami Beach Bikes & Tours
+    return f"""# Miami Beach Bikes · Rentals & Tours
 User-agent: *
 Allow: /
 
@@ -1085,7 +1085,7 @@ def build_llms():
 
 # ---------------------------------------------------------------- run
 if __name__ == "__main__":
-    print("Building Miami Beach Bikes & Tours...")
+    print("Building Miami Beach Bikes...")
     write("index.html", page_index())
     write("rentals.html", page_rentals())
     write("tours.html", page_tours())

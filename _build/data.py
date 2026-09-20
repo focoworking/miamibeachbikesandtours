@@ -7,8 +7,8 @@ SITE = "https://www.miamibeachbikesandtours.com"
 BOOKING_URL = "https://fareharbor.com/embeds/book/southfloridatrikketours/items/"
 
 BIZ = {
-    "name": "Miami Beach Bikes & Tours",
-    "legal": "Miami Beach Bikes & Tours",
+    "name": "Miami Beach Bikes",
+    "legal": "Miami Beach Bikes · Rentals & Tours",
     "tagline": "Ride more. Worry less.",
     "happy_hour": "Happy hour 1–4 PM: one extra hour free on any rental",
     "phone": "+1-305-830-9440",
@@ -40,7 +40,7 @@ FLEET = [
         "rates": [("1 hour", 12), ("2 hours", 18), ("4 hours", 22), ("All day 9am–8pm", 28), ("1 week", 75)],
     },
     {
-        "slug": "fat-tire-bike", "cat": "bikes", "img": "fleet-cruiser",
+        "slug": "fat-tire-bike", "cat": "bikes", "img": "fleet-fat-tire",
         "name": "Fat Tire Beach Bike", "tag": "Rides on sand",
         "hook": "Four-inch tires built for the hard-pack sand at the waterline. The only bike here you can actually ride on the beach.",
         "meta": ["Ages 16+", "Sand-capable", "Helmet + lock"],
@@ -56,7 +56,7 @@ FLEET = [
         "rates": [("1 hour", 25), ("2 hours", 40), ("4 hours", 55), ("All day 9am–8pm", 89), ("1 week", 320)],
     },
     {
-        "slug": "electric-tandem", "cat": "bikes electric family", "img": "fleet-ebike",
+        "slug": "electric-tandem", "cat": "bikes electric family", "img": "fleet-etandem",
         "name": "Electric Tandem", "tag": "Two riders, one battery",
         "hook": "A pedal-assist tandem for two. The strongest rider sets the pace and nobody gets dropped halfway across the causeway.",
         "meta": ["2 riders", "Ages 16+", "Priced per group"],
@@ -64,7 +64,7 @@ FLEET = [
         "rates": [("1 hour", 45), ("2 hours", 70), ("4 hours", 95), ("All day 9am–8pm", 130)],
     },
     {
-        "slug": "trikke", "cat": "trikke electric", "img": "fleet-trike",
+        "slug": "trikke", "cat": "trikke electric", "img": "fleet-trikke",
         "name": "Trikke", "tag": "Our namesake",
         "hook": "The three-wheeled carving vehicle this shop was built around. You steer it by leaning, it is easier than a bike, and nothing turns more heads on Ocean Drive.",
         "meta": ["Ages 14+", "Training included", "Electric option"],
@@ -80,7 +80,7 @@ FLEET = [
         "rates": [("Guided tour · from", 49), ("Sales, parts & service", 0)],
     },
     {
-        "slug": "side-by-side", "cat": "family bikes", "img": "fleet-trike",
+        "slug": "side-by-side", "cat": "family bikes", "img": "fleet-sidebyside",
         "name": "Side-by-Side & Tandem", "tag": "Ride together",
         "hook": "Four wheels, two seats, side by side — plus classic tandems. Talk the whole way instead of shouting over your shoulder.",
         "meta": ["2–4 riders", "Canopy", "Basket"],
@@ -88,7 +88,7 @@ FLEET = [
         "rates": [("Tandem · 1 hour", 22), ("Tandem · all day", 55), ("Side-by-side · 1 hour", 39), ("Side-by-side · all day", 89)],
     },
     {
-        "slug": "adult-tricycle", "cat": "bikes family", "img": "fleet-trike",
+        "slug": "adult-tricycle", "cat": "bikes family", "img": "fleet-tricycle",
         "name": "Adult Tricycle", "tag": "Extra stable",
         "hook": "Three wheels, big rear basket, zero balance required. The pick for beach picnics and easy cruising.",
         "meta": ["Ages 16+", "Cargo basket", "No balance needed"],
@@ -96,7 +96,7 @@ FLEET = [
         "rates": [("1 hour", 18), ("2 hours", 28), ("4 hours", 35), ("All day 9am–8pm", 45), ("1 week", 120)],
     },
     {
-        "slug": "rollerblades", "cat": "skates family", "img": "fleet-skate",
+        "slug": "rollerblades", "cat": "skates family", "img": "fleet-skates",
         "name": "Rollerblades", "tag": "Lincoln Rd favorite",
         "hook": "Skate the Beachwalk like a local. Sizes for the whole family, pads and helmet included with every pair.",
         "meta": ["Kids + adults", "Pads included", "All sizes"],

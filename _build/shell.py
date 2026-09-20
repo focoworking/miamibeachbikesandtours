@@ -27,7 +27,8 @@ LOCALBUSINESS_LD = {
     "@type": ["BicycleStore", "TouristInformationCenter"],
     "@id": SITE + "/#business",
     "name": BIZ["name"],
-    "alternateName": ["Miami Beach Bike Rental", "South Beach Bike Rental"],
+    "alternateName": ["Miami Beach Bikes Rentals & Tours", "Miami Beach Bike Rental",
+                      "South Beach Bike Rental", "South Florida Trikke"],
     "url": SITE + "/",
     "telephone": BIZ["phone"],
     "email": BIZ["email"],
@@ -35,7 +36,7 @@ LOCALBUSINESS_LD = {
     "currenciesAccepted": "USD",
     "paymentAccepted": "Cash, Credit Card, Debit Card, Apple Pay, Google Pay",
     "image": SITE + "/assets/img/hero-southbeach.svg",
-    "logo": SITE + "/assets/img/favicon.svg",
+    "logo": SITE + "/assets/img/logo-mark.svg",
     "address": ADDRESS_LD,
     "geo": {"@type": "GeoCoordinates", "latitude": BIZ["lat"], "longitude": BIZ["lng"]},
     "hasMap": "https://www.google.com/maps/search/?api=1&query=" + BIZ["lat"] + "," + BIZ["lng"],
@@ -150,7 +151,8 @@ def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach"):
 <link rel="alternate" type="text/plain" href="{SITE}/llms.txt" title="llms.txt">
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/img/favicon.svg">
+<link rel="apple-touch-icon" href="assets/img/logo-mark.svg">
+<link rel="mask-icon" href="assets/img/logo-emblem.svg" color="#9b2ff2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -184,8 +186,12 @@ def nav(current):
     <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     <div class="nav__group">{links(left)}</div>
     <a class="brand" href="index.html" aria-label="{BIZ['name']} home">
-      <span class="brand__mark">Miami Beach <span>Bikes &amp; Tours</span></span>
-      <span class="brand__sub">South Beach · Since 2009</span>
+      <img class="brand__logo" src="assets/img/logo-mark.svg" width="52" height="52"
+           alt="" loading="eager" decoding="async">
+      <span class="brand__text">
+        <span class="brand__mark">Miami Beach <span>Bikes</span></span>
+        <span class="brand__sub">Rentals &amp; Tours · South Beach</span>
+      </span>
     </a>
     <div class="nav__group nav__group--right">{links(right)}
       <a class="btn btn--sm" href="{BOOKING_URL}" target="_blank" rel="noopener">Book now</a>
@@ -204,8 +210,11 @@ def footer():
   <div class="wrap footer__grid">
     <div>
       <a class="brand" href="index.html">
-        <span class="brand__mark">Miami Beach <span>Bikes &amp; Tours</span></span>
-        <span class="brand__sub">South Beach · Since 2009</span>
+        <img class="brand__logo" src="assets/img/logo-emblem.svg" width="64" height="64" alt="" loading="lazy">
+        <span class="brand__text">
+          <span class="brand__mark">Miami Beach <span>Bikes</span></span>
+          <span class="brand__sub">Rentals &amp; Tours · South Beach</span>
+        </span>
       </a>
       <p style="margin-top:1.1rem;max-width:34ch">Bikes, e-bikes, Trikkes, Segways, skates, guided tours and day trips, one block from Ocean Drive. {BIZ['tagline']}</p>
       <div class="badge-row">
