@@ -392,6 +392,12 @@ FAQ = [
      "Twelve of them. Five Segway tours with published prices — Ocean Drive $49, Star Island $69, South Beach $79, Art Deco $79 and Millionaire's Row $89 — plus a South Beach Trikke tour, an Art Deco bike tour, the South Beach Coastal Ride, a Wynwood and Downtown e-bike tour, a sunset ride across the Venetian Islands, a private night chariot tour and fully custom private and corporate tours."),
     ("Some tours do not show a price. Why?",
      "Those run on seasonal schedules or are priced per group, so the rate depends on the date, the group size and the operator. Call +1-305-830-9440 or book online and we will quote you on the spot — every one of them is bookable."),
+    ("What is Live Route?",
+     "Live Route is our free virtual tour guide for South Beach. You tell it how you are travelling \u2014 on foot, cruiser, electric bike, Segway, Trikke or skates \u2014 how long you have and what you are interested in, and it builds a route from our door at 233 14th Street through the landmarks that fit, then guides you stop by stop while you ride. It is on the website, so there is no app to install."),
+    ("Do I need a bike to use Live Route?",
+     "No. On foot is one of the six options and the Art Deco district works perfectly at walking pace. You will want wheels for South Pointe, the Venetian Islands or Wynwood \u2014 and we are at the start line either way."),
+    ("Does Live Route cost anything?",
+     "No. It is free, there is no sign-up and it works in any phone browser. Live mode asks for your location so it can tell you how far the next stop is; you can decline and follow the written route instead."),
     ("Do you sell Segways and Trikkes?",
      "Yes. We are Miami's factory authorized Segway dealer, so we sell new Segway personal transporters with full warranty, plus pedal and electric Trikkes, electric bikes, bicycles and the complete Segway i2 parts range \u2014 cargo frames, reflective shields, integrated lighting, patroller bags, bumpers, comfort mats and the accessory bar. Call +1-305-830-9440 for current models and pricing."),
     ("Can I try a Segway or Trikke before buying one?",
@@ -470,4 +476,169 @@ SHOP = [
         "rates": [("Flat repair", None), ("Brake / gear service", None),
                   ("Full tune-up", None), ("Segway service", None), ("Battery diagnostics", None)],
     },
+]
+
+# --- LIVE ROUTE ------------------------------------------------------------
+# Virtual tour guide. Every stop is a real South Beach landmark with its own
+# address; coordinates are approximate to the block and should be verified
+# against Google Maps before launch.
+#
+# tags drive the interest filter; mins = how long people actually linger.
+POI = [
+    {"id": "shop", "name": "Miami Beach Bikes", "sub": "Your start line",
+     "addr": "233 14th Street", "lat": 25.78730, "lng": -80.13180,
+     "tags": ["start"], "mins": 0,
+     "story": "Washington and 14th. Helmet on, water in the basket, map in your pocket. Everything from here is flat."},
+
+    {"id": "espanola", "name": "Española Way", "sub": "The Spanish village",
+     "addr": "419 Española Way", "lat": 25.78760, "lng": -80.13400,
+     "tags": ["deco", "food", "photo"], "mins": 15,
+     "story": "Built in 1922 as Whitman's Spanish Colony — a Mediterranean village dropped into Florida. Two blocks of pink stucco, striped awnings and tables in the middle of the street. Al Capone ran a casino upstairs at number 1421."},
+
+    {"id": "lincoln", "name": "Lincoln Road Mall", "sub": "The mile-long promenade",
+     "addr": "Lincoln Rd between Alton & Washington", "lat": 25.79070, "lng": -80.13400,
+     "tags": ["food", "shop", "family"], "mins": 20,
+     "story": "Morris Lapidus pedestrianised it in 1960 and called it a street for people, not cars. A mile of shops, cafes and street performers. Lock up and walk this one — no wheels on the mall."},
+
+    {"id": "newworld", "name": "New World Center", "sub": "Gehry's concert hall",
+     "addr": "500 17th Street", "lat": 25.79200, "lng": -80.13980,
+     "tags": ["photo", "family"], "mins": 10,
+     "story": "Frank Gehry built it in 2011 with a 7,000 sq ft projection wall on the outside — on Wallcast nights the orchestra plays inside and the park watches it on the wall for free."},
+
+    {"id": "botanical", "name": "Miami Beach Botanical Garden", "sub": "Free green escape",
+     "addr": "2000 Convention Center Drive", "lat": 25.79430, "lng": -80.13480,
+     "tags": ["family", "nature", "photo"], "mins": 20,
+     "story": "Two and a half acres of palms, orchids and a Japanese garden, free to walk in. The quietest spot within a mile of Ocean Drive."},
+
+    {"id": "bass", "name": "The Bass Museum", "sub": "Contemporary art in a 1930 deco shell",
+     "addr": "2100 Collins Avenue", "lat": 25.79550, "lng": -80.12900,
+     "tags": ["deco", "art"], "mins": 25,
+     "story": "Built in 1930 as the Miami Beach Public Library out of keystone — Florida coral rock full of fossils. Look at the walls before you look at the art."},
+
+    {"id": "boardwalk", "name": "Miami Beach Boardwalk", "sub": "The sea-grape corridor",
+     "addr": "Boardwalk at 21st Street", "lat": 25.79660, "lng": -80.12560,
+     "tags": ["beach", "nature", "photo"], "mins": 10,
+     "story": "Raised walkway through sea grape and palm all the way north. Bikes stay on the paved Beachwalk below — the wooden stretch is for feet only."},
+
+    {"id": "beachwalk14", "name": "Beachwalk at 14th", "sub": "Car-free, ocean on your left",
+     "addr": "Beachwalk at 14th Street", "lat": 25.78740, "lng": -80.12800,
+     "tags": ["beach", "family", "photo"], "mins": 5,
+     "story": "The paved path that runs the length of the sand. No traffic, no lights, no thinking — just turn right for South Pointe or left for North Beach."},
+
+    {"id": "versace", "name": "Versace Mansion", "sub": "Villa Casa Casuarina",
+     "addr": "1116 Ocean Drive", "lat": 25.78185, "lng": -80.13000,
+     "tags": ["deco", "photo", "celeb"], "mins": 10,
+     "story": "Built 1930 by Alden Freeman, modelled on the Alcázar de Colón in Santo Domingo. Gianni Versace bought it in 1992 and was shot on these steps in 1997. Today it is a hotel — and the most photographed doorway in Florida."},
+
+    {"id": "clevelander", "name": "The Clevelander", "sub": "Ocean Drive's loudest corner",
+     "addr": "1020 Ocean Drive", "lat": 25.78090, "lng": -80.13000,
+     "tags": ["night", "photo"], "mins": 5,
+     "story": "1938, and the pool bar that defines the Ocean Drive soundtrack. Ride past in daylight; come back after dark when the neon is on."},
+
+    {"id": "artdeco", "name": "Art Deco Welcome Center", "sub": "Start of the district",
+     "addr": "1001 Ocean Drive", "lat": 25.78070, "lng": -80.13010,
+     "tags": ["deco", "art"], "mins": 15,
+     "story": "Run by the Miami Design Preservation League, the people who saved this district from the bulldozers in the 1970s. Maps, exhibits and the reason any of these buildings still stand."},
+
+    {"id": "lummus", "name": "Lummus Park", "sub": "The candy-coloured lifeguard towers",
+     "addr": "10th Street & Ocean Drive", "lat": 25.78100, "lng": -80.12970,
+     "tags": ["beach", "photo", "family"], "mins": 15,
+     "story": "Ten blocks of palm and sand between Ocean Drive and the Atlantic. The lifeguard towers were rebuilt after Hurricane Andrew by architect William Lane, each one a different colour. The 10th Street tower is the one on every postcard."},
+
+    {"id": "wolfsonian", "name": "The Wolfsonian", "sub": "Design, propaganda and industry",
+     "addr": "1001 Washington Avenue", "lat": 25.78050, "lng": -80.13300,
+     "tags": ["deco", "art"], "mins": 30,
+     "story": "A 1927 storage building turned museum of how design shaped the modern world. The lobby fountain alone is worth the stop."},
+
+    {"id": "colony", "name": "The Colony Hotel", "sub": "The blue neon one",
+     "addr": "736 Ocean Drive", "lat": 25.77930, "lng": -80.13010,
+     "tags": ["deco", "photo", "night"], "mins": 5,
+     "story": "1935, by Henry Hohauser. That vertical blue neon sign is the single most recognisable object in Miami Beach — and it is best at dusk, not noon."},
+
+    {"id": "oceandrive5", "name": "Ocean Drive & 5th", "sub": "Where the district begins",
+     "addr": "5th Street & Ocean Drive", "lat": 25.77400, "lng": -80.13070,
+     "tags": ["deco", "photo"], "mins": 5,
+     "story": "The southern gate of the Art Deco district. From here to 15th is the largest concentration of Art Deco architecture on earth — about 800 buildings."},
+
+    {"id": "joes", "name": "Joe's Stone Crab", "sub": "Open since 1913",
+     "addr": "11 Washington Avenue", "lat": 25.76830, "lng": -80.13480,
+     "tags": ["food", "celeb"], "mins": 10,
+     "story": "Older than the city around it. Stone crab season runs mid-October to May, they do not take reservations, and the takeaway window beside the restaurant is the locals' move."},
+
+    {"id": "southpointe", "name": "South Pointe Park", "sub": "Where the island ends",
+     "addr": "1 Washington Avenue", "lat": 25.76500, "lng": -80.13400,
+     "tags": ["beach", "family", "photo", "nature"], "mins": 20,
+     "story": "Seventeen acres at the southern tip, with the 1931 lighthouse and a lawn built for watching cruise ships thread Government Cut. Best light of the day is here, one hour before sunset."},
+
+    {"id": "southpointepier", "name": "South Pointe Pier", "sub": "Cruise ships at arm's length",
+     "addr": "South Pointe Pier", "lat": 25.76450, "lng": -80.13070,
+     "tags": ["photo", "beach"], "mins": 15,
+     "story": "Walk out over the jetty and the ships pass close enough to read the names. Sunday afternoons the whole channel is boats."},
+
+    {"id": "flamingo", "name": "Flamingo Park", "sub": "Where locals actually go",
+     "addr": "1200 Meridian Avenue", "lat": 25.78370, "lng": -80.13760,
+     "tags": ["family", "nature"], "mins": 15,
+     "story": "Tennis, a track, a pool and shade. Four blocks from Ocean Drive and a completely different city."},
+
+    {"id": "sunsetharbour", "name": "Sunset Harbour", "sub": "The neighbourhood side",
+     "addr": "Purdy Avenue & 18th Street", "lat": 25.79300, "lng": -80.14270,
+     "tags": ["food", "shop"], "mins": 20,
+     "story": "Where Miami Beach eats when it is not performing: coffee roasters, a fish counter, no neon. Ride here for lunch, not for the view."},
+
+    {"id": "belleisle", "name": "Belle Isle", "sub": "First of the Venetian Islands",
+     "addr": "Venetian Causeway at Belle Isle", "lat": 25.79080, "lng": -80.14530,
+     "tags": ["photo", "nature", "celeb"], "mins": 10,
+     "story": "Cross the 1926 Venetian Causeway and the whole Downtown skyline opens across Biscayne Bay. Low traffic, flat, and the best golden hour on the island."},
+
+    {"id": "macarthur", "name": "MacArthur Causeway lookout", "sub": "Star Island and the port",
+     "addr": "MacArthur Causeway bike path", "lat": 25.77160, "lng": -80.15200,
+     "tags": ["celeb", "photo"], "mins": 10,
+     "story": "Protected path with the cruise terminal on one side and the gates of Star, Palm and Hibiscus Islands on the other. You cannot ride onto Star Island — it is private — but the gate is the photo."},
+
+    {"id": "faena", "name": "Faena District", "sub": "The gold mammoth",
+     "addr": "3201 Collins Avenue", "lat": 25.80500, "lng": -80.12300,
+     "tags": ["art", "celeb", "photo"], "mins": 15,
+     "story": "Mid-Beach turned into an arts district by Alan Faena. Damien Hirst's gilded mammoth skeleton stands in a glass case you can see from the street."},
+
+    {"id": "fontainebleau", "name": "Fontainebleau", "sub": "1954, and still showing off",
+     "addr": "4441 Collins Avenue", "lat": 25.81800, "lng": -80.12200,
+     "tags": ["celeb", "deco", "photo"], "mins": 10,
+     "story": "Morris Lapidus's curved masterpiece, where Sinatra filmed and Bond swam. Walk into the lobby — the staircase to nowhere is still there."},
+]
+
+# Travel modes for the live route planner. speed = km/h on the flat.
+MODES = [
+    {"id": "walk",    "name": "On foot",      "icon": "\U0001F6B6", "speed": 4.5,
+     "blurb": "No rental needed. Great for the deco strip, slow for anything past 5th Street.",
+     "cta": None},
+    {"id": "cruiser", "name": "Beach cruiser", "icon": "\U0001F6B2", "speed": 12,
+     "blurb": "The default. Flat, easy, covers the whole island.", "cta": "rentals.html#beach-cruiser"},
+    {"id": "ebike",   "name": "Electric bike", "icon": "⚡", "speed": 18,
+     "blurb": "Doubles your range. Wynwood and Mid-Beach come into play.", "cta": "rentals.html#electric-bike"},
+    {"id": "segway",  "name": "Segway",        "icon": "\U0001F6F4", "speed": 12,
+     "blurb": "Guided only — we build the route, a guide rides it with you.", "cta": "tours.html"},
+    {"id": "trikke",  "name": "Trikke",        "icon": "\U0001F6F5", "speed": 10,
+     "blurb": "Carve it by leaning. Best on the wide flat paths.", "cta": "rentals.html#trikke"},
+    {"id": "skate",   "name": "Skates or longboard", "icon": "\U0001F6FC", "speed": 10,
+     "blurb": "Beachwalk and Lincoln Road only. Avoid the causeways.", "cta": "rentals.html#rollerblades"},
+]
+
+INTERESTS = [
+    ("deco",   "Art Deco",        "\U0001F3E8"),
+    ("beach",  "Beach & ocean",   "\U0001F3D6️"),
+    ("photo",  "Photo spots",     "\U0001F4F8"),
+    ("food",   "Food & coffee",   "☕"),
+    ("celeb",  "Mansions & fame", "⭐"),
+    ("art",    "Art & museums",   "\U0001F3A8"),
+    ("family", "Family friendly", "\U0001F46A"),
+    ("night",  "Neon after dark", "\U0001F303"),
+    ("nature", "Parks & green",   "\U0001F334"),
+    ("shop",   "Shopping",        "\U0001F6CD️"),
+]
+
+DURATIONS = [
+    {"id": "30",  "name": "30 minutes", "mins": 30},
+    {"id": "60",  "name": "1 hour",     "mins": 60},
+    {"id": "120", "name": "2 hours",    "mins": 120},
+    {"id": "240", "name": "Half a day", "mins": 240},
 ]

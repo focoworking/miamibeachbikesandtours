@@ -128,6 +128,15 @@ A: Twelve of them. Five Segway tours with published prices — Ocean Drive $49, 
 **Q: Some tours do not show a price. Why?**
 A: Those run on seasonal schedules or are priced per group, so the rate depends on the date, the group size and the operator. Call +1-305-830-9440 or book online and we will quote you on the spot — every one of them is bookable.
 
+**Q: What is Live Route?**
+A: Live Route is our free virtual tour guide for South Beach. You tell it how you are travelling — on foot, cruiser, electric bike, Segway, Trikke or skates — how long you have and what you are interested in, and it builds a route from our door at 233 14th Street through the landmarks that fit, then guides you stop by stop while you ride. It is on the website, so there is no app to install.
+
+**Q: Do I need a bike to use Live Route?**
+A: No. On foot is one of the six options and the Art Deco district works perfectly at walking pace. You will want wheels for South Pointe, the Venetian Islands or Wynwood — and we are at the start line either way.
+
+**Q: Does Live Route cost anything?**
+A: No. It is free, there is no sign-up and it works in any phone browser. Live mode asks for your location so it can tell you how far the next stop is; you can decline and follow the written route instead.
+
 **Q: Do you sell Segways and Trikkes?**
 A: Yes. We are Miami's factory authorized Segway dealer, so we sell new Segway personal transporters with full warranty, plus pedal and electric Trikkes, electric bikes, bicycles and the complete Segway i2 parts range — cargo frames, reflective shields, integrated lighting, patroller bags, bumpers, comfort mats and the accessory bar. Call +1-305-830-9440 for current models and pricing.
 
@@ -149,12 +158,24 @@ A: Yes. Our shop handles flat tires, brakes, gears, batteries and full tune-ups 
 **Q: What is your cancellation policy?**
 A: Cancellations 30 or more days before the reservation receive a full refund; 15 to 30 days receive 50%; 8 to 14 days receive 25%; and cancellations within 7 days of the reservation are non-refundable. All reservations are pre-paid in US dollars.
 
+## Live Route — free self-guided tour (https://www.miamibeachbikesandtours.com/live-route.html)
+A free virtual tour guide on the website (no app, no sign-up). The visitor picks how they travel
+(on foot, beach cruiser, electric bike, Segway, Trikke, skates or longboard), how long they have
+(30 minutes, 1 hour, 2 hours or half a day) and what they are interested in (Art Deco, beach,
+photo spots, food, mansions and fame, art and museums, family, neon after dark, parks, shopping).
+It then orders the nearest matching landmarks into a loop starting and ending at 233 14th Street,
+gives distance and riding time for each leg, and in live mode uses the phone's location to show
+the distance and compass direction to the next stop, advancing automatically on arrival.
+The whole route can be opened in Google Maps in one tap.
+Landmarks covered: Española Way, Lincoln Road Mall, New World Center, Miami Beach Botanical Garden, The Bass Museum, Miami Beach Boardwalk, Beachwalk at 14th, Versace Mansion, The Clevelander, Art Deco Welcome Center, Lummus Park, The Wolfsonian, The Colony Hotel, Ocean Drive & 5th, Joe's Stone Crab, South Pointe Park, South Pointe Pier, Flamingo Park, Sunset Harbour, Belle Isle, MacArthur Causeway lookout, Faena District, Fontainebleau.
+
 ## Pages
 - [Home](https://www.miamibeachbikesandtours.com/index.html): overview, fleet, tours, adventures, routes, reviews.
 - [Rentals](https://www.miamibeachbikesandtours.com/rentals.html): all ten vehicles with hourly, all-day and weekly prices.
 - [Tours](https://www.miamibeachbikesandtours.com/tours.html): six guided Segway and night tours with durations, stops and prices.
 - [Adventures](https://www.miamibeachbikesandtours.com/adventures.html): Everglades, Key West, Miami city tour, jet ski, parasailing, helicopter.
 - [Shop](https://www.miamibeachbikesandtours.com/shop.html): Segway and Trikke sales, e-bikes, Segway i2 parts, repairs and service.
+- [Live Route](https://www.miamibeachbikesandtours.com/live-route.html): free self-guided tour builder with live navigation.
 - [Routes](https://www.miamibeachbikesandtours.com/routes.html): six free cycling route guides with distance and difficulty.
 - [About](https://www.miamibeachbikesandtours.com/about.html): the shop, the workshop, the team.
 - [FAQ](https://www.miamibeachbikesandtours.com/faq.html): prices, delivery, ages, safety, cancellations.

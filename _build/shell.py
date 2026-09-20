@@ -7,8 +7,9 @@ NAV = [
     ("rentals.html", "Rentals"),
     ("tours.html", "Tours"),
     ("adventures.html", "Adventures"),
-    ("shop.html", "Shop"),
+    ("live-route.html", "Live Route"),
     ("routes.html", "Routes"),
+    ("shop.html", "Shop"),
     ("about.html", "About"),
     ("faq.html", "FAQ"),
     ("contact.html", "Contact"),
@@ -253,6 +254,7 @@ def footer():
         <li><a href="tours.html?ride=free">Free neighbourhood tours</a></li>
         <li><a href="shop.html">Buy a Segway or Trikke</a></li>
         <li><a href="shop.html#repairs-service">Repairs &amp; service</a></li>
+        <li><a href="live-route.html">Live Route &middot; free guide</a></li>
         <li><a href="routes.html">South Beach routes</a></li>
         <li><a href="about.html">Our story</a></li>
         <li><a href="faq.html">FAQ</a></li>

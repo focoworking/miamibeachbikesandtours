@@ -2,7 +2,8 @@
 """Builds every static page from data.py + shell.py. Run: python3 _build/build.py"""
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from data import BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, SHOP, ROUTES, FAQ, REVIEWS
+from data import (BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, SHOP, ROUTES,
+                  FAQ, REVIEWS, POI, MODES, INTERESTS, DURATIONS)
 import shell
 from shell import head, nav, footer, ld, breadcrumbs, ADDRESS_LD
 
@@ -165,6 +166,7 @@ HOME_FAQ_KEYS = [
     "How much does it cost to rent a bike in Miami Beach?",
     "How much are the Segway tours?",
     "What is the happy hour special?",
+    "What is Live Route?",
     "Are the neighbourhood bike tours really free?",
     "What else do you book besides bikes and Segways?",
 ]
@@ -224,6 +226,7 @@ def page_index():
       <span class="badge">🏨 Free hotel delivery 24h+</span>
       <span class="badge">⏰ Happy hour 1–4 PM · +1 free hour</span>
       <span class="badge">🎨 Free Wynwood &amp; Coconut Grove tours</span>
+      <span class="badge">📍 Live Route · free self-guided tour</span>
     </div>
   </div>
   <span class="hero__scroll">Scroll</span>
@@ -270,6 +273,26 @@ def page_index():
 {answer_box("Where can I rent a bike in South Beach?",
  "At Miami Beach Bikes · Rentals &amp; Tours, 233 14th Street, Miami Beach, FL 33139 — one block from Ocean Drive and the Beachwalk. "
  "We are open every day from 9 AM to 8 PM, rent by the hour, day, week or month from $12/hour, run a happy hour from 1 to 4 PM that adds a free extra hour, and deliver free to South Beach hotels on rentals of 24 hours or more. Call " + BIZ["phone_pretty"] + ".")}
+
+<section class="sec band-ocean">
+  <div class="wrap split">
+    <div data-reveal>
+      <span class="eyebrow eyebrow--light">New &middot; free for everyone</span>
+      <h2 style="color:#fff">Live Route: a tour guide in your pocket</h2>
+      <p class="lead">Tell it how you are moving, how long you have and what you like. It builds a route from our door on Washington and 14th through the South Beach worth seeing &mdash; Espa&ntilde;ola Way, the Versace Mansion, the Lummus lifeguard towers, South Pointe &mdash; then guides you stop by stop while you ride, using your phone's location.</p>
+      <div class="badge-row">
+        <span class="badge">&#128694; 6 ways to travel</span>
+        <span class="badge">&#9201;&#65039; 30 min to half a day</span>
+        <span class="badge">&#128205; 23 landmarks</span>
+      </div>
+      <div class="btn-row" style="margin-top:1.6rem">
+        <a class="btn btn--sun" href="live-route.html">Build my route</a>
+        <a class="btn btn--ghost" href="live-route.html#plan">See how it works</a>
+      </div>
+    </div>
+    <div class="split__media" data-reveal data-delay="2">{img("routes-map", "Live Route map of iconic South Beach stops")}</div>
+  </div>
+</section>
 
 <section class="sec">
   <div class="wrap">
@@ -799,6 +822,201 @@ def page_shop():
 ''' + footer()
 
 
+def page_live_route():
+    """LIVE ROUTE — the virtual tour guide."""
+    stops_ld = ld({
+        "@context": "https://schema.org", "@type": "ItemList",
+        "name": "Iconic South Beach stops on the Live Route virtual guide",
+        "numberOfItems": len([p for p in POI if p["id"] != "shop"]),
+        "itemListElement": [{
+            "@type": "ListItem", "position": i + 1,
+            "item": {
+                "@type": "TouristAttraction", "name": p["name"],
+                "description": p["story"],
+                "address": {"@type": "PostalAddress", "streetAddress": p["addr"],
+                            "addressLocality": "Miami Beach", "addressRegion": "FL",
+                            "postalCode": "33139", "addressCountry": "US"},
+                "geo": {"@type": "GeoCoordinates", "latitude": p["lat"], "longitude": p["lng"]},
+                "hasMap": "https://www.google.com/maps/search/?api=1&query=%s,%s" % (p["lat"], p["lng"]),
+            }} for i, p in enumerate(p for p in POI if p["id"] != "shop")]})
+
+    app_ld = ld({
+        "@context": "https://schema.org", "@type": "WebApplication",
+        "name": "Live Route — South Beach virtual tour guide",
+        "url": SITE + "/live-route.html",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any modern web browser",
+        "browserRequirements": "Requires JavaScript and, for live mode, location permission",
+        "isAccessibleForFree": True,
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "featureList": [
+            "Choose how you travel: on foot, cruiser, electric bike, Segway, Trikke or skates",
+            "Choose how long you have: 30 minutes to half a day",
+            "Choose what you like: Art Deco, beach, food, photo spots, mansions, art, nature",
+            "Builds an ordered route from 233 14th Street and back",
+            "Live mode follows your location and announces each stop",
+            "Opens the whole route in Google Maps",
+        ],
+        "provider": {"@id": SITE + "/#business"},
+    })
+
+    trip_ld = ld({
+        "@context": "https://schema.org", "@type": "TouristTrip",
+        "name": "Live Route: self-guided South Beach tour",
+        "description": ("A free self-guided route from 233 14th Street, Miami Beach, through the "
+                        "most iconic spots in South Beach, built around how you travel, how long "
+                        "you have and what you want to see."),
+        "url": SITE + "/live-route.html",
+        "provider": {"@id": SITE + "/#business"},
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD",
+                   "availability": "https://schema.org/InStock"},
+        "itinerary": {"@type": "ItemList", "itemListElement": [
+            {"@type": "ListItem", "position": i + 1,
+             "item": {"@type": "TouristAttraction", "name": p["name"]}}
+            for i, p in enumerate(p for p in POI if p["id"] != "shop")]},
+    })
+
+    extra = "".join([speakable(), app_ld, trip_ld, stops_ld,
+                     breadcrumbs([("Home", ""), ("Live Route", "live-route.html")]),
+                     faq_ld([f for f in FAQ if f[0] in
+                             ("What is Live Route?",
+                              "Do I need a bike to use Live Route?",
+                              "Does Live Route cost anything?")])])
+
+    h = head("live-route.html",
+             "Live Route | Free Self-Guided South Beach Tour · Virtual Tour Guide",
+             "A free virtual tour guide for South Beach. Pick how you travel — on foot, bike, "
+             "e-bike, Segway, Trikke or skates — how long you have and what you like, and it "
+             "builds a route from 233 14th Street through the Art Deco district, Ocean Drive, "
+             "Lummus Park and South Pointe, then guides you stop by stop.",
+             "self guided tour south beach, free walking tour miami beach, virtual tour guide miami, "
+             "south beach bike route planner, art deco self guided tour, things to do south beach map",
+             extra, og_img="routes-map")
+
+    modes = "".join(
+        '<button type="button" class="lr-opt%s" data-lr-mode="%s">'
+        '<span class="lr-opt__ico">%s</span><span class="lr-opt__name">%s</span></button>'
+        % (" is-on" if m["id"] == "cruiser" else "", m["id"], m["icon"], m["name"])
+        for m in MODES)
+    durs = "".join(
+        '<button type="button" class="lr-opt lr-opt--sm%s" data-lr-mins="%d">%s</button>'
+        % (" is-on" if d["mins"] == 120 else "", d["mins"], d["name"])
+        for d in DURATIONS)
+    tags = "".join(
+        '<button type="button" class="lr-opt lr-opt--sm" data-lr-tag="%s">'
+        '<span class="lr-opt__ico">%s</span>%s</button>' % (t, ico, label)
+        for t, label, ico in INTERESTS)
+
+    # every stop is also rendered as static HTML, so it indexes without JS
+    stop_cards = "".join(f'''
+<article class="lr-index__item" id="stop-{p['id']}">
+  <h3>{p['name']}</h3>
+  <p class="lr-index__sub">{p['sub']} &middot; {p['addr']}</p>
+  <p>{p['story']}</p>
+  <a href="https://www.google.com/maps/search/?api=1&amp;query={p['lat']},{p['lng']}" target="_blank" rel="noopener">Open in Maps &rarr;</a>
+</article>''' for p in POI if p["id"] != "shop")
+
+    poi_json = json.dumps(POI, ensure_ascii=False, separators=(",", ":"))
+    modes_json = json.dumps(MODES, ensure_ascii=False, separators=(",", ":"))
+
+    return h + nav("live-route.html") + f'''
+<section class="phead phead--live">
+  <div class="wrap phead__in" data-reveal>
+    <p class="crumbs"><a href="index.html">Home</a> &middot; Live Route</p>
+    <span class="lr-badge">Free &middot; no app &middot; works on your phone</span>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Live Route</h1>
+    <p class="lead">A virtual tour guide that starts at our door on Washington and 14th and takes you to the South Beach worth seeing. Tell it how you are moving, how long you have and what you like — it builds the route and then talks you through it, stop by stop, while you ride.</p>
+  </div>
+</section>
+
+{answer_box("What is a self-guided tour of South Beach?",
+ "Live Route is a free self-guided tour of South Beach from Miami Beach Bikes at 233 14th Street. "
+ "You choose how you are travelling — on foot, beach cruiser, electric bike, Segway, Trikke or skates — "
+ "how much time you have, from 30 minutes to half a day, and what you want to see. It then orders the "
+ "nearest landmarks into a loop, tells you the distance and riding time between each one, and in live "
+ "mode uses your phone's location to announce each stop as you reach it. No app, no sign-up, no charge.")}
+
+<section class="sec" id="plan">
+  <div class="wrap">
+    <div class="lr-planner" data-reveal>
+      <div class="lr-step">
+        <h2><span class="lr-step__n">1</span> How are you moving?</h2>
+        <div class="lr-opts">{modes}</div>
+        <p class="lr-hint" id="lr-mode-cta">The default. Flat, easy, covers the whole island. <a href="rentals.html#beach-cruiser">Get one &rarr;</a></p>
+      </div>
+
+      <div class="lr-step">
+        <h2><span class="lr-step__n">2</span> How long have you got?</h2>
+        <div class="lr-opts lr-opts--wrap">{durs}</div>
+      </div>
+
+      <div class="lr-step">
+        <h2><span class="lr-step__n">3</span> What are you into?</h2>
+        <div class="lr-opts lr-opts--wrap">{tags}</div>
+        <p class="lr-hint">Pick as many as you like, or none at all and we will give you the greatest hits.</p>
+      </div>
+
+      <button class="btn btn--block" id="lr-go" type="button">Build my route</button>
+    </div>
+
+    <div id="lr-result" class="lr-result" hidden></div>
+  </div>
+</section>
+
+<section class="sec--tight">
+  <div class="wrap">
+    <div class="lr-live" id="lr-live" hidden>
+      <div class="lr-live__head">
+        <span class="lr-live__dot" aria-hidden="true"></span>
+        <span id="lr-live-count">Stop 1</span>
+        <button class="lr-live__end" id="lr-live-end" type="button">End</button>
+      </div>
+      <h2 id="lr-live-name">—</h2>
+      <p class="lr-live__sub" id="lr-live-sub"></p>
+      <p class="lr-live__gps" id="lr-live-gps">Finding you…</p>
+      <p class="lr-live__story" id="lr-live-story"></p>
+      <div class="lr-live__actions">
+        <a class="btn btn--sm btn--sun" id="lr-live-nav" href="#" target="_blank" rel="noopener">Navigate</a>
+        <button class="btn btn--sm btn--ghost" id="lr-live-next" type="button">I'm here — next stop</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band-dark">
+  <div class="wrap">
+    <div class="center" data-reveal>
+      <span class="eyebrow eyebrow--light">How it works</span>
+      <h2 style="color:#fff">A guide in your pocket, not a group to keep up with</h2>
+    </div>
+    <div class="steps" style="margin-top:3rem">
+      <div class="step" data-reveal data-delay="1"><h3>Pick your three</h3><p>Vehicle, time, interests. Six ways to travel, four time budgets, ten things to be into — the combinations land in the hundreds.</p></div>
+      <div class="step" data-reveal data-delay="2"><h3>We order the stops</h3><p>It takes the landmarks that match, orders them by what is actually nearest, and only keeps what fits your clock — including the ride back to us.</p></div>
+      <div class="step" data-reveal data-delay="3"><h3>Ride it live</h3><p>Live mode uses your phone's location to show the distance and direction to the next stop, and flips over when you arrive.</p></div>
+      <div class="step" data-reveal data-delay="4"><h3>Or just open Maps</h3><p>One tap sends the whole loop to Google Maps for turn-by-turn, if you would rather have a voice in your ear.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band-sand">
+  <div class="wrap">
+    <div class="center" data-reveal>
+      <span class="eyebrow">Every stop on the map</span>
+      <h2>The {len([p for p in POI if p["id"] != "shop"])} places Live Route can take you</h2>
+      <p class="lead">Written by people who ride past them every day — not scraped from a listings site.</p>
+    </div>
+    <div class="lr-index" style="margin-top:2.6rem">{stop_cards}</div>
+  </div>
+</section>
+
+{cta_section("No bike? The route still works on foot",
+ "Walking covers the deco strip fine. For South Pointe, the Venetian Islands or Wynwood you will want wheels — we are at the start line either way.")}
+
+<script>window.LR_POI={poi_json};window.LR_MODES={modes_json};</script>
+<script src="assets/js/live-route.js" defer></script>
+''' + footer()
+
+
 def page_routes():
     cards = "".join(f'''
 <article class="card" data-reveal data-delay="{i%3+1}">
@@ -1094,6 +1312,7 @@ def page_404():
 def build_sitemap():
     pages = [("index.html", "1.0", "weekly"), ("rentals.html", "0.9", "weekly"),
              ("tours.html", "0.9", "weekly"), ("adventures.html", "0.9", "weekly"),
+             ("live-route.html", "0.9", "monthly"),
              ("shop.html", "0.8", "monthly"),
              ("routes.html", "0.8", "monthly"),
              ("about.html", "0.6", "monthly"), ("faq.html", "0.7", "monthly"),
@@ -1157,6 +1376,7 @@ def build_llms():
     shop = "\n".join("- **%s** \u2014 %s %s Options: %s." %
                      (p["name"], p["hook"], pr(p["price"]),
                       ", ".join(lbl for lbl, _ in p["rates"])) for p in SHOP)
+    poi_names = ", ".join(p["name"] for p in POI if p["id"] != "shop")
     routes = "\n".join("- **%s** (%s, %s, %s): %s" % (r["name"], r["km"], r["time"], r["level"], r["desc"]) for r in ROUTES)
     faq = "\n\n".join("**Q: %s**\nA: %s" % (q, a) for q, a in FAQ)
     return f"""# {BIZ['name']}
@@ -1212,12 +1432,24 @@ def build_llms():
 ## Frequently asked questions ({SITE}/faq.html)
 {faq}
 
+## Live Route — free self-guided tour ({SITE}/live-route.html)
+A free virtual tour guide on the website (no app, no sign-up). The visitor picks how they travel
+(on foot, beach cruiser, electric bike, Segway, Trikke, skates or longboard), how long they have
+(30 minutes, 1 hour, 2 hours or half a day) and what they are interested in (Art Deco, beach,
+photo spots, food, mansions and fame, art and museums, family, neon after dark, parks, shopping).
+It then orders the nearest matching landmarks into a loop starting and ending at 233 14th Street,
+gives distance and riding time for each leg, and in live mode uses the phone's location to show
+the distance and compass direction to the next stop, advancing automatically on arrival.
+The whole route can be opened in Google Maps in one tap.
+Landmarks covered: {poi_names}.
+
 ## Pages
 - [Home]({SITE}/index.html): overview, fleet, tours, adventures, routes, reviews.
 - [Rentals]({SITE}/rentals.html): all ten vehicles with hourly, all-day and weekly prices.
 - [Tours]({SITE}/tours.html): six guided Segway and night tours with durations, stops and prices.
 - [Adventures]({SITE}/adventures.html): Everglades, Key West, Miami city tour, jet ski, parasailing, helicopter.
 - [Shop]({SITE}/shop.html): Segway and Trikke sales, e-bikes, Segway i2 parts, repairs and service.
+- [Live Route]({SITE}/live-route.html): free self-guided tour builder with live navigation.
 - [Routes]({SITE}/routes.html): six free cycling route guides with distance and difficulty.
 - [About]({SITE}/about.html): the shop, the workshop, the team.
 - [FAQ]({SITE}/faq.html): prices, delivery, ages, safety, cancellations.
@@ -1233,6 +1465,7 @@ if __name__ == "__main__":
     write("tours.html", page_tours())
     write("adventures.html", page_adventures())
     write("shop.html", page_shop())
+    write("live-route.html", page_live_route())
     write("routes.html", page_routes())
     write("about.html", page_about())
     write("faq.html", page_faq())

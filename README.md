@@ -16,6 +16,7 @@ sunset coral, Art Deco gold, palm green and sand.
 
 ```
 index.html          Home: hero, finder, fleet, tours, adventures, routes, reviews, FAQ
+live-route.html     Live Route — the self-guided tour builder + live navigation
 shop.html           Segway / Trikke / e-bike sales, i2 parts, repairs & service
 rentals.html        10 rentals + complete price table
 tours.html          6 guided Segway / night tours + price table + tour FAQ
@@ -28,6 +29,7 @@ contact.html        Booking form, map, hours, delivery zone
 
 assets/css/style.css    Design system: tokens, components, animations, responsive
 assets/js/main.js       Parallax, scroll reveals, sticky nav, filters, counters, open/closed status
+assets/js/live-route.js Route engine: nearest-neighbour planner, Haversine, Geolocation live mode
 assets/img/*.svg        Generated artwork (hero scene + card scenes + favicon)
 
 llms.txt            Machine-readable business brief for AI answer engines
@@ -36,6 +38,33 @@ sitemap.xml         All indexable pages
 
 _build/             Page generator (data.py + shell.py + build.py)
 ```
+
+## Live Route
+
+A free self-guided tour builder at `live-route.html`. The visitor picks three things — how they
+travel (6 modes), how long they have (4 budgets) and what they like (10 interests) — and the engine
+orders the matching landmarks into a loop from the shop and back.
+
+How it works, in `assets/js/live-route.js`:
+
+- **Planner.** Nearest-neighbour over the POIs whose tags match the chosen interests, with distances
+  by Haversine. Riding time is `distance / mode speed` padded 35% for lights, crossings and actually
+  looking at things. A stop is only added if there is still time for it *plus* the ride home.
+  Walking and skating drop the causeway stops automatically.
+- **Live mode.** `navigator.geolocation.watchPosition` gives distance and compass bearing to the next
+  stop, and advances the route when the visitor is within 45 m. Degrades cleanly: if permission is
+  denied or GPS cannot get a fix, it says so and the written route still works.
+- **Maps handoff.** One tap builds a `google.com/maps/dir/` URL with every stop in order.
+
+No API key, no backend, no dependency. The 24 stops live in `POI` in `_build/data.py`; modes,
+interests and time budgets sit beside them.
+
+**Before launch:** the coordinates are accurate to the block, derived from each landmark's street
+address, not surveyed. Check each one against Google Maps and nudge as needed — live mode's arrival
+radius is 45 m, so a block of drift matters.
+
+Every stop is also rendered as static HTML further down the page, so the content indexes and the
+page is useful with JavaScript off.
 
 ## Editing content
 
