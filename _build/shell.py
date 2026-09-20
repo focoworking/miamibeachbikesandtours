@@ -232,7 +232,7 @@ def nav(current, lang="en", page=None):
            alt="" loading="eager" decoding="async">
       <span class="brand__text">
         <span class="brand__mark">Miami Beach <span>Bikes</span></span>
-        <span class="brand__sub">Rentals &amp; Tours · South Beach</span>
+        <span class="brand__sub">Rentals &amp; Tours</span>
       </span>
     </a>
     <div class="nav__group nav__group--right">{links(right)}
@@ -303,7 +303,7 @@ def footer(lang="en", poi=None, modes=None, interests=None, durations=None):
         <img class="brand__logo" src="{prefix}assets/img/logo-emblem.svg" width="64" height="64" alt="" loading="lazy">
         <span class="brand__text">
           <span class="brand__mark">Miami Beach <span>Bikes</span></span>
-          <span class="brand__sub">Rentals &amp; Tours · South Beach</span>
+          <span class="brand__sub">Rentals &amp; Tours</span>
         </span>
       </a>
       <p style="margin-top:1.1rem;max-width:34ch">{T["f_tagline"]}</p>

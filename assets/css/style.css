@@ -1253,3 +1253,103 @@ p{max-width:72ch}
    arrive just below the header instead of behind it. */
 html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
 :target{scroll-margin-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
+
+/* ============================================================
+   Hero: the booking bar stopped cutting into the buttons, and
+   the standfirst stopped running across the illustration
+   ============================================================ */
+
+/* The booking card is pulled up over the hero on purpose, but the hero was
+   not reserving room for it, so its top edge landed on the CTA buttons.
+   The pull and the padding now come from one number. */
+:root{--finder-lift:44px}
+.finder{margin-top:calc(var(--finder-lift) * -1)}
+.hero__in{padding-bottom:calc(var(--finder-lift) + 2.4rem)}
+
+/* The standfirst was 54ch of 1.35rem, which on a wide screen reached past
+   the scrim into the cyclists. Shorter measure, smaller type, and a scrim
+   that actually covers the column the text sits in. */
+.hero__sub{
+  font-size:clamp(1rem,1.15vw,1.16rem);
+  max-width:44ch;line-height:1.6;
+  color:rgba(255,255,255,.94);
+  text-shadow:0 2px 18px rgba(4,48,61,.55);
+}
+.hero h1{text-shadow:0 6px 40px rgba(0,0,0,.45)}
+.hero__scrim{
+  background:
+    linear-gradient(100deg,rgba(4,48,61,.86) 0%,rgba(4,48,61,.66) 30%,
+                    rgba(4,48,61,.3) 52%,rgba(4,48,61,0) 72%),
+    linear-gradient(180deg,rgba(4,48,61,.34) 0%,transparent 20%,
+                    transparent 48%,rgba(4,48,61,.62) 100%);
+}
+
+@media(max-width:940px){
+  :root{--finder-lift:26px}
+}
+@media(max-width:760px){
+  :root{--finder-lift:22px}
+  .finder{margin-top:0;transform:translateY(calc(var(--finder-lift) * -1))}
+  .hero__sub{font-size:1rem;max-width:36ch}
+}
+
+/* ============================================================
+   Header trim: bigger mark, shorter bar, glass language pills
+   ============================================================ */
+
+/* The isotype carries the brand; the wordmark under it repeats what the
+   logo already says. Give the mark the room — and the nav the height to
+   hold it, or the subtitle gets sliced off by the bar's own edge. */
+:root{--nav-h:108px}
+.brand__logo{width:64px;height:64px;border-radius:17px}
+.brand__sub{font-size:.58rem;letter-spacing:.22em}
+
+/* A thinner strip: the address line is a utility, not a headline. */
+.topbar{
+  --topbar-pad:.34rem;
+  background:#f2e6cf;                 /* a lighter tan than the hero sand */
+  font-size:.78rem;
+  border-bottom:1px solid rgba(4,48,61,.08);
+}
+.topbar__in{padding:var(--topbar-pad) 0;gap:1.1rem}
+
+/* Frosted-glass language pills: they sit on a pale bar now, so the old
+   translucent-white treatment had nothing to read against. */
+.langs{gap:.3rem}
+.lang{
+  min-width:36px;height:25px;font-size:.68rem;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:0 1px 3px rgba(4,48,61,.12),inset 0 1px 0 rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(8px) saturate(150%);
+  backdrop-filter:blur(8px) saturate(150%);
+  color:rgba(4,48,61,.72);
+  transition:background .25s ease,color .25s ease,box-shadow .25s ease,transform .25s ease;
+}
+.lang:hover{
+  background:rgba(255,255,255,.82);color:var(--ocean-ink);
+  box-shadow:0 3px 10px rgba(4,48,61,.16),inset 0 1px 0 #fff;
+  transform:translateY(-1px);
+}
+.lang.is-on{
+  background:linear-gradient(180deg,rgba(255,214,90,.95),rgba(255,197,49,.95));
+  border-color:rgba(255,255,255,.85);color:#3a2a00;
+  box-shadow:0 2px 8px rgba(255,197,49,.45),inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+@media(max-width:1200px){ :root{--nav-h:98px} .brand__logo{width:54px;height:54px} }
+@media(max-width:760px){
+  :root{--nav-h:92px}
+  .topbar{--topbar-pad:.28rem;font-size:.72rem}
+  .brand__logo{width:48px;height:48px;border-radius:14px}
+  .lang{min-width:32px;height:23px;font-size:.64rem}
+}
+
+/* "Rentals & Tours" fits on a phone now that "· South Beach" is gone —
+   it was only hidden below 390px because the old string overflowed. */
+@media(max-width:390px){ .brand__sub{display:block;font-size:.46rem;letter-spacing:.14em} }
+
+/* The Find button is taller than the fields it sits beside, so at some
+   widths it pushed 10px past the card into the section below. */
+.finder{margin-bottom:.9rem}
+.finder__card .btn{align-self:end}
