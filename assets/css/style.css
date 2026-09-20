@@ -922,3 +922,117 @@ body.as-open .as-fab{opacity:0;pointer-events:none}
   .trust::-webkit-scrollbar{display:none}
   .trust__i{flex:none;font-size:.8rem;padding:.45rem .85rem}
 }
+
+/* ============================================================
+   ONE-HANDED MODE
+   The assistant gets used mid-ride: one thumb, no looking down for
+   long, sometimes sunlight on the screen. Targets are large, the
+   primary action sits inside thumb reach, and single-choice steps
+   advance on tap so there is no Next to hunt for.
+   ============================================================ */
+
+/* --- big choice tiles --- */
+.as-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+.as-tiles--2{grid-template-columns:repeat(2,1fr)}
+.as-tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
+  min-height:104px;padding:1rem .7rem;cursor:pointer;
+  background:var(--white);border:3px solid transparent;border-radius:26px;
+  box-shadow:var(--shadow-s);color:var(--ink);
+  font-family:var(--font-display);font-weight:800;font-size:1.02rem;
+  transition:transform .18s var(--ease),border-color .18s ease,background .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.as-tile:active{transform:scale(.96)}
+.as-tile.is-on{background:var(--ocean-ink);color:#fff;border-color:var(--ocean-ink)}
+.as-tile__ico{display:grid;place-items:center;color:var(--ocean-deep);height:36px}
+.as-tile.is-on .as-tile__ico{color:var(--sun)}
+.as-tile__name{line-height:1.1;text-align:center}
+.as-tile__big{font-size:2.1rem;font-weight:900;line-height:1;color:var(--ocean-deep)}
+.as-tile.is-on .as-tile__big{color:var(--sun)}
+.as-tile--text{gap:.2rem}
+.as-tile--text .as-tile__name{font-size:.86rem;font-weight:700;opacity:.8}
+
+/* --- interest chips get thumb-sized too --- */
+.as-opt--sm{min-height:52px;padding:.7rem 1.1rem;font-size:.95rem}
+
+/* --- the dock: primary action pinned in thumb reach --- */
+.as-dock{
+  position:sticky;bottom:0;z-index:2;margin:1.4rem -1.1rem -1.1rem;
+  padding:1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(255,246,233,0),var(--sand) 38%);
+}
+.as-dock--split{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.as-dock .btn{min-height:62px;font-size:1.08rem}
+.as-dock .btn[disabled]{opacity:.4;pointer-events:none}
+.as-dock--split .btn{min-height:58px}
+
+/* --- bigger chrome: back and close are targets, not decorations --- */
+.as__bar{padding:.8rem .8rem}
+.as__back,.as__close{width:48px;height:48px;font-size:1.6rem}
+.as__title{font-size:.78rem}
+
+/* --- inline links become tappable pills --- */
+.as-inline{
+  display:inline-flex;align-items:center;min-height:40px;padding:.3rem 1rem;
+  margin-left:.3rem;border-radius:var(--r-pill);background:var(--ocean-ink);color:#fff;
+  font-family:var(--font-display);font-weight:700;font-size:.85rem;text-decoration:none;
+}
+.as-note{font-size:.9rem;line-height:1.5}
+
+/* --- tool rows on the home screen: fewer words, bigger targets --- */
+.as-tool{min-height:82px;gap:1rem}
+.as-tool__ico{font-size:1.7rem;width:34px;text-align:center}
+.as-tool__txt b{font-size:1.12rem}
+.as-tool__txt em{font-size:.88rem;line-height:1.35}
+.as-tool__go{font-size:1.4rem}
+.as-tool:active{transform:scale(.985)}
+
+/* --- extension blocks: wide, high contrast --- */
+.as-block{min-height:96px;border-width:3px}
+.as-block:active{transform:scale(.96)}
+.as-pay{min-height:72px}
+.as-pay:active{transform:scale(.985)}
+
+@media(max-width:760px){
+  .as__body{padding:1.1rem 1.1rem 0}
+  .as-tile{min-height:112px;font-size:1.05rem}
+  .as-tiles{gap:.6rem}
+  .as-q{font-size:1.28rem;font-weight:900}
+}
+/* short screens: keep the dock visible without squeezing the choices */
+@media(max-height:680px){
+  .as-tile{min-height:88px}
+  .as-dock .btn{min-height:54px}
+}
+
+/* --- the choice grid fills the panel, so the tiles get as big as the
+       screen allows instead of leaving dead space under them --- */
+.as__body{display:flex;flex-direction:column}
+.as-step{flex:1;display:flex;flex-direction:column;gap:.9rem}
+.as-step .as-tiles{flex:1;grid-auto-rows:minmax(104px,1fr);align-content:stretch}
+.as-step .as-opts--wrap{align-content:flex-start}
+.as-step > .as-note{flex:none}
+
+/* the "get one" call sits right under the blurb as a proper target */
+.as-inline{min-height:44px;padding:.4rem 1.15rem;font-size:.9rem;box-shadow:var(--shadow-s)}
+
+/* --- interest picker: an even grid beats ragged pills for accuracy --- */
+.as-picks{display:grid;grid-template-columns:repeat(2,1fr);gap:.55rem}
+.as-pick{
+  display:flex;align-items:center;gap:.55rem;min-height:62px;padding:.6rem .9rem;
+  cursor:pointer;text-align:left;background:var(--white);
+  border:3px solid transparent;border-radius:var(--r-pill);box-shadow:var(--shadow-s);
+  color:var(--ink);font-family:var(--font-display);font-weight:700;font-size:.92rem;
+  transition:transform .18s var(--ease),border-color .18s ease,background .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.as-pick:active{transform:scale(.96)}
+.as-pick.is-on{background:var(--ocean-ink);color:#fff;border-color:var(--ocean-ink)}
+.as-pick__ico{font-size:1.25rem;line-height:1;flex:none}
+.as-pick__t{line-height:1.15}
+.as-step .as-picks{flex:none}
+
+/* bigger glyphs now that the tiles have room */
+.as-tile__ico{height:46px}
+.as-tile__ico svg{width:44px;height:44px}

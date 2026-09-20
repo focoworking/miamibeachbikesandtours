@@ -258,6 +258,7 @@ UI = {
                   "pt": "Ir para o conteúdo", "it": "Vai al contenuto"},
     "home":      {"en": "Home", "es": "Inicio", "pt": "Início", "it": "Home"},
     "lang_label":{"en": "Language", "es": "Idioma", "pt": "Idioma", "it": "Lingua"},
+    "unit_hours": {"en": "hours", "es": "horas", "pt": "horas", "it": "ore"},
 }
 
 

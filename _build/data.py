@@ -629,18 +629,18 @@ POI = [
 
 # Travel modes for the live route planner. speed = km/h on the flat.
 MODES = [
-    {"id": "walk",    "name": "On foot",      "icon": "\U0001F6B6", "speed": 4.5,
+    {"id": "walk",    "name": "On foot",      "short": "Walk",   "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="26" cy="8" r="4" fill="currentColor" stroke="none"/><path d="M26 14 L22 24 L28 28 L30 38"/><path d="M22 24 L15 32"/><path d="M26 17 L33 21"/></svg>', "speed": 4.5,
      "blurb": "No rental needed. Great for the deco strip, slow for anything past 5th Street.",
      "cta": None},
-    {"id": "cruiser", "name": "Beach cruiser", "icon": "\U0001F6B2", "speed": 12,
+    {"id": "cruiser", "name": "Beach cruiser", "short": "Bike",   "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="33" r="9"/><circle cx="36" cy="33" r="9"/><path d="M12 33 L20 18 L30 18 M20 18 L26 33 L36 33"/><path d="M17 14 L25 14"/></svg>', "speed": 12,
      "blurb": "The default. Flat, easy, covers the whole island.", "cta": "rentals.html#beach-cruiser"},
-    {"id": "ebike",   "name": "Electric bike", "icon": "⚡", "speed": 18,
+    {"id": "ebike",   "name": "Electric bike", "short": "E-bike", "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="33" r="9"/><circle cx="36" cy="33" r="9"/><path d="M12 33 L20 18 L30 18 M20 18 L26 33 L36 33"/><path d="M17 14 L25 14"/><path d="M27 20 l-7 9 h6 l-6 9" stroke-width="3.4" stroke-linejoin="miter"/></svg>', "speed": 18,
      "blurb": "Doubles your range. Wynwood and Mid-Beach come into play.", "cta": "rentals.html#electric-bike"},
-    {"id": "segway",  "name": "Segway",        "icon": "\U0001F6F4", "speed": 12,
-     "blurb": "Guided only — we build the route, a guide rides it with you.", "cta": "tours.html"},
-    {"id": "trikke",  "name": "Trikke",        "icon": "\U0001F6F5", "speed": 10,
+    {"id": "segway",  "name": "Segway",        "short": "Segway", "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="36" r="7"/><circle cx="35" cy="36" r="7"/><path d="M13 36 L35 36"/><path d="M24 36 L24 12"/><path d="M16 9 L32 9"/></svg>', "speed": 12,
+     "blurb": "Guided only \u2014 we build the route, a guide rides it with you.", "cta": "tours.html"},
+    {"id": "trikke",  "name": "Trikke",        "short": "Trikke", "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="36" r="6"/><circle cx="24" cy="36" r="6"/><circle cx="38" cy="36" r="6"/><path d="M10 36 L24 22 L38 36"/><path d="M24 22 L24 10"/><path d="M17 8 L31 8"/></svg>', "speed": 10,
      "blurb": "Carve it by leaning. Best on the wide flat paths.", "cta": "rentals.html#trikke"},
-    {"id": "skate",   "name": "Skates or longboard", "icon": "\U0001F6FC", "speed": 10,
+    {"id": "skate",   "name": "Skates or longboard", "short": "Skates", "icon": '<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 30 L8 16 L16 16 L22 22 L34 24 L34 30 Z"/><circle cx="13" cy="36" r="5"/><circle cx="29" cy="36" r="5"/></svg>', "speed": 10,
      "blurb": "Beachwalk and Lincoln Road only. Avoid the causeways.", "cta": "rentals.html#rollerblades"},
 ]
 

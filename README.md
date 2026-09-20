@@ -48,6 +48,23 @@ so a flow never gets mixed into the page behind it. Launch it from the desktop p
 the mobile action bar, any `data-assistant="<view>"` element, or a `#assistant=<view>` deep link.
 It traps focus, closes on Escape or scrim click, has a back stack, and restores scroll and focus.
 
+### Designed for one hand on the bars
+
+The assistant gets used mid-ride, so the interaction budget is the design constraint:
+
+- **Single-choice steps advance on tap.** No Next button to find — picking a vehicle moves to the
+  time step, picking a time moves to interests. Open to a finished route is five taps.
+- **Targets fill the panel.** The choice grid stretches to the available height, so mode tiles come
+  out around 173×200px on a 390px phone. Everything tappable clears 44px by a wide margin.
+- **The primary action docks in thumb reach**, sticky at the bottom of the panel rather than after
+  the content.
+- **Vehicles use drawn glyphs, not emoji.** The emoji for Trikke and Segway are a scooter and a
+  kick-scooter — wrong machines. These are SVG, and the labels are one word so nothing wraps.
+- **The interest picker is an even grid**, not ragged pills: uniform targets are easier to hit
+  without looking.
+- **`navigator.vibrate` fires a 12ms tick on every selection** where the device supports it, so the
+  tap is confirmed without a second look at the screen.
+
 ### Tool 1 — Live Route
 
 A free self-guided tour builder. Three steps: how you travel (6 modes), how long you have (4

@@ -26,6 +26,12 @@
   var CFG = window.ASSIST_CONFIG || {};
   var T = CFG.t || {};
   function tr(k, fb) { return T[k] || fb || k; }
+
+  /* A short tick on selection. Gloved or one-handed, the buzz confirms the
+     tap without the rider having to look down again. */
+  function tick(ms) {
+    try { if (navigator.vibrate) navigator.vibrate(ms || 12); } catch (e) {}
+  }
   var POI = window.LR_POI || [];
   var MODES = window.LR_MODES || [];
   var INTERESTS = window.LR_INTERESTS || [];
@@ -289,23 +295,22 @@
     title: tr('lr_step').replace('%d', 1),
     html: function () {
       var opts = MODES.map(function (m) {
-        return '<button class="as-opt' + (m.id === state.mode ? ' is-on' : '') +
-          '" data-mode="' + m.id + '"><span class="as-opt__ico">' + m.icon +
-          '</span><span class="as-opt__name">' + esc(m.name) + '</span></button>';
+        return '<button class="as-tile' + (m.id === state.mode ? ' is-on' : '') +
+          '" data-mode="' + m.id + '"><span class="as-tile__ico">' + m.icon +
+          '</span><span class="as-tile__name">' + esc(m.short || m.name) + '</span></button>';
       }).join('');
       return '<div class="as-step">' +
         '<p class="as-q">' + tr('lr_q_mode') + '</p>' +
-        '<div class="as-opts">' + opts + '</div>' +
+        '<div class="as-tiles">' + opts + '</div>' +
         '<p class="as-note" id="as-mode-note"></p>' +
-        '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('btn_next') + ' &rarr;</button></div>';
+        '</div>';
     },
     wire: function () {
       function note() {
         var m = MODES.filter(function (x) { return x.id === state.mode; })[0];
         var n = el.body.querySelector('#as-mode-note');
         if (m && n) n.innerHTML = esc(m.blurb) +
-          (m.cta ? ' <a href="' + m.cta + '">Get one &rarr;</a>' : '');
+          (m.cta ? ' <a class="as-inline" href="' + m.cta + '">' + tr('btn_book') + ' &rarr;</a>' : '');
       }
       el.body.querySelectorAll('[data-mode]').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -313,10 +318,12 @@
           b.classList.add('is-on');
           state.mode = b.getAttribute('data-mode');
           note();
+          tick();
+          // one tap, one step: no Next button to reach for
+          setTimeout(function () { go('lr-time'); }, 240);
         });
       });
       note();
-      el.body.querySelector('[data-next]').addEventListener('click', function () { go('lr-time'); });
     },
   };
 
@@ -325,15 +332,17 @@
     title: tr('lr_step').replace('%d', 2),
     html: function () {
       var opts = DURATIONS.map(function (d) {
-        return '<button class="as-opt as-opt--wide' + (d.mins === state.minutes ? ' is-on' : '') +
-          '" data-mins="' + d.mins + '">' + esc(d.name) + '</button>';
+        return '<button class="as-tile as-tile--text' + (d.mins === state.minutes ? ' is-on' : '') +
+          '" data-mins="' + d.mins + '"><span class="as-tile__big">' +
+          (d.mins < 60 ? d.mins : (d.mins / 60)) + '</span><span class="as-tile__name">' +
+          (d.mins < 60 ? tr('lr_mins') : (d.mins >= 240 ? esc(d.name) : tr('unit_hours'))) +
+          '</span></button>';
       }).join('');
       return '<div class="as-step">' +
         '<p class="as-q">' + tr('lr_q_time') + '</p>' +
-        '<div class="as-opts as-opts--2">' + opts + '</div>' +
+        '<div class="as-tiles as-tiles--2">' + opts + '</div>' +
         '<p class="as-note">' + tr('lr_time_note') + '</p>' +
-        '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('btn_next') + ' &rarr;</button></div>';
+        '</div>';
     },
     wire: function () {
       el.body.querySelectorAll('[data-mins]').forEach(function (b) {
@@ -341,9 +350,10 @@
           el.body.querySelectorAll('[data-mins]').forEach(function (x) { x.classList.remove('is-on'); });
           b.classList.add('is-on');
           state.minutes = parseInt(b.getAttribute('data-mins'), 10);
+          tick();
+          setTimeout(function () { go('lr-tags'); }, 240);
         });
       });
-      el.body.querySelector('[data-next]').addEventListener('click', function () { go('lr-tags'); });
     },
   };
 
@@ -353,16 +363,16 @@
     html: function () {
       var opts = INTERESTS.map(function (t) {
         var on = state.interests.indexOf(t[0]) > -1;
-        return '<button class="as-opt as-opt--sm' + (on ? ' is-on' : '') +
-          '" data-tag="' + t[0] + '"><span class="as-opt__ico">' + t[2] + '</span>' +
-          esc(t[1]) + '</button>';
+        return '<button class="as-pick' + (on ? ' is-on' : '') +
+          '" data-tag="' + t[0] + '"><span class="as-pick__ico">' + t[2] + '</span>' +
+          '<span class="as-pick__t">' + esc(t[1]) + '</span></button>';
       }).join('');
       return '<div class="as-step">' +
         '<p class="as-q">' + tr('lr_q_tags') + '</p>' +
-        '<div class="as-opts as-opts--wrap">' + opts + '</div>' +
+        '<div class="as-picks">' + opts + '</div>' +
         '<p class="as-note">' + tr('lr_tags_note') + '</p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('lr_build') + '</button></div>';
+        '<div class="as-dock"><button class="btn btn--block" data-next>' + tr('lr_build') + '</button></div>';
     },
     wire: function () {
       el.body.querySelectorAll('[data-tag]').forEach(function (b) {
@@ -370,6 +380,7 @@
           var t = b.getAttribute('data-tag'), i = state.interests.indexOf(t);
           if (i > -1) { state.interests.splice(i, 1); b.classList.remove('is-on'); }
           else { state.interests.push(t); b.classList.add('is-on'); }
+          tick();
         });
       });
       el.body.querySelector('[data-next]').addEventListener('click', function () { go('lr-route'); });
@@ -410,7 +421,7 @@
         '<div><b>' + Math.round(totalMins) + '</b><span>' + tr('lr_mins') + '</span></div>' +
         '</div>' +
         '<ol class="as-stops">' + list + '</ol>' +
-        '<div class="as-foot as-foot--split">' +
+        '<div class="as-dock as-dock--split">' +
         '  <a class="btn btn--sm btn--ocean" href="' + mapsUrl(pts) + '" target="_blank" rel="noopener">' + tr('lr_maps') + '</a>' +
         '  <button class="btn btn--sm" data-live>' + tr('lr_start') + '</button>' +
         '</div>';
@@ -435,7 +446,7 @@
         '<p class="as-live__gps" id="as-live-gps">' + tr('lr_finding') + '</p>' +
         '<p class="as-live__story" id="as-live-story"></p>' +
         '</div>' +
-        '<div class="as-foot as-foot--split">' +
+        '<div class="as-dock as-dock--split">' +
         '  <a class="btn btn--sm btn--sun" id="as-live-nav" href="#" target="_blank" rel="noopener">' + tr('lr_nav') + '</a>' +
         '  <button class="btn btn--sm btn--ghost" id="as-live-next">' + tr('lr_here') + ' &rarr;</button>' +
         '</div>';
@@ -594,7 +605,7 @@
         '<p class="as-q">' + tr('ex_howlong') + '</p>' +
         '<div class="as-blocks">' + blocks + '</div>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next disabled>' + tr('ex_choose_pay') + '</button></div>';
+        '<div class="as-dock"><button class="btn btn--block" data-next disabled>' + tr('ex_choose_pay') + '</button></div>';
     },
     wire: function () {
       var next = el.body.querySelector('[data-next]');
@@ -604,6 +615,7 @@
           b.classList.add('is-on');
           state.block = b.getAttribute('data-block');
           next.disabled = false;
+          tick();
         });
       });
       next.addEventListener('click', function () { if (state.block) go('ex-pay'); });
@@ -644,7 +656,7 @@
         '<div class="as-pays">' + methods + '</div>' +
         '<p class="as-note as-note--lock">&#128274; ' + tr('ex_secure') + '</p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-pay-go disabled>' + tr('ex_continue') + '</button></div>';
+        '<div class="as-dock"><button class="btn btn--block" data-pay-go disabled>' + tr('ex_continue') + '</button></div>';
     },
     wire: function () {
       var go2 = el.body.querySelector('[data-pay-go]');
@@ -654,6 +666,7 @@
           b.classList.add('is-on');
           state.method = b.getAttribute('data-pay');
           go2.disabled = false;
+          tick();
         });
       });
       go2.addEventListener('click', function () {
