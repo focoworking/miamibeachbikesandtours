@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" role="img" aria-label="hero southbeach">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" role="img" aria-label="adv jetski">
 <defs>
 <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#04303d"/><stop offset="1" stop-color="#0aa2c0"/></linearGradient>
+<stop offset="0" stop-color="#0f7fb8"/><stop offset="1" stop-color="#00e0d1"/></linearGradient>
 <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
-<stop offset="0" stop-color="#ffc531"/><stop offset="1" stop-color="#ff5d73"/></linearGradient>
+<stop offset="0" stop-color="#ffc531"/><stop offset="1" stop-color="#fff6e9"/></linearGradient>
 <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
 <circle cx="4" cy="4" r="2" fill="#ffffff" opacity=".22"/></pattern>
 </defs>
@@ -13,10 +13,10 @@
 <circle cx="965" cy="200" r="290" fill="none" stroke="#ffc531" stroke-width="2" opacity=".25"/>
 <rect width="1200" height="900" fill="url(#dots)"/>
 <path d="M0 640 C170 570 300 720 470 650 C640 580 760 730 930 660 C1050 612 1140 660 1200 636 L1200 900 L0 900 Z" fill="#ffc531" opacity=".22"/>
-<path d="M0 712 C170 642 300 792 470 722 C640 652 760 802 930 732 C1050 684 1140 732 1200 708 L1200 900 L0 900 Z" fill="#ff5d73" opacity=".3"/>
+<path d="M0 712 C170 642 300 792 470 722 C640 652 760 802 930 732 C1050 684 1140 732 1200 708 L1200 900 L0 900 Z" fill="#fff6e9" opacity=".3"/>
 <path d="M0 786 C170 716 300 866 470 796 C640 726 760 876 930 806 C1050 758 1140 806 1200 782 L1200 900 L0 900 Z" fill="#ffffff" opacity=".18"/>
 <g transform="translate(365 235) scale(4.7)" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" opacity=".95">
-<path d="M50 88 L50 44 M50 44 C34 30 22 34 14 44 M50 44 C40 24 26 20 16 24 M50 44 C60 24 76 22 86 30 M50 44 C66 32 80 38 88 48 M50 44 C50 26 56 16 66 12"/></g>
+<path d="M6 58 C22 42 34 74 50 58 C66 42 78 74 94 58 M6 76 C22 60 34 92 50 76 C66 60 78 92 94 76"/></g>
 <g stroke="#ffc531" stroke-width="6" stroke-linecap="round" opacity=".55">
 <path d="M96 150 L96 250"/><path d="M148 110 L148 290"/><path d="M200 150 L200 250"/></g>
 </svg>

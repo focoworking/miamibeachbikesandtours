@@ -107,10 +107,13 @@ canonical URL, Open Graph tag, sitemap entry and JSON-LD `@id`.
 
 ## Catalogue: what is confirmed and what is not
 
-The catalogue mirrors the operator's own booking feed (FareHarbor: `southfloridatrikketours`),
-the same business as Miami Beach Bike Rental / South Florida Trikke — same shop, same phone.
+The catalogue mirrors the operator's live booking feed
+(`https://fareharbor.com/embeds/book/southfloridatrikketours/items/`) — the same business as
+Miami Beach Bike Rental / South Florida Trikke. **Every "Book" button on the site points at that
+feed**; items with no published price show "Price on request" and a `tel:` button instead, so
+nothing in the catalogue is a dead end.
 
-**Confirmed prices** (published by the operator):
+**Confirmed prices** (published by the operator, live on the site):
 
 | Item | Price |
 |---|---|
@@ -121,21 +124,36 @@ the same business as Miami Beach Bike Rental / South Florida Trikke — same sho
 | Miami Millionaire's Row Segway Tour | $89 / person, 2.5 h |
 | Everglades Airboat Adventure | $69 / person, 4.5 h |
 
-Also confirmed: happy hour 1–4 PM adds one free hour; Segway tours need a minimum of two riders and
-take no deposit; the cancellation ladder (100 / 50 / 25 / 0%); baskets and baby seats $5.
+Also confirmed and published: happy hour 1–4 PM adds one free hour; Segway tours need a minimum of
+two riders and take no deposit; the cancellation ladder (100 / 50 / 25 / 0%); baskets and baby
+seats $5; hours 9 AM–8 PM daily; address 233 14th Street, Miami Beach, FL 33139.
 
-**Still to confirm with the client** — the rental rate table (`FLEET` in `_build/data.py`), the prices
-for Key West, the Miami City Tour, the night chariot tour, jet ski, parasailing and helicopter
-(`ADVENTURES`), the review quotes in `REVIEWS`, and the "since 2009" / rating figures.
-Everything sits in one file; replace the numbers and run the build.
+**Listed without a price** — bookable by phone, priced per group or seasonal. Give us the numbers
+and they publish like the rest:
+
+- Tours: South Beach Trikke Tour, Art Deco Bike Tour, South Beach Coastal Ride, Wynwood & Downtown
+  E-Bike Tour, Sunset Venetian Islands Ride, Panoramic Night Private Chariot Tour, Private Group &
+  Corporate Tour.
+- Adventures: Key West Day Trip, Miami City Tour, Big Bus Hop-On Hop-Off, Jet Ski Rental, South
+  Beach Parasailing, Biscayne Bay Millionaire's Row Cruise, Speedboat & Sandbar Tour, Miami
+  Helicopter Ride.
+
+**Estimated, needs the client's real list:** the rental rate table (`FLEET` in `_build/data.py`).
+The per-hour and all-day numbers are South Beach market rates, not the shop's own. The rates that
+circulate on OTA listings carry reseller markup and are not usable.
+
+Also unverified: the review quotes in `REVIEWS`, the "since 2009" line and the 4.8 / 131 rating.
 
 ## Before going live
 
-1. **Swap the unconfirmed prices above** in `_build/data.py`, then `python3 _build/build.py`.
-2. **The booking form** on `contact.html` currently uses a `mailto:` action, which is unreliable across
-   browsers. Point it at the operator's FareHarbor booking flow
-   (`https://fareharbor.com/embeds/book/southfloridatrikketours/items/`) or a form backend —
-   FareHarbor also ships a lightbox embed that drops straight into the "Book now" buttons.
-3. **Address.** Listings disagree between 233 14th St, 226 14th St and 1401 Washington Ave (the corner
-   building). The site uses 233 14th Street; confirm and make it identical everywhere, including the
-   Google Business Profile, since NAP consistency is what local ranking runs on.
+1. **Swap the estimated rental rates** in `_build/data.py`, add any missing tour prices, then run
+   `python3 _build/build.py`. Setting a `price` from `None` to a number switches that card from
+   "Price on request / Call to book" to a price and a Book button automatically, and updates the
+   price table, the JSON-LD offer and `llms.txt` in the same pass.
+2. **Booking.** Buttons currently open the FareHarbor item list in a new tab. FareHarbor also ships
+   a lightbox embed — dropping their script in and adding their class to the buttons opens booking
+   in place. The `contact.html` form still uses a `mailto:` action; point it at a form backend or
+   remove it in favour of the booking flow.
+3. **NAP.** The address is 233 14th Street, Miami Beach, FL 33139 everywhere on the site, in the
+   JSON-LD and in `llms.txt`. Make the Google Business Profile and every directory listing match it
+   character for character — local ranking runs on that consistency.

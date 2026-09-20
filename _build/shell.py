@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """HTML shell: head (SEO/AEO/GEO/LLM), nav, footer."""
 import json
-from data import BIZ, SITE
+from data import BIZ, SITE, BOOKING_URL
 
 NAV = [
     ("rentals.html", "Rentals"),
@@ -47,6 +47,13 @@ LOCALBUSINESS_LD = {
     "areaServed": [{"@type": "Place", "name": a} for a in BIZ["areas"]],
     "knowsLanguage": ["en", "es", "pt"],
     "slogan": BIZ["tagline"],
+    "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {"@type": "EntryPoint", "urlTemplate": BOOKING_URL,
+                   "actionPlatform": ["http://schema.org/DesktopWebPlatform",
+                                      "http://schema.org/MobileWebPlatform"]},
+        "result": {"@type": "Reservation", "name": "Rental or tour booking"},
+    },
     "description": ("Bicycle, fat tire, electric bike, electric tandem, Trikke, Segway, tricycle and rollerblade "
                     "rentals in South Beach, plus guided Segway tours of Ocean Drive, Star Island, the Art Deco "
                     "District and Millionaire's Row, Everglades airboat adventures, Key West day trips, Miami city "
@@ -181,7 +188,7 @@ def nav(current):
       <span class="brand__sub">South Beach · Since 2009</span>
     </a>
     <div class="nav__group nav__group--right">{links(right)}
-      <a class="btn btn--sm" href="contact.html#book">Book now</a>
+      <a class="btn btn--sm" href="{BOOKING_URL}" target="_blank" rel="noopener">Book now</a>
     </div>
   </nav>
 </header>
@@ -227,12 +234,13 @@ def footer():
         <li><a href="routes.html">South Beach routes</a></li>
         <li><a href="about.html">Our story</a></li>
         <li><a href="faq.html">FAQ</a></li>
+        <li><a href="{BOOKING_URL}" target="_blank" rel="noopener">Book online</a></li>
       </ul>
     </div>
     <div>
       <h4>Visit</h4>
       <ul>
-        <li>{BIZ['street']} {BIZ['cross']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</li>
+        <li>{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</li>
         <li><a href="tel:{BIZ['phone']}">{BIZ['phone_pretty']}</a></li>
         <li><a href="mailto:{BIZ['email']}">{BIZ['email']}</a></li>
         <li>{BIZ['hours_pretty']}</li>

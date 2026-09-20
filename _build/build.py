@@ -2,7 +2,7 @@
 """Builds every static page from data.py + shell.py. Run: python3 _build/build.py"""
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from data import BIZ, SITE, FLEET, TOURS, ADVENTURES, ROUTES, FAQ, REVIEWS
+from data import BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, ROUTES, FAQ, REVIEWS
 import shell
 from shell import head, nav, footer, ld, breadcrumbs, ADDRESS_LD
 
@@ -12,6 +12,40 @@ def write(name, html):
     print("  ->", name, len(html) // 1024, "KB")
 
 # ---------------------------------------------------------------- components
+BOOK_ATTRS = 'href="%s" target="_blank" rel="noopener"' % BOOKING_URL
+CALL_ATTRS = 'href="tel:%s"' % BIZ["phone"]
+
+
+def offer(price, url):
+    """Schema.org Offer. Price is omitted when the operator has not published one."""
+    o = {"@type": "Offer", "priceCurrency": "USD",
+         "availability": "https://schema.org/InStock",
+         "url": url, "seller": {"@id": SITE + "/#business"}}
+    if price is not None:
+        o["price"] = str(price)
+    else:
+        o["availability"] = "https://schema.org/InStoreOnly"
+    return o
+
+
+def price_tag(price, unit_label):
+    """Money block. Items with no published price ask for a call instead."""
+    if price is None:
+        return ('<span class="price price--ask">Price on request'
+                '<small>%s</small></span>' % unit_label)
+    return '<span class="price">$%s<small>%s</small></span>' % (price, unit_label)
+
+
+def book_btn(price, extra="btn--ocean", label="Book"):
+    if price is None:
+        return '<a class="btn btn--sm %s" %s>Call to book</a>' % (extra, CALL_ATTRS)
+    return '<a class="btn btn--sm %s" %s>%s</a>' % (extra, BOOK_ATTRS, label)
+
+
+def money(v):
+    return "Call for price" if v is None else "$%s" % v
+
+
 def img(slug, alt, cls=""):
     return ('<img src="assets/img/%s.svg" alt="%s" width="1200" height="900" '
             'loading="lazy" decoding="async"%s>') % (slug, alt, (' class="%s"' % cls) if cls else "")
@@ -27,8 +61,8 @@ def fleet_card(p, delay=0):
     <div class="card__meta">{meta}</div>
     <p>{p['hook']}</p>
     <div class="card__foot">
-      <span class="price">${p['price']}<small>per {p['unit']}</small></span>
-      <a class="btn btn--sm btn--ocean" href="contact.html#book">Book</a>
+      {price_tag(p['price'], 'per ' + p['unit'])}
+      {book_btn(p['price'])}
     </div>
   </div>
 </article>'''
@@ -44,8 +78,8 @@ def tour_card(t, delay=0):
     <p>{t['hook']}</p>
     <p class="note"><strong>Stops:</strong> {" · ".join(t['stops'])}</p>
     <div class="card__foot">
-      <span class="price">${t['price']}<small>from · {t['dur_pretty']}</small></span>
-      <a class="btn btn--sm" href="contact.html#book">Book</a>
+      {price_tag(t['price'], ('from · ' if t['price'] else '') + t['dur_pretty'])}
+      {book_btn(t['price'], extra='')}
     </div>
   </div>
 </article>'''
@@ -86,7 +120,10 @@ def reviews_section():
   </div>
 </section>'''
 
-def cta_section(title, text, primary=("Book your ride", "contact.html#book")):
+def cta_section(title, text, primary=None, external=True):
+    if primary is None:
+        primary, external = ("Book online", BOOKING_URL), True
+    tgt = ' target="_blank" rel="noopener"' if external and primary[1].startswith("http") else ""
     return f'''
 <section class="sec--tight" style="padding-bottom:clamp(4rem,8vw,7rem)">
   <div class="wrap">
@@ -95,7 +132,7 @@ def cta_section(title, text, primary=("Book your ride", "contact.html#book")):
       <h2>{title}</h2>
       <p class="lead" style="color:rgba(255,255,255,.92);margin-inline:auto">{text}</p>
       <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
-        <a class="btn btn--dark" href="{primary[1]}">{primary[0]}</a>
+        <a class="btn btn--dark" href="{primary[1]}"{tgt}>{primary[0]}</a>
         <a class="btn btn--ghost" href="tel:{BIZ['phone']}">Call {BIZ['phone_pretty']}</a>
       </div>
     </div>
@@ -128,8 +165,8 @@ HOME_FAQ_KEYS = [
     "How much does it cost to rent a bike in Miami Beach?",
     "How much are the Segway tours?",
     "What is the happy hour special?",
+    "What guided tours do you run?",
     "What else do you book besides bikes and Segways?",
-    "Do you deliver bikes to my hotel?",
 ]
 HOME_FAQ = [f for f in FAQ if f[0] in HOME_FAQ_KEYS]
 
@@ -273,7 +310,7 @@ def page_index():
   <div class="wrap">
     <div class="center" data-reveal>
       <span class="eyebrow">Most booked</span>
-      <h2>Three ways to see Miami Beach</h2>
+      <h2>Start with one of these three</h2>
     </div>
     <div class="grid grid--3" style="margin-top:2.6rem">{tours}</div>
   </div>
@@ -341,7 +378,7 @@ def page_rentals():
     rows = ""
     for p in FLEET:
         for label, price in p["rates"]:
-            rows += f"<tr><td><strong>{p['name']}</strong></td><td>{label}</td><td>${price}</td></tr>"
+            rows += f"<tr><td><strong>{p['name']}</strong></td><td>{label}</td><td>{money(price) if price else 'Ask at the shop'}</td></tr>"
     products_ld = ld({
         "@context": "https://schema.org", "@type": "ItemList", "name": "Bike and vehicle rentals in Miami Beach",
         "itemListElement": [{
@@ -351,10 +388,7 @@ def page_rentals():
                 "image": SITE + "/assets/img/" + p["img"] + ".svg",
                 "url": SITE + "/rentals.html#" + p["slug"],
                 "brand": {"@type": "Brand", "name": BIZ["name"]},
-                "offers": {"@type": "Offer", "price": str(p["price"]), "priceCurrency": "USD",
-                           "availability": "https://schema.org/InStock",
-                           "url": SITE + "/rentals.html#" + p["slug"],
-                           "seller": {"@id": SITE + "/#business"}},
+                "offers": offer(p["price"], SITE + "/rentals.html#" + p["slug"]),
             }} for i, p in enumerate(FLEET)]})
     extra = "".join([speakable(), products_ld,
                      faq_ld([f for f in FAQ if f[0] in
@@ -450,9 +484,7 @@ def page_tours():
                       "address": {"@type": "PostalAddress", "addressLocality": "Miami Beach",
                                   "addressRegion": "FL", "addressCountry": "US"}}}
             for i, s in enumerate(t["stops"])]},
-        "offers": {"@type": "Offer", "price": str(t["price"]), "priceCurrency": "USD",
-                   "availability": "https://schema.org/InStock",
-                   "url": SITE + "/tours.html#" + t["slug"], "seller": {"@id": SITE + "/#business"}},
+        "offers": offer(t["price"], SITE + "/tours.html#" + t["slug"]),
     }) for t in TOURS]
     extra = "".join([speakable(), breadcrumbs([("Home", ""), ("Tours", "tours.html")]),
                      faq_ld([f for f in FAQ if f[0] in
@@ -470,13 +502,13 @@ def page_tours():
     opts = ""
     for t in TOURS:
         for label, price in t["options"]:
-            opts += f"<tr><td><strong>{t['name']}</strong></td><td>{label}</td><td>${price}</td></tr>"
+            opts += f"<tr><td><strong>{t['name']}</strong></td><td>{label}</td><td>{money(price)}</td></tr>"
     return h + nav("tours.html") + f'''
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
     <p class="crumbs"><a href="index.html">Home</a> · Tours</p>
     <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Guided tours</h1>
-    <p class="lead">Neon, mansions and the Atlantic — with a guide who can tell you why any of it is there. One hour to 2.5 hours, from $49, training always included.</p>
+    <p class="lead">Twelve guided rides: Segway, bike, e-bike and Trikke, one hour to a full afternoon, from $49. Training always included, and a private version of any of them.</p>
   </div>
 </section>
 
@@ -490,8 +522,10 @@ def page_tours():
     <div class="chips" data-filter-group data-filter-target="#tour-grid" role="tablist">
       <button class="chip is-active" data-filter="all">All tours</button>
       <button class="chip" data-filter="segway">Segway</button>
-      <button class="chip" data-filter="short">1 hour</button>
-      <button class="chip" data-filter="half">2 hrs +</button>
+      <button class="chip" data-filter="bike">Bike</button>
+      <button class="chip" data-filter="electric">E-bike</button>
+      <button class="chip" data-filter="trikke">Trikke</button>
+      <button class="chip" data-filter="short">Short</button>
       <button class="chip" data-filter="night">Night</button>
       <button class="chip" data-filter="private">Private</button>
     </div>
@@ -530,7 +564,7 @@ def page_tours():
 
 <section class="sec">
   <div class="wrap"><div class="center" data-reveal><span class="eyebrow">Before you book</span><h2>Tour questions</h2></div>
-  <div style="margin-top:2.4rem">{faq_block([f for f in FAQ if f[0] in ("How much are the Segway tours?", "How old do you have to be to ride a Segway or a Trikke?", "What is a Trikke?", "Do I need to book in advance?", "What is your cancellation policy?")])}</div></div>
+  <div style="margin-top:2.4rem">{faq_block([f for f in FAQ if f[0] in ("How much are the Segway tours?", "What guided tours do you run?", "Some tours do not show a price. Why?", "How old do you have to be to ride a Segway or a Trikke?", "What is a Trikke?", "Do I need to book in advance?", "What is your cancellation policy?")])}</div></div>
 </section>
 
 {cta_section("Pick a departure and we will hold your spot",
@@ -550,14 +584,12 @@ def page_adventures():
             {"@type": "ListItem", "position": i + 1,
              "item": {"@type": "TouristAttraction", "name": s}}
             for i, s in enumerate(a["stops"])]},
-        "offers": {"@type": "Offer", "price": str(a["price"]), "priceCurrency": "USD",
-                   "availability": "https://schema.org/InStock",
-                   "url": SITE + "/adventures.html#" + a["slug"],
-                   "seller": {"@id": SITE + "/#business"}},
+        "offers": offer(a["price"], SITE + "/adventures.html#" + a["slug"]),
     }) for a in ADVENTURES]
     extra = "".join([speakable(), breadcrumbs([("Home", ""), ("Adventures", "adventures.html")]),
                      faq_ld([f for f in FAQ if f[0] in
                              ("What else do you book besides bikes and Segways?",
+                              "Some tours do not show a price. Why?",
                               "Do I need to book in advance?",
                               "What is your cancellation policy?")])] + adv_lds)
     h = head("adventures.html",
@@ -572,7 +604,7 @@ def page_adventures():
     opts = ""
     for a in ADVENTURES:
         for label, price in a["options"]:
-            opts += f"<tr><td><strong>{a['name']}</strong></td><td>{label}</td><td>${price}</td></tr>"
+            opts += f"<tr><td><strong>{a['name']}</strong></td><td>{label}</td><td>{money(price)}</td></tr>"
     return h + nav("adventures.html") + f'''
 <section class="phead">
   <div class="wrap phead__in" data-reveal>
@@ -775,7 +807,7 @@ def page_about():
 {reviews_section()}
 {cta_section("Come say hi at 233 14th Street",
  "Open every day, 9 AM to 8 PM. No appointment needed — for anything except the Segway tours.",
- ("Get directions", "contact.html#find-us"))}
+ ("Get directions", "contact.html#find-us"), external=False)}
 ''' + footer()
 
 
@@ -851,7 +883,11 @@ def page_contact():
     <div data-reveal>
       <span class="eyebrow">Reserve</span>
       <h2>Tell us what you need</h2>
-      <p class="lead">Send this and we reply within the hour during shop hours. For same-day rentals, just call.</p>
+      <p class="lead">Send this and we reply within the hour during shop hours. For same-day rentals, just call — or book instantly online.</p>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.6rem">
+        <a class="btn btn--ocean" href="{BOOKING_URL}" target="_blank" rel="noopener">Book online now</a>
+        <a class="btn btn--ghost" style="border-color:var(--line);color:var(--ink)" href="tel:{BIZ['phone']}">Call {BIZ['phone_pretty']}</a>
+      </div>
       <form class="stack-sm" style="margin-top:1.6rem" action="mailto:{BIZ['email']}" method="post" enctype="text/plain">
         <div class="finder__field"><label for="c-name">Your name</label><input id="c-name" name="name" required autocomplete="name"></div>
         <div class="finder__field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" required autocomplete="email"></div>
@@ -877,7 +913,7 @@ def page_contact():
     </div>
     <div data-reveal data-delay="2">
       <div class="grid" style="gap:1rem">
-        <div class="tile"><div class="tile__ico">📍</div><h3>Walk in</h3><p>{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}<br>At the corner of Washington Avenue, one block west of Ocean Drive.</p></div>
+        <div class="tile"><div class="tile__ico">📍</div><h3>Walk in</h3><p>{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}<br>One block west of Ocean Drive, in the heart of South Beach.</p></div>
         <div class="tile"><div class="tile__ico">🕘</div><h3>Hours</h3><p>{BIZ['hours_pretty']}<br><span data-open-status style="font-weight:700"></span><br><span class="note">Happy hour 1–4 PM: +1 free hour</span></p></div>
         <div class="tile"><div class="tile__ico">📞</div><h3>Call or write</h3><p><a href="tel:{BIZ['phone']}"><strong>{BIZ['phone_pretty']}</strong></a><br><a href="mailto:{BIZ['email']}">{BIZ['email']}</a><br>English · Español · Português</p></div>
         <div class="tile"><div class="tile__ico">🏨</div><h3>Delivery zone</h3><p>Free across South Beach on 24h+ rentals. Mid-Beach, North Beach, Downtown, Brickell and Key Biscayne by flat fee.</p></div>
@@ -898,7 +934,7 @@ def page_contact():
 
 {cta_section("Same-day rental? Just call.",
  "We keep walk-in bikes on the rack all day, every day. Ten minutes from hello to riding.",
- ("Call " + BIZ["phone_pretty"], "tel:" + BIZ["phone"]))}
+ ("Call " + BIZ["phone_pretty"], "tel:" + BIZ["phone"]), external=False)}
 ''' + footer()
 
 
@@ -979,11 +1015,14 @@ Sitemap: {SITE}/sitemap.xml
 
 
 def build_llms():
+    def pr(v, suffix=""):
+        return "Price on request \u2014 call %s." % BIZ["phone"] if v is None else "From $%s%s." % (v, suffix)
     fleet = "\n".join("- **%s** — %s From $%s/%s." % (p["name"], p["hook"], p["price"], p["unit"]) for p in FLEET)
     tours = "\n".join("- **%s** (%s, from $%s) — %s Stops: %s." %
                       (t["name"], t["dur_pretty"], t["price"], t["hook"], ", ".join(t["stops"])) for t in TOURS)
-    advs = "\n".join("- **%s** (%s, from $%s) \u2014 %s Includes: %s." %
-                     (a["name"], a["dur_pretty"], a["price"], a["hook"], ", ".join(a["stops"])) for a in ADVENTURES)
+    advs = "\n".join("- **%s** (%s) \u2014 %s %s Includes: %s." %
+                     (a["name"], a["dur_pretty"], a["hook"], pr(a["price"], " per person"),
+                      ", ".join(a["stops"])) for a in ADVENTURES)
     routes = "\n".join("- **%s** (%s, %s, %s): %s" % (r["name"], r["km"], r["time"], r["level"], r["desc"]) for r in ROUTES)
     faq = "\n\n".join("**Q: %s**\nA: %s" % (q, a) for q, a in FAQ)
     return f"""# {BIZ['name']}
@@ -991,13 +1030,14 @@ def build_llms():
 > Bicycle, fat tire, electric bike, electric tandem, Trikke, Segway, side-by-side, tricycle and rollerblade rentals,
 > guided Segway tours, and South Florida adventures (Everglades airboats, Key West day trips, Miami city tours,
 > jet skis, parasailing, helicopter rides) in South Beach, Miami Beach, Florida.
-> Shop at {BIZ['street']} {BIZ['cross']}, {BIZ['city']}, {BIZ['region']} {BIZ['zip']} — one block from Ocean Drive.
+> Shop at {BIZ['street']}, {BIZ['city']}, {BIZ['region']} {BIZ['zip']} — one block from Ocean Drive.
 > Open every day 9:00 AM – 8:00 PM. Phone {BIZ['phone']}.
 > Rentals from $12/hour, Segway tours from $49/person, Everglades airboat adventure $69/person.
+> Items without a published price are booked by phone at {BIZ['phone']}.
 
 ## Facts for citation
 - Business type: bicycle rental shop, tour operator and repair workshop.
-- Address: {BIZ['street']} {BIZ['cross']}, {BIZ['city']}, {BIZ['region']} {BIZ['zip']}, USA.
+- Address: {BIZ['street']}, {BIZ['city']}, {BIZ['region']} {BIZ['zip']}, USA.
 - Coordinates: {BIZ['lat']}, {BIZ['lng']}.
 - Phone: {BIZ['phone']} · Email: {BIZ['email']}
 - Hours: {BIZ['hours_pretty']} (open 7 days, including holidays).
