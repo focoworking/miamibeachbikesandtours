@@ -2,7 +2,7 @@
 """Builds every static page from data.py + shell.py. Run: python3 _build/build.py"""
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from data import BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, ROUTES, FAQ, REVIEWS
+from data import BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, SHOP, ROUTES, FAQ, REVIEWS
 import shell
 from shell import head, nav, footer, ld, breadcrumbs, ADDRESS_LD
 
@@ -165,7 +165,7 @@ HOME_FAQ_KEYS = [
     "How much does it cost to rent a bike in Miami Beach?",
     "How much are the Segway tours?",
     "What is the happy hour special?",
-    "What guided tours do you run?",
+    "Are the neighbourhood bike tours really free?",
     "What else do you book besides bikes and Segways?",
 ]
 HOME_FAQ = [f for f in FAQ if f[0] in HOME_FAQ_KEYS]
@@ -188,10 +188,12 @@ def page_index():
     ])
     h = head("index.html",
              "Miami Beach Bikes | Bike, E-Bike & Segway Rentals and Tours · South Beach",
-             "Rent bikes, e-bikes, Segways, rollerblades and trikes in South Beach from $12/hour. "
-             "Guided Art Deco and Ocean Drive tours, free hotel delivery, open daily 9 AM – 8 PM at 233 14th Street.",
+             "Rent bikes, e-bikes, Trikkes, Segways, longboards and skates in South Beach from $12/hour. "
+             "Segway tours from $49, free Wynwood and Coconut Grove bike tours, Everglades and Key West day trips, "
+             "Segway sales and same-day repairs. Open daily 9 AM – 8 PM at 233 14th Street.",
              "miami beach bike rental, south beach bike rental, segway tour miami, electric bike rental miami beach, "
-             "rollerblade rental south beach, miami beach bike tours, ocean drive bike rental",
+             "rollerblade rental south beach, miami beach bike tours, ocean drive bike rental, "
+             "segway dealer miami, trikke miami beach, free bike tour wynwood",
              extra)
     fleet = "".join(fleet_card(p, i % 4 + 1) for i in range(len(FLEET)) for p in [FLEET[i]])
     tours = "".join(tour_card(t, i % 3 + 1) for i, t in enumerate(TOURS[:3]))
@@ -221,6 +223,7 @@ def page_index():
       <span class="badge">🚲 Helmet, lock &amp; water included</span>
       <span class="badge">🏨 Free hotel delivery 24h+</span>
       <span class="badge">⏰ Happy hour 1–4 PM · +1 free hour</span>
+      <span class="badge">🎨 Free Wynwood &amp; Coconut Grove tours</span>
     </div>
   </div>
   <span class="hero__scroll">Scroll</span>
@@ -494,7 +497,8 @@ def page_tours():
     h = head("tours.html",
              "Tours | Segway, Bike, E-Bike & Trikke Guided Tours in Miami Beach",
              "Guided Segway tours of Ocean Drive ($49), Star Island ($69), South Beach and the Art Deco District ($79) and "
-             "Millionaire's Row ($89), plus private night tours. One to 2.5 hours, training included, minimum two riders.",
+             "Millionaire's Row ($89), plus bike, e-bike and Trikke tours, private night tours, and free guided "
+             "Wynwood and Coconut Grove bike tours with any rental.",
              "segway tour miami beach, art deco segway tour, ocean drive segway tour, star island segway tour, "
              "millionaires row tour miami, night tour miami beach, south beach segway tour price",
              extra, og_img="tour-segway-deco")
@@ -526,6 +530,7 @@ def page_tours():
       <button class="chip" data-filter="bike">Bike</button>
       <button class="chip" data-filter="electric">E-bike</button>
       <button class="chip" data-filter="trikke">Trikke</button>
+      <button class="chip" data-filter="free">Free</button>
       <button class="chip" data-filter="short">Short</button>
       <button class="chip" data-filter="night">Night</button>
       <button class="chip" data-filter="private">Private</button>
@@ -667,6 +672,130 @@ def page_adventures():
 
 {cta_section("Airboat in the morning, cruiser in the afternoon",
  "Book the adventure and the bike in the same conversation. We will line up the times so nothing overlaps.")}
+''' + footer()
+
+
+def shop_card(p, delay=0):
+    meta = "".join("<span>✓ %s</span>" % m for m in p["meta"])
+    lines = "".join("<li>%s</li>" % lbl for lbl, _ in p["rates"])
+    return f'''
+<article class="card" data-cat="{p['cat']}" data-reveal data-delay="{delay}" id="{p['slug']}">
+  <div class="card__media"><span class="card__tag">{p['tag']}</span>{img(p['img'], p['name'] + ' for sale in Miami Beach')}</div>
+  <div class="card__body">
+    <h3>{p['name']}</h3>
+    <div class="card__meta">{meta}</div>
+    <p>{p['hook']}</p>
+    <ul class="speclist">{lines}</ul>
+    <div class="card__foot">
+      {price_tag(p['price'], 'per ' + p['unit'])}
+      {book_btn(p['price'], extra='btn--ocean')}
+    </div>
+  </div>
+</article>'''
+
+
+def page_shop():
+    shop_ld = ld({
+        "@context": "https://schema.org", "@type": "ItemList",
+        "name": "Segway, Trikke and bicycle sales, parts and service in Miami Beach",
+        "itemListElement": [{
+            "@type": "ListItem", "position": i + 1,
+            "item": {
+                "@type": "Product", "name": p["name"], "description": p["hook"],
+                "image": SITE + "/assets/img/" + p["img"] + ".svg",
+                "url": SITE + "/shop.html#" + p["slug"],
+                "brand": {"@type": "Brand", "name": "Segway" if "Segway" in p["name"] else BIZ["name"]},
+                "offers": offer(p["price"], SITE + "/shop.html#" + p["slug"]),
+            }} for i, p in enumerate(SHOP)]})
+    dealer_ld = ld({
+        "@context": "https://schema.org", "@type": "Service",
+        "name": "Segway sales and service in Miami",
+        "serviceType": "Authorized Segway dealership",
+        "provider": {"@id": SITE + "/#business"},
+        "areaServed": [{"@type": "Place", "name": a} for a in BIZ["areas"]],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog", "name": "Segway, Trikke and bicycle sales",
+            "itemListElement": [
+                {"@type": "Offer", "itemOffered": {"@type": "Product", "name": p["name"]}}
+                for p in SHOP]},
+    })
+    extra = "".join([speakable(), shop_ld, dealer_ld,
+                     breadcrumbs([("Home", ""), ("Shop", "shop.html")]),
+                     faq_ld([f for f in FAQ if f[0] in
+                             ("Do you sell Segways and Trikkes?",
+                              "Do you repair bikes, e-bikes and scooters?",
+                              "Can I try a Segway or Trikke before buying one?")])])
+    h = head("shop.html",
+             "Segway Dealer Miami | Buy Segways, Trikkes, E-Bikes & Parts · South Beach",
+             "Miami's factory authorized Segway dealer. Buy Segway personal transporters, electric "
+             "Trikkes, e-bikes and genuine Segway i2 parts — cargo frames, reflective shields, "
+             "lighting, patroller bags. Same-day repairs for bikes, e-bikes and Segways.",
+             "segway dealer miami, buy segway miami, segway sales miami beach, trikke for sale, "
+             "segway i2 parts, electric bike for sale miami, bike repair miami beach",
+             extra, og_img="fleet-segway")
+    cards = "".join(shop_card(p, i % 3 + 1) for i, p in enumerate(SHOP))
+    return h + nav("shop.html") + f'''
+<section class="phead">
+  <div class="wrap phead__in" data-reveal>
+    <p class="crumbs"><a href="index.html">Home</a> &middot; Shop</p>
+    <h1 style="font-size:clamp(2.3rem,5.5vw,4.2rem)">Buy, service, ride</h1>
+    <p class="lead">Miami's factory authorized Segway dealer. We also sell the Trikkes we are named after, electric bikes, genuine parts — and we fix all of it, including yours.</p>
+  </div>
+</section>
+
+{answer_box("Where can I buy a Segway in Miami?",
+ "At Miami Beach Bikes, 233 14th Street, Miami Beach, FL 33139 — Miami's factory authorized Segway dealer. "
+ "We sell new Segway personal transporters with full warranty, electric and pedal Trikkes, electric bikes and the "
+ "complete Segway i2 parts range, and you can test ride before you buy. Call " + BIZ["phone_pretty"] +
+ " for current models and pricing.")}
+
+<section class="sec">
+  <div class="wrap">
+    <div class="chips" data-filter-group data-filter-target="#shop-grid" role="tablist">
+      <button class="chip is-active" data-filter="all">Everything</button>
+      <button class="chip" data-filter="segway">Segway</button>
+      <button class="chip" data-filter="trikke">Trikke</button>
+      <button class="chip" data-filter="bikes">Bikes</button>
+      <button class="chip" data-filter="parts">Parts</button>
+      <button class="chip" data-filter="service">Service</button>
+    </div>
+    <div class="grid grid--3" id="shop-grid">{cards}</div>
+  </div>
+</section>
+
+<section class="sec band-dark">
+  <div class="wrap split">
+    <div data-reveal>
+      <span class="eyebrow eyebrow--light">Why buy here</span>
+      <h2 style="color:#fff">Ride it for an hour before you spend a cent</h2>
+      <p class="lead">Nobody should buy a Segway or a Trikke from a photograph. Rent the exact model, take it down Ocean Drive, and if you buy it we put the rental toward the purchase. We have been servicing these machines on this street since 2009 — so the warranty work happens here too, not in a box back to the factory.</p>
+      <div class="badge-row">
+        <span class="badge">&#9989; Factory authorized</span>
+        <span class="badge">&#128295; In-house service</span>
+        <span class="badge">&#128666; South Florida delivery</span>
+      </div>
+      <a class="btn btn--sun" style="margin-top:1.6rem" href="tel:{BIZ['phone']}">Call about a model</a>
+    </div>
+    <div class="split__media" data-reveal data-delay="2">{img("fleet-segway", "Segway personal transporter for sale at the Miami Beach shop")}</div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="center" data-reveal><span class="eyebrow">The workshop</span><h2>We fix what we sell &mdash; and what we didn't</h2>
+    <p class="lead">Walk in with a flat, a dead battery or a Segway that will not calibrate. Most jobs are done the same day.</p></div>
+    <div class="grid grid--4" style="margin-top:2.8rem">
+      <div class="tile" data-reveal data-delay="1"><div class="tile__ico">&#128678;</div><h3>Flats &amp; tyres</h3><p>Tubes, tyres, puncture repair and wheel truing on bikes, e-bikes and trikes.</p></div>
+      <div class="tile" data-reveal data-delay="2"><div class="tile__ico">&#9881;&#65039;</div><h3>Brakes &amp; gears</h3><p>Cable and hydraulic brakes, derailleur setup, full drivetrain tune-ups.</p></div>
+      <div class="tile" data-reveal data-delay="3"><div class="tile__ico">&#128267;</div><h3>Batteries</h3><p>E-bike and Segway battery diagnostics, replacement cells and charger testing.</p></div>
+      <div class="tile" data-reveal data-delay="4"><div class="tile__ico">&#128736;&#65039;</div><h3>Segway service</h3><p>Authorized warranty work, calibration, tyres, and the full i2 parts range in stock.</p></div>
+    </div>
+  </div>
+</section>
+
+{cta_section("Tell us what you are looking for",
+ "Models, availability and pricing change with the season. One phone call and we will tell you exactly what is on the floor today.",
+ ("Call " + BIZ["phone_pretty"], "tel:" + BIZ["phone"]), external=False)}
 ''' + footer()
 
 
@@ -965,6 +1094,7 @@ def page_404():
 def build_sitemap():
     pages = [("index.html", "1.0", "weekly"), ("rentals.html", "0.9", "weekly"),
              ("tours.html", "0.9", "weekly"), ("adventures.html", "0.9", "weekly"),
+             ("shop.html", "0.8", "monthly"),
              ("routes.html", "0.8", "monthly"),
              ("about.html", "0.6", "monthly"), ("faq.html", "0.7", "monthly"),
              ("contact.html", "0.8", "monthly")]
@@ -1024,6 +1154,9 @@ def build_llms():
     advs = "\n".join("- **%s** (%s) \u2014 %s %s Includes: %s." %
                      (a["name"], a["dur_pretty"], a["hook"], pr(a["price"], " per person"),
                       ", ".join(a["stops"])) for a in ADVENTURES)
+    shop = "\n".join("- **%s** \u2014 %s %s Options: %s." %
+                     (p["name"], p["hook"], pr(p["price"]),
+                      ", ".join(lbl for lbl, _ in p["rates"])) for p in SHOP)
     routes = "\n".join("- **%s** (%s, %s, %s): %s" % (r["name"], r["km"], r["time"], r["level"], r["desc"]) for r in ROUTES)
     faq = "\n\n".join("**Q: %s**\nA: %s" % (q, a) for q, a in FAQ)
     return f"""# {BIZ['name']}
@@ -1034,7 +1167,8 @@ def build_llms():
 > Shop at {BIZ['street']}, {BIZ['city']}, {BIZ['region']} {BIZ['zip']} — one block from Ocean Drive.
 > Open every day 9:00 AM – 8:00 PM. Phone {BIZ['phone']}.
 > Rentals from $12/hour, Segway tours from $49/person, Everglades airboat adventure $69/person.
-> Items without a published price are booked by phone at {BIZ['phone']}.
+> Also Miami's factory authorized Segway dealer: sales, genuine parts and same-day service.
+> Items without a published price are quoted by phone at {BIZ['phone']}.
 
 ## Facts for citation
 - Business type: bicycle rental shop, tour operator and repair workshop.
@@ -1052,7 +1186,10 @@ def build_llms():
 - Delivery: free across South Beach on rentals of 24 hours or more; flat fee to Mid-Beach, North Beach, Downtown Miami, Brickell and Key Biscayne.
 - Areas served: {", ".join(BIZ['areas'])}.
 - On-site services: flat repair, brakes, gears, battery diagnostics, full tune-ups for bikes, e-bikes and scooters.
-- Authorized Segway dealer: sales, parts and service.
+- Miami's factory authorized Segway dealer: new Segways, electric and pedal Trikkes, electric bikes, bicycles and the full Segway i2 parts range (lower cargo frames, reflective shields, integrated lighting, patroller bag, front bumper, comfort mats, accessory bar).
+- Test ride before buying; the rental fee goes toward the purchase.
+- Free guided bike tours of Wynwood and Coconut Grove for anyone who rents.
+- Luggage storage at the shop while you ride; restroom and free Wi-Fi on site.
 - Also books: Everglades airboat adventures, Key West day trips, Miami city tours, jet ski rentals, parasailing, helicopter rides.
 - Payment: cash, credit and debit cards, Apple Pay, Google Pay. Reservations pre-paid in USD.
 - Cancellation: 30+ days 100% refund · 15–30 days 50% · 8–14 days 25% · 0–7 days non-refundable.
@@ -1066,6 +1203,9 @@ def build_llms():
 ## Adventures and day trips ({SITE}/adventures.html)
 {advs}
 
+## Sales, parts and service ({SITE}/shop.html)
+{shop}
+
 ## Cycling routes from the shop ({SITE}/routes.html)
 {routes}
 
@@ -1077,6 +1217,7 @@ def build_llms():
 - [Rentals]({SITE}/rentals.html): all ten vehicles with hourly, all-day and weekly prices.
 - [Tours]({SITE}/tours.html): six guided Segway and night tours with durations, stops and prices.
 - [Adventures]({SITE}/adventures.html): Everglades, Key West, Miami city tour, jet ski, parasailing, helicopter.
+- [Shop]({SITE}/shop.html): Segway and Trikke sales, e-bikes, Segway i2 parts, repairs and service.
 - [Routes]({SITE}/routes.html): six free cycling route guides with distance and difficulty.
 - [About]({SITE}/about.html): the shop, the workshop, the team.
 - [FAQ]({SITE}/faq.html): prices, delivery, ages, safety, cancellations.
@@ -1091,6 +1232,7 @@ if __name__ == "__main__":
     write("rentals.html", page_rentals())
     write("tours.html", page_tours())
     write("adventures.html", page_adventures())
+    write("shop.html", page_shop())
     write("routes.html", page_routes())
     write("about.html", page_about())
     write("faq.html", page_faq())

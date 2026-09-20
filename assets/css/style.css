@@ -383,6 +383,11 @@ td strong{color:var(--ocean-ink)}
 .badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.14);
   border:1px solid rgba(255,255,255,.24);padding:.45rem .9rem;border-radius:var(--r-pill);font-size:.83rem;font-weight:600}
 
+/* ---------- Spec list (shop cards) ---------- */
+.speclist{list-style:none;margin:.2rem 0 0;padding:0;display:grid;gap:.3rem;font-size:.88rem;color:var(--ink-soft)}
+.speclist li{padding-left:1rem;position:relative}
+.speclist li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--ocean)}
+
 /* ---------- Button rows ---------- */
 .btn-row{display:flex;gap:.85rem;flex-wrap:wrap}
 .btn-row--center{justify-content:center}

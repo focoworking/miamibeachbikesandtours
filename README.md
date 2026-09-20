@@ -16,6 +16,7 @@ sunset coral, Art Deco gold, palm green and sand.
 
 ```
 index.html          Home: hero, finder, fleet, tours, adventures, routes, reviews, FAQ
+shop.html           Segway / Trikke / e-bike sales, i2 parts, repairs & service
 rentals.html        10 rentals + complete price table
 tours.html          6 guided Segway / night tours + price table + tour FAQ
 adventures.html     Everglades, Key West, Miami city tour, jet ski, parasailing, helicopter
@@ -104,6 +105,43 @@ canonical URL, Open Graph tag, sitemap entry and JSON-LD `@id`.
   gets quoted back in an AI answer.
 
 ---
+
+## Content audit — what came across from the client's site, and what has not
+
+The client's own sites (miamibeachbikerental.com / southfloridatrikke.com) are blocked by this
+environment's network egress policy, so nothing was read from them directly. Everything below was
+reconstructed from public sources: their pages as they appear in search results, Yelp, TripAdvisor,
+Greetwell, Wanderlog and the OTAs. **That means this is a faithful reconstruction, not a migration.**
+
+### Carried across
+
+| Area | Status |
+|---|---|
+| NAP, hours, languages | ✅ 233 14th Street, +1 305-830-9440, 9 AM–8 PM daily, EN/ES/PT |
+| Rentals | ✅ 11 — cruiser, fat tire, e-bike, e-tandem, Trikke, Segway, side-by-side, tricycle, rollerblades, longboards, kids & baby seats |
+| Guided tours | ✅ 14, incl. the 5 Segway tours at their published prices, and the free Wynwood / Coconut Grove tours |
+| Adventures | ✅ 9 — Everglades airboat, Key West, Miami city tour, Big Bus, jet ski, parasailing, boat cruise, sandbar, helicopter |
+| Sales & service | ✅ Segway (factory authorized dealer), Trikkes, e-bikes, i2 parts range, repairs |
+| Policies | ✅ Cancellation ladder, pre-payment, min. 2 riders, no Segway deposit, age limits |
+| Amenities | ✅ Restroom, Wi-Fi, luggage storage, hotel delivery, happy hour 1–4 PM |
+| Booking | ✅ Every button points at their live FareHarbor feed |
+
+### NOT carried across — still needed from the client
+
+- **Rental price list.** The hourly/daily figures in `FLEET` are South Beach market estimates.
+  Only the tour prices and the Everglades airboat are the operator's published numbers.
+- **Sales prices.** No Segway, Trikke, e-bike or parts pricing is public. Those cards show
+  "Price on request" with a call button.
+- **Blog.** Their site runs one; no posts were recoverable. This is the biggest SEO gap — see below.
+- **Photo gallery.** They have a tours gallery. Replaced here with illustrations.
+- **Shopping cart / e-commerce.** Their site has a real cart for parts and merchandise. Not rebuilt.
+- **Terms, waiver and rental requirements.** ID, deposit, credit card hold, damage and insurance
+  terms are all unknown and are legally required before taking bookings.
+- **Social profiles.** No Instagram / Facebook / TikTok URLs, so `sameAs` is absent from the
+  LocalBusiness schema — that field matters for entity resolution in Google and in LLM answers.
+- **Google Business Profile URL**, review counts and holiday hours.
+- **Team, founding year and fleet size.** "Since 2009", "4.8 / 131 reviews" and the stat tiles are
+  placeholders pulled from the Yelp listing, not verified with the client.
 
 ## Catalogue: what is confirmed and what is not
 

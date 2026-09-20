@@ -25,7 +25,7 @@ BIZ = {
     "hours_pretty": "Every day · 9:00 AM – 8:00 PM",
     "price_range": "$$",
     "areas": ["South Beach", "Mid-Beach", "North Beach", "Downtown Miami",
-              "Brickell", "Wynwood", "Star Island", "Venetian Islands", "Key Biscayne", "Everglades", "Key West"],
+              "Brickell", "Wynwood", "Star Island", "Venetian Islands", "Key Biscayne", "Everglades", "Key West", "Coconut Grove"],
 }
 
 # --- Fleet ------------------------------------------------------------------
@@ -102,6 +102,14 @@ FLEET = [
         "meta": ["Kids + adults", "Pads included", "All sizes"],
         "price": 12, "unit": "hour",
         "rates": [("1 hour", 12), ("2 hours", 18), ("4 hours", 20), ("All day 9am–8pm", 25), ("1 week", 65)],
+    },
+    {
+        "slug": "longboards", "cat": "skates family", "img": "fleet-skates",
+        "name": "Longboards", "tag": "Cruise the strip",
+        "hook": "Longboards for the Beachwalk and Lincoln Road. Pads and a helmet with every board, and a five-minute lesson if it is your first time.",
+        "meta": ["Ages 12+", "Pads included", "Lesson included"],
+        "price": 14, "unit": "hour",
+        "rates": [("1 hour", 14), ("2 hours", 20), ("4 hours", 26), ("All day 9am\u20138pm", 32)],
     },
     {
         "slug": "kids-bikes", "cat": "family bikes", "img": "fleet-kids",
@@ -213,6 +221,24 @@ TOURS = [
         "price": None, "dur": "PT2H", "dur_pretty": "2 hours",
         "stops": ["Venetian Causeway", "Belle Isle", "Di Lido Island", "Sunset Harbour"],
         "options": [("Per person", None)],
+    },
+    {
+        "slug": "free-wynwood-bike-tour", "cat": "bike free short", "img": "tour-ebike-wynwood",
+        "name": "Free Wynwood Bike Tour", "tag": "Free with rental",
+        "hook": "A guided run through the murals of Wynwood at no charge when you rent from us. Small groups, fixed departures, first come first served.",
+        "meta": ["Free with rental", "~2 hours", "Small group"],
+        "price": 0, "dur": "PT2H", "dur_pretty": "~2 hours",
+        "stops": ["Wynwood Walls", "NW 2nd Avenue", "Design District", "Mural alleys"],
+        "options": [("Free with any rental", 0)],
+    },
+    {
+        "slug": "free-coconut-grove-bike-tour", "cat": "bike free short", "img": "tour-bike-coastal",
+        "name": "Free Coconut Grove Bike Tour", "tag": "Free with rental",
+        "hook": "Miami's oldest neighbourhood — banyan trees, the bayfront marina and Vizcaya — guided and free when you rent with us.",
+        "meta": ["Free with rental", "~2 hours", "Small group"],
+        "price": 0, "dur": "PT2H", "dur_pretty": "~2 hours",
+        "stops": ["CocoWalk", "Bayfront marina", "Barnacle Historic Park", "Vizcaya"],
+        "options": [("Free with any rental", 0)],
     },
     {
         "slug": "private-group-corporate-tour", "cat": "private segway bike", "img": "tour-private",
@@ -366,6 +392,14 @@ FAQ = [
      "Twelve of them. Five Segway tours with published prices — Ocean Drive $49, Star Island $69, South Beach $79, Art Deco $79 and Millionaire's Row $89 — plus a South Beach Trikke tour, an Art Deco bike tour, the South Beach Coastal Ride, a Wynwood and Downtown e-bike tour, a sunset ride across the Venetian Islands, a private night chariot tour and fully custom private and corporate tours."),
     ("Some tours do not show a price. Why?",
      "Those run on seasonal schedules or are priced per group, so the rate depends on the date, the group size and the operator. Call +1-305-830-9440 or book online and we will quote you on the spot — every one of them is bookable."),
+    ("Do you sell Segways and Trikkes?",
+     "Yes. We are Miami's factory authorized Segway dealer, so we sell new Segway personal transporters with full warranty, plus pedal and electric Trikkes, electric bikes, bicycles and the complete Segway i2 parts range \u2014 cargo frames, reflective shields, integrated lighting, patroller bags, bumpers, comfort mats and the accessory bar. Call +1-305-830-9440 for current models and pricing."),
+    ("Can I try a Segway or Trikke before buying one?",
+     "Yes, and we recommend it. Rent the exact model for an hour, take it down Ocean Drive, and if you buy it we put the rental toward the purchase."),
+    ("Are the neighbourhood bike tours really free?",
+     "Yes. The guided Wynwood and Coconut Grove bike tours are free when you rent from us. They run on fixed departures in small groups, first come first served, so ask at the counter or call ahead to reserve a spot."),
+    ("Can I leave my luggage at the shop?",
+     "Yes. We hold luggage at the shop while you ride \u2014 useful on your check-out day or between a cruise and a flight. There is also a restroom and free Wi-Fi."),
     ("Is Miami Beach safe for cycling?",
      "Yes. South Beach is flat, compact and covered by protected bike lanes plus the car-free Beachwalk that runs the length of the sand. Florida law requires helmets for riders under 16 and we provide one with every rental."),
     ("Do you repair bikes, e-bikes and scooters?",
@@ -387,4 +421,53 @@ REVIEWS = [
      "Greg P. · Boston"),
     ("They fixed my own bike's brakes in under an hour while I got coffee. Real mechanics, fair price, locals' spot.",
      "Andrés M. · Miami Beach"),
+]
+
+# --- Sales: the half of the business the site was missing ------------------
+# South Florida Trikke is Miami's factory authorized Segway dealer and also
+# sells electric Trikkes, e-bikes and Segway parts.
+SHOP = [
+    {
+        "slug": "segway-sales", "cat": "segway", "img": "fleet-segway",
+        "name": "Segway Personal Transporters", "tag": "Factory authorized dealer",
+        "hook": "We are Miami's factory authorized Segway dealer. New units, full warranty, delivery across South Florida and a test ride before you buy — at the shop, on Ocean Drive.",
+        "meta": ["New units", "Full warranty", "Test ride first"],
+        "price": None, "unit": "unit",
+        "rates": [("Segway i2 SE", None), ("Segway x2 SE", None), ("Trade-in / used", None)],
+    },
+    {
+        "slug": "trikke-sales", "cat": "trikke", "img": "fleet-trikke",
+        "name": "Trikke & Electric Trikke", "tag": "Our specialty",
+        "hook": "The three-wheeled carving vehicle we are named after, in pedal and electric versions. Try one on a tour first, then buy the one you liked.",
+        "meta": ["Pedal & electric", "All sizes", "Try before you buy"],
+        "price": None, "unit": "unit",
+        "rates": [("Trikke carving vehicle", None), ("Electric Trikke", None)],
+    },
+    {
+        "slug": "ebike-sales", "cat": "bikes", "img": "fleet-ebike",
+        "name": "Electric Bikes & Bicycles", "tag": "New & ex-fleet",
+        "hook": "New electric bikes and bicycles, plus ex-rental cruisers serviced by our own mechanics and sold at a fraction of new.",
+        "meta": ["New & ex-fleet", "Serviced", "Warranty"],
+        "price": None, "unit": "bike",
+        "rates": [("New electric bike", None), ("New bicycle", None), ("Ex-rental cruiser", None)],
+    },
+    {
+        "slug": "segway-accessories", "cat": "parts segway", "img": "fleet-segway",
+        "name": "Segway i2 Parts & Accessories", "tag": "In stock",
+        "hook": "The full Segway parts range: lower cargo frames, upper and lower reflective shields, integrated lighting, patroller bag, front bumper, comfort mats and the optional accessory bar.",
+        "meta": ["Genuine parts", "Fitted in store", "Shipping available"],
+        "price": None, "unit": "part",
+        "rates": [("Lower cargo frame", None), ("Reflective shields", None),
+                  ("Integrated lighting system", None), ("Patroller bag", None),
+                  ("Front bumper", None), ("Comfort mats", None), ("Accessory bar", None)],
+    },
+    {
+        "slug": "repairs-service", "cat": "service", "img": "about-shop",
+        "name": "Repairs & Service", "tag": "Same day",
+        "hook": "Flats, brakes, gears, wheel truing, battery diagnostics and full tune-ups — for bikes, e-bikes, scooters and Segways. Ours or yours. Most walk-in repairs done the same day.",
+        "meta": ["Walk-in", "Same day", "Bikes, e-bikes, Segways"],
+        "price": None, "unit": "job",
+        "rates": [("Flat repair", None), ("Brake / gear service", None),
+                  ("Full tune-up", None), ("Segway service", None), ("Battery diagnostics", None)],
+    },
 ]

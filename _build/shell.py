@@ -7,6 +7,7 @@ NAV = [
     ("rentals.html", "Rentals"),
     ("tours.html", "Tours"),
     ("adventures.html", "Adventures"),
+    ("shop.html", "Shop"),
     ("routes.html", "Routes"),
     ("about.html", "About"),
     ("faq.html", "FAQ"),
@@ -64,7 +65,9 @@ LOCALBUSINESS_LD = {
         ["Bicycle rental", "Electric bike rental", "Fat tire bike rental", "Trikke rental",
          "Segway guided tour", "Rollerblade rental", "Tricycle rental", "Tandem bike rental",
          "Everglades airboat adventure", "Key West day trip", "Miami city tour",
-         "Jet ski rental", "Parasailing", "Helicopter ride", "Bicycle and e-bike repair"]],
+         "Jet ski rental", "Parasailing", "Helicopter ride", "Bicycle and e-bike repair",
+         "Segway sales", "Trikke sales", "Electric bike sales", "Segway parts and accessories",
+         "Longboard rental", "Luggage storage"]],
     "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.8",
                         "reviewCount": "131", "bestRating": "5"},
     "amenityFeature": [
@@ -72,6 +75,8 @@ LOCALBUSINESS_LD = {
         {"@type": "LocationFeatureSpecification", "name": "Restroom", "value": True},
         {"@type": "LocationFeatureSpecification", "name": "Hotel delivery", "value": True},
         {"@type": "LocationFeatureSpecification", "name": "On-site repair shop", "value": True},
+        {"@type": "LocationFeatureSpecification", "name": "Luggage storage", "value": True},
+        {"@type": "LocationFeatureSpecification", "name": "Authorized Segway dealer", "value": True},
     ],
 }
 
@@ -234,7 +239,7 @@ def footer():
         <li><a href="rentals.html?ride=electric">Electric bikes</a></li>
         <li><a href="rentals.html?ride=segways">Segways</a></li>
         <li><a href="rentals.html?ride=trikke">Trikkes</a></li>
-        <li><a href="rentals.html?ride=skates">Rollerblades</a></li>
+        <li><a href="rentals.html?ride=skates">Rollerblades &amp; longboards</a></li>
         <li><a href="rentals.html?ride=family">Family &amp; kids</a></li>
       </ul>
     </div>
@@ -245,6 +250,9 @@ def footer():
         <li><a href="tours.html?ride=segway">Segway tours</a></li>
         <li><a href="adventures.html">Adventures &amp; day trips</a></li>
         <li><a href="adventures.html?ride=water">Jet ski &amp; parasailing</a></li>
+        <li><a href="tours.html?ride=free">Free neighbourhood tours</a></li>
+        <li><a href="shop.html">Buy a Segway or Trikke</a></li>
+        <li><a href="shop.html#repairs-service">Repairs &amp; service</a></li>
         <li><a href="routes.html">South Beach routes</a></li>
         <li><a href="about.html">Our story</a></li>
         <li><a href="faq.html">FAQ</a></li>
