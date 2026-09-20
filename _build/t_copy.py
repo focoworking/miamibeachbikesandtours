@@ -260,6 +260,11 @@ add("We keep walk-in bikes on the rack all day, every day. Ten minutes from hell
     "Guardamos bikes livres no suporte o dia todo, todos os dias. Dez minutos do oi até pedalar.",
     "Teniamo bici libere in rastrelliera tutto il giorno, tutti i giorni. Dieci minuti dal "
     "saluto alla pedalata.")
+# "Book online now" has to be its own entry: the shorter "Book online" key
+# matched its prefix and left a stray English "now" on the contact page in
+# all three languages. Longest-first matching does the rest.
+add("Book online now", "Reservar ahora online", "Reservar agora online",
+    "Prenota subito online")
 add("Book online", "Reservar online", "Reservar online", "Prenota online")
 add("Call ", "Llamar al ", "Ligar para ", "Chiama il ")
 

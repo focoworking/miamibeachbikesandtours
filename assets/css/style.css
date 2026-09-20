@@ -1621,3 +1621,32 @@ html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
 .cta-band::after{
   background:linear-gradient(100deg,rgba(4,48,61,.34) 0%,rgba(4,48,61,.16) 46%,rgba(4,48,61,0) 82%);
 }
+
+/* ============================================================
+   The open menu must not swallow the action bar
+   At 360px the panel ran to 746px of a 780px screen and covered the
+   fixed bar underneath it. Playwright could not click Book now with the
+   menu open: the menu intercepted the tap. WhatsApp, Live Route and Book
+   now are the three things someone on a bike reaches for, so the menu
+   and its scrim both stop above them.
+   ============================================================ */
+:root{--actionbar-h:5.9rem}
+
+@media(max-width:1200px){
+  .nav.is-open .nav__in{
+    max-height:calc(100svh - var(--topbar-h) - var(--actionbar-h));
+  }
+  /* The scrim is a pseudo-element of .nav, so anything it intercepts is
+     reported as the bar itself — which is how it ended up swallowing taps
+     meant for the action bar. It is paint only now; the page underneath
+     stops listening instead, and the action bar keeps listening. */
+  .nav::after{pointer-events:none}
+  .nav.is-open::after{pointer-events:none}
+  body.menu-open main,
+  body.menu-open .footer,
+  body.menu-open .as-fab{pointer-events:none}
+}
+/* above the action-bar breakpoint there is no bar to clear */
+@media(min-width:761px) and (max-width:1200px){
+  .nav.is-open .nav__in{max-height:calc(100svh - var(--topbar-h))}
+}

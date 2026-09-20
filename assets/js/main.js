@@ -16,11 +16,13 @@
     if (toggle) {
       toggle.addEventListener('click', function () {
         var open = nav.classList.toggle('is-open');
+        document.body.classList.toggle('menu-open', open);
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
       var close = function () {
         if (!nav.classList.contains('is-open')) return;
         nav.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
         toggle.setAttribute('aria-expanded', 'false');
       };
       nav.querySelectorAll('.nav__link').forEach(function (a) {
