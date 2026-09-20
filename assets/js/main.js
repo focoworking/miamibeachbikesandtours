@@ -1,0 +1,132 @@
+/* Miami Beach Bikes & Tours — interactions
+   Parallax hero, scroll reveals, sticky nav, mobile menu,
+   fleet/tour filtering, counters. No dependencies. */
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Sticky nav + mobile toggle ---- */
+  var nav = document.querySelector('.nav');
+  if (nav) {
+    var onScroll = function () { nav.classList.toggle('is-stuck', window.scrollY > 8); };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    var toggle = nav.querySelector('.nav__toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      nav.querySelectorAll('.nav__link').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+  }
+
+  /* ---- Scroll reveal ---- */
+  var revealables = document.querySelectorAll('[data-reveal]');
+  if (revealables.length) {
+    if (reduce || !('IntersectionObserver' in window)) {
+      revealables.forEach(function (el) { el.classList.add('is-in'); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      revealables.forEach(function (el) { io.observe(el); });
+    }
+  }
+
+  /* ---- Hero parallax ---- */
+  var media = document.querySelector('.hero__media');
+  if (media && !reduce) {
+    var ticking = false;
+    var move = function () {
+      var y = window.scrollY;
+      if (y < window.innerHeight * 1.2) media.style.transform = 'translate3d(0,' + (y * 0.18) + 'px,0)';
+      ticking = false;
+    };
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(move); }
+    }, { passive: true });
+  }
+
+  /* ---- Counters ---- */
+  var nums = document.querySelectorAll('[data-count]');
+  if (nums.length && 'IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target, target = parseFloat(el.getAttribute('data-count')),
+            suffix = el.getAttribute('data-suffix') || '', dur = 1400, t0 = null;
+        if (reduce) { el.textContent = target + suffix; co.unobserve(el); return; }
+        var tick = function (ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1), eased = 1 - Math.pow(1 - p, 3);
+          var v = target * eased;
+          el.textContent = (target % 1 ? v.toFixed(1) : Math.round(v)) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        co.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (n) { co.observe(n); });
+  }
+
+  /* ---- Chip filtering (fleet + tours) ---- */
+  document.querySelectorAll('[data-filter-group]').forEach(function (group) {
+    var targetSel = group.getAttribute('data-filter-target');
+    var items = document.querySelectorAll(targetSel + ' [data-cat]');
+    group.querySelectorAll('.chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        group.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('is-active'); });
+        chip.classList.add('is-active');
+        var f = chip.getAttribute('data-filter');
+        items.forEach(function (item) {
+          var show = f === 'all' || item.getAttribute('data-cat').split(' ').indexOf(f) > -1;
+          item.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  });
+
+  /* ---- Finder bar -> rentals page with query ---- */
+  var finder = document.querySelector('[data-finder]');
+  if (finder) {
+    finder.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var data = new FormData(finder), params = new URLSearchParams();
+      data.forEach(function (v, k) { if (v) params.set(k, v); });
+      var ride = data.get('ride') || 'all';
+      window.location.href = (ride === 'tour' ? 'tours.html' : 'rentals.html') + '?' + params.toString();
+    });
+  }
+
+  /* ---- Apply ?ride= filter on load ---- */
+  var qs = new URLSearchParams(window.location.search).get('ride');
+  if (qs) {
+    var chip = document.querySelector('.chip[data-filter="' + qs + '"]');
+    if (chip) chip.click();
+  }
+
+  /* ---- Current year ---- */
+  document.querySelectorAll('[data-year]').forEach(function (el) {
+    el.textContent = new Date().getFullYear();
+  });
+
+  /* ---- Open/closed status (shop hours 9:00–20:00 ET, daily) ---- */
+  document.querySelectorAll('[data-open-status]').forEach(function (el) {
+    var now = new Date();
+    var et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    var h = et.getHours();
+    var open = h >= 9 && h < 20;
+    el.textContent = open ? 'Open now · until 8 PM' : 'Closed · opens 9 AM';
+    el.style.color = open ? '#39d98a' : '#ffc531';
+  });
+})();
