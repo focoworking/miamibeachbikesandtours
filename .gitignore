@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 node_modules/
+
+# generated language builds are committed, but never edited by hand

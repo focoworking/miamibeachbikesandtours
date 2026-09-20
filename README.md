@@ -30,6 +30,8 @@ contact.html        Booking form, map, hours, delivery zone
 assets/css/style.css    Design system: tokens, components, animations, responsive
 assets/js/main.js       Parallax, scroll reveals, sticky nav, filters, counters, open/closed status
 assets/js/assistant.js  The assistant panel: Live Route engine + rental extension flow
+_build/i18n.py          Interface strings in EN / ES / PT / IT
+es/ pt/ it/             Generated language builds (do not edit by hand)
 assets/img/*.svg        Generated artwork (hero scene + card scenes + favicon)
 
 llms.txt            Machine-readable business brief for AI answer engines
@@ -86,6 +88,27 @@ mode**, says so on screen in a yellow notice, and only resolves the three sample
 
 FareHarbor is the operator's booking system, so the likely shape is a small endpoint that proxies
 their API for the lookup, and their own checkout or a Stripe payment link for `payUrl`.
+
+## Languages
+
+The site builds into four languages from one source. English lives at the root; the rest get a
+directory: `/es/`, `/pt/`, `/it/`. Every page carries `hreflang` for all four plus `x-default`,
+the sitemap lists every URL with its alternates, and the switcher sits top-right in the bar.
+
+- `_build/i18n.py` holds the interface strings — navigation, buttons, the whole assistant, footer,
+  labels. `t(key, lang)` falls back to English on a missing key, so a partial translation degrades
+  instead of rendering blank.
+- `pack(lang)` ships the same dictionary to the browser, so the assistant speaks the page's
+  language with no extra request.
+- `LANGS` in `_build/data.py` drives directories, locales and the switcher. Adding a fifth language
+  means adding a row there and a column in `i18n.py`.
+
+**Translation status:** the interface is complete in all four. The editorial content — product
+descriptions, tour and adventure copy, POI stories, FAQ answers, page headlines and meta
+descriptions — is still English in `/es/`, `/pt/` and `/it/`. That content lives in `_build/data.py`
+and needs the same treatment: a per-language dictionary keyed by slug. Until it is done, do not
+submit the translated directories to Search Console — duplicate English under a Spanish URL is
+worse than no Spanish URL.
 
 ## Editing content
 

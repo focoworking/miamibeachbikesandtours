@@ -829,3 +829,96 @@ body.as-open .as-fab{opacity:0;pointer-events:none}
   .as-fab{display:none}
   .as-blocks{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ============================================================
+   ROUND-BUTTON PASS + LANGUAGE + 3-UP ACTION BAR
+   Everything tappable becomes a pill: these get used one-handed,
+   sometimes with a bike under the other hand.
+   ============================================================ */
+.chip,.lr-opt,.as-opt,.as-block,.as-tool,.as-pay,.tile__link,
+.finder__field,.as-field input,.actionbar__btn,.lang{
+  border-radius:var(--r-pill)!important;
+}
+.as-block{border-radius:28px!important}
+.as-tool,.as-pay{border-radius:var(--r-pill)!important;padding-inline:1.2rem}
+.btn{min-height:52px}
+.btn--sm{min-height:44px}
+
+/* --- language switcher --- */
+.langs{display:flex;gap:.2rem;margin-left:auto}
+.lang{
+  display:inline-grid;place-items:center;min-width:38px;height:28px;padding:0 .55rem;
+  font-family:var(--font-display);font-weight:800;font-size:.72rem;letter-spacing:.06em;
+  color:rgba(255,255,255,.72);background:rgba(255,255,255,.08);
+  transition:background .25s ease,color .25s ease;
+}
+.lang:hover{background:rgba(255,255,255,.2);color:#fff}
+.lang.is-on{background:var(--sun);color:#3a2a00}
+
+/* --- taller header, logo dead centre --- */
+:root{--nav-h:96px}
+.nav__in{height:var(--nav-h)}
+.brand{flex-direction:column;gap:.35rem;text-align:center}
+.brand__logo{width:46px;height:46px}
+.brand__text{align-items:center}
+
+/* --- action bar: WhatsApp · Live Route · Book --- */
+@media(max-width:760px){
+  .actionbar{
+    grid-template-columns:repeat(3,1fr);gap:.5rem;
+    padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom,0px));
+  }
+  .actionbar__btn{
+    flex-direction:column;gap:.18rem;padding:.6rem .3rem;min-height:56px;
+    font-size:.78rem;letter-spacing:.01em;line-height:1.1;
+  }
+  .actionbar__btn svg{flex:none}
+  .actionbar__btn--wa{background:#25d366;color:#08351a;box-shadow:0 6px 16px rgba(37,211,102,.34)}
+  .actionbar__btn--live{background:var(--ocean-ink);color:#fff;box-shadow:0 6px 16px rgba(4,48,61,.3)}
+  .actionbar__btn--book{background:var(--coral);color:#fff;box-shadow:0 6px 16px rgba(255,93,115,.32)}
+  .actionbar__dot{
+    width:9px;height:9px;border-radius:50%;background:var(--lime);
+    box-shadow:0 0 0 0 rgba(57,217,138,.7);animation:lrpulse 2.2s infinite;
+  }
+  body{padding-bottom:5.6rem}
+
+  /* header on a phone: menu left, logo centre, languages right */
+  :root{--nav-h:84px}
+  .nav__in{
+    display:grid;grid-template-columns:44px 1fr 44px;align-items:center;
+    height:var(--nav-h);column-gap:.5rem;row-gap:0;
+  }
+  .nav__toggle{order:0;justify-self:start}
+  .brand{order:0;justify-self:center;margin:0;align-items:center}
+  .brand__logo{width:40px;height:40px}
+  .brand__mark{font-size:1rem}
+  .brand__sub{display:block;font-size:.48rem;letter-spacing:.12em}
+  .nav__group{order:3;grid-column:1/-1;flex-basis:auto}
+  .nav.is-open .nav__group{max-height:460px}
+
+  .topbar__in{justify-content:space-between;padding:.35rem 0}
+  .topbar__tel{font-weight:700}
+  .langs{margin-left:0}
+  .lang{min-width:32px;height:24px;font-size:.66rem;padding:0 .4rem}
+}
+@media(max-width:390px){
+  .brand__sub{display:none}
+  .actionbar__btn{font-size:.72rem}
+}
+
+/* --- trust strip (was the hero badge pile) --- */
+.trust{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;
+}
+.trust__i{
+  display:inline-flex;align-items:center;gap:.4rem;background:var(--white);
+  border:1px solid var(--line);border-radius:var(--r-pill);
+  padding:.5rem 1rem;font-size:.85rem;font-weight:600;color:var(--ink-soft);
+  box-shadow:var(--shadow-s);
+}
+@media(max-width:760px){
+  .trust{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;
+    margin-inline:-1.25rem;padding:0 1.25rem .4rem}
+  .trust::-webkit-scrollbar{display:none}
+  .trust__i{flex:none;font-size:.8rem;padding:.45rem .85rem}
+}

@@ -24,6 +24,8 @@
   'use strict';
 
   var CFG = window.ASSIST_CONFIG || {};
+  var T = CFG.t || {};
+  function tr(k, fb) { return T[k] || fb || k; }
   var POI = window.LR_POI || [];
   var MODES = window.LR_MODES || [];
   var INTERESTS = window.LR_INTERESTS || [];
@@ -126,15 +128,15 @@
     root.id = 'assistant';
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Miami Beach Bikes assistant');
+    root.setAttribute('aria-label', 'Miami Beach Bikes ' + tr('as_title'));
     root.hidden = true;
     root.innerHTML = '' +
       '<div class="as__scrim" data-as-close></div>' +
       '<div class="as__panel">' +
       '  <header class="as__bar">' +
       '    <button class="as__back" type="button" hidden>&larr;</button>' +
-      '    <span class="as__title">Assistant</span>' +
-      '    <button class="as__close" type="button" data-as-close aria-label="Close">&times;</button>' +
+      '    <span class="as__title">' + tr('as_title') + '</span>' +
+      '    <button class="as__close" type="button" data-as-close aria-label="' + tr('as_close') + '">&times;</button>' +
       '  </header>' +
       '  <div class="as__body"></div>' +
       '</div>';
@@ -210,32 +212,32 @@
   var VIEWS = {};
 
   VIEWS.home = {
-    title: 'How can we help?',
+    title: tr('as_home'),
     html: function () {
       return '' +
         '<div class="as-home">' +
         '  <button class="as-tool" data-go="lr-mode">' +
         '    <span class="as-tool__ico">&#128205;</span>' +
-        '    <span class="as-tool__txt"><b>Live Route</b>' +
-        '      <em>Build a self-guided tour and follow it live</em></span>' +
+        '    <span class="as-tool__txt"><b>' + tr('tool_live') + '</b>' +
+        '      <em>' + tr('tool_live_sub') + '</em></span>' +
         '    <span class="as-tool__go">&rarr;</span>' +
         '  </button>' +
         '  <button class="as-tool" data-go="ex-lookup">' +
         '    <span class="as-tool__ico">&#9203;</span>' +
-        '    <span class="as-tool__txt"><b>Extend my rental</b>' +
-        '      <em>Add time with your ticket number, pay on your phone</em></span>' +
+        '    <span class="as-tool__txt"><b>' + tr('tool_extend') + '</b>' +
+        '      <em>' + tr('tool_extend_sub') + '</em></span>' +
         '    <span class="as-tool__go">&rarr;</span>' +
         '  </button>' +
         '  <a class="as-tool" href="' + (CFG.bookUrl || '#') + '" target="_blank" rel="noopener">' +
         '    <span class="as-tool__ico">&#128666;</span>' +
-        '    <span class="as-tool__txt"><b>Book something new</b>' +
-        '      <em>Rentals, tours and adventures</em></span>' +
+        '    <span class="as-tool__txt"><b>' + tr('tool_book') + '</b>' +
+        '      <em>' + tr('tool_book_sub') + '</em></span>' +
         '    <span class="as-tool__go">&rarr;</span>' +
         '  </a>' +
         '  <a class="as-tool as-tool--quiet" href="tel:' + (CFG.phone || '') + '">' +
         '    <span class="as-tool__ico">&#128222;</span>' +
-        '    <span class="as-tool__txt"><b>Talk to a person</b>' +
-        '      <em>' + esc(CFG.phonePretty || '') + ' &middot; 9 AM to 8 PM, every day</em></span>' +
+        '    <span class="as-tool__txt"><b>' + tr('tool_call') + '</b>' +
+        '      <em>' + esc(CFG.phonePretty || '') + ' &middot; ' + tr('tool_call_sub') + '</em></span>' +
         '    <span class="as-tool__go">&rarr;</span>' +
         '  </a>' +
         '</div>';
@@ -247,9 +249,44 @@
     },
   };
 
+  /* ---------- Book: stay on the site ---------- */
+  VIEWS.book = {
+    title: tr('book_title'),
+    html: function () {
+      var L = CFG.links || {};
+      function row(href, ico, title, sub) {
+        return '<a class="as-tool" href="' + href + '">' +
+          '<span class="as-tool__ico">' + ico + '</span>' +
+          '<span class="as-tool__txt"><b>' + title + '</b><em>' + sub + '</em></span>' +
+          '<span class="as-tool__go">&rarr;</span></a>';
+      }
+      return '<div class="as-home">' +
+        row(L.rentals || 'rentals.html', '&#128690;', tr('book_rentals'), tr('book_rentals_sub')) +
+        row(L.tours || 'tours.html', '&#128205;', tr('book_tours'), tr('book_tours_sub')) +
+        row(L.adventures || 'adventures.html', '&#127754;', tr('book_adv'), tr('book_adv_sub')) +
+        '<button class="as-tool" data-go="ex-lookup">' +
+        '  <span class="as-tool__ico">&#9203;</span>' +
+        '  <span class="as-tool__txt"><b>' + tr('tool_extend') + '</b><em>' +
+        tr('tool_extend_sub') + '</em></span>' +
+        '  <span class="as-tool__go">&rarr;</span></button>' +
+        '<a class="as-tool as-tool--quiet" href="' + (CFG.bookUrl || '#') +
+        '" target="_blank" rel="noopener">' +
+        '  <span class="as-tool__ico">&#128179;</span>' +
+        '  <span class="as-tool__txt"><b>' + tr('book_online') + '</b><em>' +
+        tr('book_online_sub') + '</em></span>' +
+        '  <span class="as-tool__go">&rarr;</span></a>' +
+        '</div>';
+    },
+    wire: function () {
+      el.body.querySelectorAll('[data-go]').forEach(function (b) {
+        b.addEventListener('click', function () { go(b.getAttribute('data-go')); });
+      });
+    },
+  };
+
   /* ---------- Live Route: step 1 ---------- */
   VIEWS['lr-mode'] = {
-    title: 'Live Route · 1 of 3',
+    title: tr('lr_step').replace('%d', 1),
     html: function () {
       var opts = MODES.map(function (m) {
         return '<button class="as-opt' + (m.id === state.mode ? ' is-on' : '') +
@@ -257,11 +294,11 @@
           '</span><span class="as-opt__name">' + esc(m.name) + '</span></button>';
       }).join('');
       return '<div class="as-step">' +
-        '<p class="as-q">How are you moving?</p>' +
+        '<p class="as-q">' + tr('lr_q_mode') + '</p>' +
         '<div class="as-opts">' + opts + '</div>' +
         '<p class="as-note" id="as-mode-note"></p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>Next &rarr;</button></div>';
+        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('btn_next') + ' &rarr;</button></div>';
     },
     wire: function () {
       function note() {
@@ -285,18 +322,18 @@
 
   /* ---------- Live Route: step 2 ---------- */
   VIEWS['lr-time'] = {
-    title: 'Live Route · 2 of 3',
+    title: tr('lr_step').replace('%d', 2),
     html: function () {
       var opts = DURATIONS.map(function (d) {
         return '<button class="as-opt as-opt--wide' + (d.mins === state.minutes ? ' is-on' : '') +
           '" data-mins="' + d.mins + '">' + esc(d.name) + '</button>';
       }).join('');
       return '<div class="as-step">' +
-        '<p class="as-q">How long have you got?</p>' +
+        '<p class="as-q">' + tr('lr_q_time') + '</p>' +
         '<div class="as-opts as-opts--2">' + opts + '</div>' +
-        '<p class="as-note">We always keep enough time in the plan to get you back to the shop.</p>' +
+        '<p class="as-note">' + tr('lr_time_note') + '</p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>Next &rarr;</button></div>';
+        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('btn_next') + ' &rarr;</button></div>';
     },
     wire: function () {
       el.body.querySelectorAll('[data-mins]').forEach(function (b) {
@@ -312,7 +349,7 @@
 
   /* ---------- Live Route: step 3 ---------- */
   VIEWS['lr-tags'] = {
-    title: 'Live Route · 3 of 3',
+    title: tr('lr_step').replace('%d', 3),
     html: function () {
       var opts = INTERESTS.map(function (t) {
         var on = state.interests.indexOf(t[0]) > -1;
@@ -321,11 +358,11 @@
           esc(t[1]) + '</button>';
       }).join('');
       return '<div class="as-step">' +
-        '<p class="as-q">What are you into?</p>' +
+        '<p class="as-q">' + tr('lr_q_tags') + '</p>' +
         '<div class="as-opts as-opts--wrap">' + opts + '</div>' +
-        '<p class="as-note">Pick as many as you like &mdash; or none, and we will give you the greatest hits.</p>' +
+        '<p class="as-note">' + tr('lr_tags_note') + '</p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next>Build my route</button></div>';
+        '<div class="as-foot"><button class="btn btn--block" data-next>' + tr('lr_build') + '</button></div>';
     },
     wire: function () {
       el.body.querySelectorAll('[data-tag]').forEach(function (b) {
@@ -341,14 +378,14 @@
 
   /* ---------- Live Route: the plan ---------- */
   VIEWS['lr-route'] = {
-    title: 'Your route',
+    title: tr('lr_your'),
     html: function () {
       var route = buildRoute();
       var stops = route.filter(function (r) { return !r.isReturn; });
       if (!stops.length) {
-        return '<div class="as-empty"><h3>Not enough time for that mix</h3>' +
-          '<p>Add minutes, pick something faster, or widen what you are into.</p>' +
-          '<button class="btn" data-restart>Change my answers</button></div>';
+        return '<div class="as-empty"><h3>' + tr('lr_empty_t') + '</h3>' +
+          '<p>' + tr('lr_empty_p') + '</p>' +
+          '<button class="btn" data-restart>' + tr('lr_change') + '</button></div>';
       }
       var totalKm = route.reduce(function (a, r) { return a + r.legKm; }, 0);
       var totalMins = route.reduce(function (a, r) { return a + r.legMins + (r.poi.mins || 0); }, 0);
@@ -360,22 +397,22 @@
           '<span class="as-stop__n">' + (r.isReturn ? '&#127937;' : (i + 1)) + '</span>' +
           '<span class="as-stop__b">' +
           '<b>' + esc(p.name) + '</b>' +
-          '<em>' + esc(r.isReturn ? 'Back to 14th Street' : p.sub) + '</em>' +
+          '<em>' + esc(r.isReturn ? tr('lr_back_shop') : p.sub) + '</em>' +
           '<span class="as-stop__m">' + km(r.legKm) + ' &middot; ' + r.legMins + ' min' +
-          (p.mins && !r.isReturn ? ' &middot; ' + p.mins + ' min there' : '') + '</span>' +
+          (p.mins && !r.isReturn ? ' &middot; ' + p.mins + ' ' + tr('lr_there') : '') + '</span>' +
           (r.isReturn ? '' : '<span class="as-stop__s">' + esc(p.story) + '</span>') +
           '</span></li>';
       }).join('');
 
       return '<div class="as-sum">' +
-        '<div><b>' + stops.length + '</b><span>stops</span></div>' +
+        '<div><b>' + stops.length + '</b><span>' + tr('lr_stops') + '</span></div>' +
         '<div><b>' + km(totalKm) + '</b><span>' + mi(totalKm) + '</span></div>' +
-        '<div><b>' + Math.round(totalMins) + '</b><span>minutes</span></div>' +
+        '<div><b>' + Math.round(totalMins) + '</b><span>' + tr('lr_mins') + '</span></div>' +
         '</div>' +
         '<ol class="as-stops">' + list + '</ol>' +
         '<div class="as-foot as-foot--split">' +
-        '  <a class="btn btn--sm btn--ocean" href="' + mapsUrl(pts) + '" target="_blank" rel="noopener">Open in Maps</a>' +
-        '  <button class="btn btn--sm" data-live>Start live guide</button>' +
+        '  <a class="btn btn--sm btn--ocean" href="' + mapsUrl(pts) + '" target="_blank" rel="noopener">' + tr('lr_maps') + '</a>' +
+        '  <button class="btn btn--sm" data-live>' + tr('lr_start') + '</button>' +
         '</div>';
     },
     wire: function () {
@@ -388,19 +425,19 @@
 
   /* ---------- Live Route: live ---------- */
   VIEWS['lr-live'] = {
-    title: 'Live guide',
+    title: tr('lr_guide'),
     html: function () {
       return '<div class="as-live" id="as-live">' +
         '<div class="as-live__head"><span class="as-live__dot"></span>' +
         '<span id="as-live-count"></span></div>' +
         '<h3 id="as-live-name">&mdash;</h3>' +
         '<p class="as-live__sub" id="as-live-sub"></p>' +
-        '<p class="as-live__gps" id="as-live-gps">Finding you&hellip;</p>' +
+        '<p class="as-live__gps" id="as-live-gps">' + tr('lr_finding') + '</p>' +
         '<p class="as-live__story" id="as-live-story"></p>' +
         '</div>' +
         '<div class="as-foot as-foot--split">' +
-        '  <a class="btn btn--sm btn--sun" id="as-live-nav" href="#" target="_blank" rel="noopener">Navigate</a>' +
-        '  <button class="btn btn--sm btn--ghost" id="as-live-next">I\'m here &rarr;</button>' +
+        '  <a class="btn btn--sm btn--sun" id="as-live-nav" href="#" target="_blank" rel="noopener">' + tr('lr_nav') + '</a>' +
+        '  <button class="btn btn--sm btn--ghost" id="as-live-next">' + tr('lr_here') + ' &rarr;</button>' +
         '</div>';
     },
     wire: function () {
@@ -415,7 +452,7 @@
   function startLive() {
     var gps = document.getElementById('as-live-gps');
     if (!navigator.geolocation) {
-      if (gps) gps.textContent = 'This browser will not share your location — use Navigate instead.';
+      if (gps) gps.textContent = tr('lr_nogeo');
       return;
     }
     state.watchId = navigator.geolocation.watchPosition(
@@ -423,8 +460,8 @@
       function (err) {
         if (!gps) return;
         gps.textContent = err.code === 1
-          ? 'Location permission denied — follow the stops, or tap Navigate.'
-          : 'No GPS fix here — buildings block it. Tap Navigate.';
+          ? tr('lr_denied')
+          : tr('lr_nofix');
       },
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
   }
@@ -440,14 +477,14 @@
     var p = stop.poi, q = function (id) { return document.getElementById(id); };
     if (!q('as-live-name')) return;
     q('as-live-name').textContent = p.name;
-    q('as-live-sub').textContent = stop.isReturn ? 'Last leg — back to 14th Street' : p.sub;
+    q('as-live-sub').textContent = stop.isReturn ? tr('lr_last_leg') : p.sub;
     q('as-live-story').textContent = stop.isReturn
-      ? 'Drop off, or tell us you want another hour — we can extend it right here.' : p.story;
-    q('as-live-count').textContent = 'Stop ' + (state.liveIdx + 1) + ' of ' + state.route.length;
+      ? tr('lr_drop') : p.story;
+    q('as-live-count').textContent = tr('lr_stop_of').replace('%d', state.liveIdx + 1).replace('%d', state.route.length);
     q('as-live-nav').href = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
     if (me) {
       var d = distKm(me, p);
-      q('as-live-gps').innerHTML = '<strong>' + km(d) + '</strong> away &middot; head <strong>' +
+      q('as-live-gps').innerHTML = '<strong>' + km(d) + '</strong> ' + tr('lr_away') + ' <strong>' +
         compass(bearing(me, p)) + '</strong>';
       if (d < 0.045 && state.liveIdx < state.route.length - 1) {
         state.liveIdx++;
@@ -460,24 +497,23 @@
 
   /* ================= Extend: lookup ================= */
   VIEWS['ex-lookup'] = {
-    title: 'Extend your rental',
+    title: tr('ex_title'),
     html: function () {
       return '<div class="as-step">' +
-        '<p class="as-q">What is your ticket number?</p>' +
-        '<p class="as-note">It is on your receipt and in your confirmation email — it looks like MBB-1234.</p>' +
+        '<p class="as-q">' + tr('ex_q') + '</p>' +
+        '<p class="as-note">' + tr('ex_note') + '</p>' +
         '<form class="as-form" id="as-ex-form">' +
-        '  <label class="as-field"><span>Ticket or order number</span>' +
+        '  <label class="as-field"><span>' + tr('ex_label') + '</span>' +
         '    <input id="as-ref" name="ref" autocomplete="off" autocapitalize="characters" ' +
         '           spellcheck="false" placeholder="MBB-4417" required></label>' +
         '  <p class="as-err" id="as-ex-err" hidden></p>' +
-        '  <button class="btn btn--block" type="submit">Find my rental</button>' +
+        '  <button class="btn btn--block" type="submit">' + tr('ex_find') + '</button>' +
         '</form>' +
         (CFG.lookupUrl ? '' :
-          '<p class="as-demo"><b>Demo mode.</b> This site is not connected to the booking ' +
-          'system yet, so only the sample tickets work: <code>MBB-4417</code>, ' +
-          '<code>MBB-2098</code>, <code>MBB-7731</code>.</p>') +
-        '<p class="as-note">Can\'t find it? Call <a href="tel:' + (CFG.phone || '') + '">' +
-        esc(CFG.phonePretty || '') + '</a> and we will look it up for you.</p>' +
+          '<p class="as-demo"><b>' + tr('ex_demo') + '</b> ' + tr('ex_demo_p') +
+          ' <code>MBB-4417</code>, <code>MBB-2098</code>, <code>MBB-7731</code>.</p>') +
+        '<p class="as-note">' + tr('ex_cantfind') + ' <a href="tel:' + (CFG.phone || '') + '">' +
+        esc(CFG.phonePretty || '') + '</a> ' + tr('ex_cantfind2') + '</p>' +
         '</div>';
     },
     wire: function () {
@@ -499,7 +535,7 @@
 
   function lookup(ref) {
     return new Promise(function (resolve, reject) {
-      if (!ref) return reject('Type your ticket number first.');
+      if (!ref) return reject(tr('ex_typefirst'));
       if (CFG.lookupUrl) {
         fetch(CFG.lookupUrl.replace('{ref}', encodeURIComponent(ref)), {
           headers: { 'Accept': 'application/json' },
@@ -507,7 +543,7 @@
           if (!res.ok) throw new Error('not found');
           return res.json();
         }).then(resolve).catch(function () {
-          reject('We could not find that ticket. Check the number, or call us.');
+          reject(tr('ex_notfound'));
         });
         return;
       }
@@ -520,15 +556,15 @@
   }
 
   function dueText(mins) {
-    if (mins < 0) return { txt: 'Overdue by ' + Math.abs(mins) + ' min', cls: 'is-late' };
-    if (mins < 60) return { txt: 'Due back in ' + mins + ' min', cls: 'is-soon' };
+    if (mins < 0) return { txt: tr('ex_overdue') + ' ' + Math.abs(mins) + ' min', cls: 'is-late' };
+    if (mins < 60) return { txt: tr('ex_due_in') + ' ' + mins + ' min', cls: 'is-soon' };
     var h = Math.floor(mins / 60), m = mins % 60;
-    return { txt: 'Due back in ' + h + ' h' + (m ? ' ' + m + ' min' : ''), cls: '' };
+    return { txt: tr('ex_due_in') + ' ' + h + ' h' + (m ? ' ' + m + ' min' : ''), cls: '' };
   }
 
   /* ================= Extend: the rental ================= */
   VIEWS['ex-rental'] = {
-    title: 'Your rental',
+    title: tr('ex_yours'),
     html: function () {
       var r = state.rental;
       var rates = EX.rates[r.family] || {};
@@ -540,7 +576,7 @@
           (state.block === b.id ? ' is-on' : '') + '" data-block="' + b.id + '"' +
           (dis ? ' disabled' : '') + '>' +
           '<b>' + esc(b.label) + '</b>' +
-          '<span>' + (dis ? 'Ask us' : '$' + price * r.qty) + '</span>' +
+          '<span>' + (dis ? tr('price_call') : '$' + price * r.qty) + '</span>' +
           (r.qty > 1 && !dis ? '<em>$' + price + ' &times; ' + r.qty + '</em>' : '') +
           '</button>';
       }).join('');
@@ -552,14 +588,13 @@
         '<h3>' + esc(r.item) + (r.qty > 1 ? ' &times; ' + r.qty : '') + '</h3>' +
         '<p class="as-rental__name">' + esc(r.name) + '</p>' +
         (r.dueInMins < 0
-          ? '<p class="as-warn">This one is already past its return time. Extending now covers you ' +
-            'from the original due time — no late fee.</p>' : '') +
+          ? '<p class="as-warn">' + tr('ex_warn') + '</p>' : '') +
         '</div>' +
         '<div class="as-step">' +
-        '<p class="as-q">How much longer?</p>' +
+        '<p class="as-q">' + tr('ex_howlong') + '</p>' +
         '<div class="as-blocks">' + blocks + '</div>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-next disabled>Choose how to pay</button></div>';
+        '<div class="as-foot"><button class="btn btn--block" data-next disabled>' + tr('ex_choose_pay') + '</button></div>';
     },
     wire: function () {
       var next = el.body.querySelector('[data-next]');
@@ -587,7 +622,7 @@
   }
 
   VIEWS['ex-pay'] = {
-    title: 'Pay & extend',
+    title: tr('ex_pay_title'),
     html: function () {
       var r = state.rental, total = extPrice();
       var methods = EX.pay.map(function (m) {
@@ -598,19 +633,18 @@
           '</button>';
       }).join('');
       return '<div class="as-recap">' +
-        '<div><span>Rental</span><b>' + esc(r.item) + (r.qty > 1 ? ' &times; ' + r.qty : '') + '</b></div>' +
-        '<div><span>Ticket</span><b>' + esc(r.ref) + '</b></div>' +
-        '<div><span>Extension</span><b>' + esc(blockLabel()) + '</b></div>' +
-        '<div class="as-recap__total"><span>Total</span><b>' +
-        (total == null ? 'Quoted at the shop' : '$' + total) + '</b></div>' +
+        '<div><span>' + tr('ex_rental') + '</span><b>' + esc(r.item) + (r.qty > 1 ? ' &times; ' + r.qty : '') + '</b></div>' +
+        '<div><span>' + tr('ex_ticket') + '</span><b>' + esc(r.ref) + '</b></div>' +
+        '<div><span>' + tr('ex_ext') + '</span><b>' + esc(blockLabel()) + '</b></div>' +
+        '<div class="as-recap__total"><span>' + tr('ex_total') + '</span><b>' +
+        (total == null ? tr('ex_quoted') : '$' + total) + '</b></div>' +
         '</div>' +
         '<div class="as-step">' +
-        '<p class="as-q">How would you like to pay?</p>' +
+        '<p class="as-q">' + tr('ex_how_pay') + '</p>' +
         '<div class="as-pays">' + methods + '</div>' +
-        '<p class="as-note as-note--lock">&#128274; You pay on your provider\'s own secure page. ' +
-        'Card details are never typed into this site.</p>' +
+        '<p class="as-note as-note--lock">&#128274; ' + tr('ex_secure') + '</p>' +
         '</div>' +
-        '<div class="as-foot"><button class="btn btn--block" data-pay-go disabled>Continue to secure checkout</button></div>';
+        '<div class="as-foot"><button class="btn btn--block" data-pay-go disabled>' + tr('ex_continue') + '</button></div>';
     },
     wire: function () {
       var go2 = el.body.querySelector('[data-pay-go]');
@@ -637,22 +671,20 @@
   };
 
   VIEWS['ex-done'] = {
-    title: 'Almost there',
+    title: tr('ex_almost'),
     html: function () {
       var wired = !!CFG.payUrl;
       return '<div class="as-done">' +
         '<div class="as-done__ico">' + (wired ? '&#128179;' : '&#128222;') + '</div>' +
-        '<h3>' + (wired ? 'Finish in the checkout tab' : 'One call and it is done') + '</h3>' +
+        '<h3>' + (wired ? tr('ex_finish') : tr('ex_callit')) + '</h3>' +
         '<p>' + (wired
-          ? 'We opened your payment page in a new tab. The moment it clears, your return time moves ' +
-            'and you will get a new confirmation — nothing else to do.'
-          : 'Checkout is not connected on this preview yet. Call us with your ticket number and we ' +
-            'will extend it in under a minute, while you keep riding.') + '</p>' +
+          ? tr('ex_finish_p')
+          : tr('ex_callit_p')) + '</p>' +
         '<div class="as-done__recap">' + esc(state.rental.ref) + ' &middot; ' +
         esc(blockLabel()) + (extPrice() == null ? '' : ' &middot; $' + extPrice()) + '</div>' +
-        '<a class="btn btn--block" href="tel:' + (CFG.phone || '') + '">Call ' +
+        '<a class="btn btn--block" href="tel:' + (CFG.phone || '') + '">' + tr('btn_call') + ' ' +
         esc(CFG.phonePretty || '') + '</a>' +
-        '<button class="btn btn--block btn--ghost" style="margin-top:.7rem;border-color:var(--line);color:var(--ink)" data-as-close>Done</button>' +
+        '<button class="btn btn--block btn--ghost" style="margin-top:.7rem;border-color:var(--line);color:var(--ink)" data-as-close>' + tr('ex_done') + '</button>' +
         '</div>';
     },
   };

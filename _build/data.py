@@ -6,6 +6,21 @@ SITE = "https://www.miamibeachbikesandtours.com"
 # The operator's live booking feed. Every "Book" button points here.
 BOOKING_URL = "https://fareharbor.com/embeds/book/southfloridatrikketours/items/"
 
+# WhatsApp uses the shop line, digits only.
+WHATSAPP = "13058309440"
+WHATSAPP_URL = ("https://wa.me/13058309440?text="
+                "Hi%20Miami%20Beach%20Bikes%21%20I%27d%20like%20to%20ask%20about%20")
+
+# --- Languages -------------------------------------------------------------
+# English lives at the root; the others get their own directory. hreflang and
+# the language switcher are generated from this list.
+LANGS = [
+    {"code": "en", "name": "English",    "short": "EN", "dir": "",    "locale": "en_US"},
+    {"code": "es", "name": "Espa\u00f1ol",   "short": "ES", "dir": "es/", "locale": "es_ES"},
+    {"code": "pt", "name": "Portugu\u00eas", "short": "PT", "dir": "pt/", "locale": "pt_BR"},
+    {"code": "it", "name": "Italiano",   "short": "IT", "dir": "it/", "locale": "it_IT"},
+]
+
 BIZ = {
     "name": "Miami Beach Bikes",
     "legal": "Miami Beach Bikes · Rentals & Tours",

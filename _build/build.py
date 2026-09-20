@@ -6,6 +6,27 @@ from data import (BIZ, SITE, BOOKING_URL, FLEET, TOURS, ADVENTURES, SHOP, ROUTES
                   FAQ, REVIEWS, POI, MODES, INTERESTS, DURATIONS)
 import shell
 from shell import head, nav, footer, ld, breadcrumbs, ADDRESS_LD
+from i18n import t as _t, pack as _pack
+from data import LANGS, WHATSAPP_URL
+
+LANG = "en"   # rebound once per language pass in __main__
+
+
+def head(*a, **kw):
+    kw.setdefault("lang", LANG)
+    return shell.head(*a, **kw)
+
+
+def nav(current, page=None):
+    return shell.nav(current, lang=LANG, page=page or current)
+
+
+def footer():
+    return shell.footer(lang=LANG)
+
+
+def T(key):
+    return _t(key, LANG)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def write(name, html):
@@ -220,14 +241,7 @@ def page_index():
       <a class="btn" href="rentals.html">Rent a ride · from $12</a>
       <a class="btn btn--ghost" href="tours.html">See the tours</a>
     </div>
-    <div class="badge-row">
-      <span class="badge">★ 4.8 · 131 reviews</span>
-      <span class="badge">🚲 Helmet, lock &amp; water included</span>
-      <span class="badge">🏨 Free hotel delivery 24h+</span>
-      <span class="badge">⏰ Happy hour 1–4 PM · +1 free hour</span>
-      <span class="badge">🎨 Free Wynwood &amp; Coconut Grove tours</span>
-      <span class="badge">📍 Live Route · free self-guided tour</span>
-    </div>
+
   </div>
   <span class="hero__scroll">Scroll</span>
 </section>
@@ -267,6 +281,18 @@ def page_index():
     <button class="btn btn--ocean" type="submit">Find it</button>
   </form>
 </div>
+
+<section class="sec--tight" style="padding-top:2.2rem;padding-bottom:0">
+  <div class="wrap">
+    <div class="trust" data-reveal>
+      <span class="trust__i">&#9733; 4.8 &middot; 131 reviews</span>
+      <span class="trust__i">&#128690; Helmet, lock &amp; water included</span>
+      <span class="trust__i">&#127976; Free hotel delivery 24h+</span>
+      <span class="trust__i">&#9200; Happy hour 1&ndash;4 PM &middot; +1 free hour</span>
+      <span class="trust__i">&#127912; Free Wynwood &amp; Coconut Grove tours</span>
+    </div>
+  </div>
+</section>
 
 {marquee()}
 
@@ -1432,20 +1458,61 @@ Every page carries an assistant that opens in its own panel. Two tools:
 
 
 # ---------------------------------------------------------------- run
+PAGES = [
+    ("index.html", lambda: page_index()),
+    ("rentals.html", lambda: page_rentals()),
+    ("tours.html", lambda: page_tours()),
+    ("adventures.html", lambda: page_adventures()),
+    ("live-route.html", lambda: page_live_route()),
+    ("shop.html", lambda: page_shop()),
+    ("routes.html", lambda: page_routes()),
+    ("about.html", lambda: page_about()),
+    ("faq.html", lambda: page_faq()),
+    ("contact.html", lambda: page_contact()),
+    ("404.html", lambda: page_404()),
+]
+
+
+def build_sitemap_all():
+    import datetime
+    today = datetime.date.today().isoformat()
+    pri = {"index.html": "1.0", "rentals.html": "0.9", "tours.html": "0.9",
+           "adventures.html": "0.9", "live-route.html": "0.9", "shop.html": "0.8",
+           "routes.html": "0.8", "faq.html": "0.7", "contact.html": "0.8",
+           "about.html": "0.6"}
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+           'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+    for page, _ in PAGES:
+        if page == "404.html":
+            continue
+        for lg in LANGS:
+            alts = "".join(
+                '\n    <xhtml:link rel="alternate" hreflang="%s" href="%s/%s%s"/>' % (
+                    a["code"], SITE, a["dir"], page) for a in LANGS)
+            out.append(
+                '  <url>\n    <loc>%s/%s%s</loc>\n    <lastmod>%s</lastmod>'
+                '\n    <changefreq>weekly</changefreq>\n    <priority>%s</priority>%s\n  </url>'
+                % (SITE, lg["dir"], page, today, pri.get(page, "0.7"), alts))
+    out.append("</urlset>")
+    return "\n".join(out) + "\n"
+
+
 if __name__ == "__main__":
-    print("Building Miami Beach Bikes...")
-    write("index.html", page_index())
-    write("rentals.html", page_rentals())
-    write("tours.html", page_tours())
-    write("adventures.html", page_adventures())
-    write("shop.html", page_shop())
-    write("live-route.html", page_live_route())
-    write("routes.html", page_routes())
-    write("about.html", page_about())
-    write("faq.html", page_faq())
-    write("contact.html", page_contact())
-    write("404.html", page_404())
-    write("sitemap.xml", build_sitemap())
+    import builtins
+    print("Building Miami Beach Bikes in %d languages..." % len(LANGS))
+    for lg in LANGS:
+        LANG = lg["code"]
+        globals()["LANG"] = LANG
+        outdir = os.path.join(ROOT, lg["dir"]) if lg["dir"] else ROOT
+        os.makedirs(outdir, exist_ok=True)
+        print(" [%s] -> %s" % (lg["short"], lg["dir"] or "/"))
+        for page, fn in PAGES:
+            html = fn()
+            open(os.path.join(outdir, page), "w", encoding="utf-8").write(html)
+        if lg["dir"]:
+            write(lg["dir"] + "llms.txt", build_llms())
+    write("sitemap.xml", build_sitemap_all())
     write("robots.txt", build_robots())
     write("llms.txt", build_llms())
     print("Done.")
