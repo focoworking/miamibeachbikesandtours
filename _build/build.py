@@ -511,10 +511,18 @@ def page_index():
 
 
 def page_rentals():
+    # One group header row per product. It is hidden on desktop, where the
+    # name sits in the first column; on a phone the table folds into blocks
+    # and the header is what keeps "Trikke, Trikke, Trikke" from repeating
+    # down every row.
     rows = ""
     for p in FLEET:
+        rows += ('<tr class="rate-head"><td colspan="3">%s</td></tr>' % p["name"])
         for label, price in p["rates"]:
-            rows += f"<tr><td><strong>{p['name']}</strong></td><td>{label}</td><td>{money(price) if price else 'Ask at the shop'}</td></tr>"
+            rows += ('<tr><td class="rate-name"><strong>%s</strong></td>'
+                     '<td class="rate-dur">%s</td><td class="rate-price">%s</td></tr>'
+                     % (p["name"], label,
+                        money(price) if price else T("u_ask")))
     products_ld = ld({
         "@context": "https://schema.org", "@type": "ItemList", "name": "Bike and vehicle rentals in Miami Beach",
         "itemListElement": [{

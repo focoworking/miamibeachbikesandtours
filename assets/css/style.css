@@ -1425,3 +1425,199 @@ html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
   top:50%;transform:translateY(-50%);height:44px;
 }
 .langs{position:relative;z-index:1}
+
+/* ============================================================
+   MOBILE PASS
+   The phone build was a single column of full-bleed cards: the
+   home page ran to 22,978px — twenty-seven screens — and the
+   pinned header took 130px of an 844px viewport before a single
+   word of content. Three changes: the header gets out of the
+   way, the cards go two-up, and the long lists compress.
+   ============================================================ */
+
+@media(max-width:760px){
+
+  /* ---- 1. The header shrinks once you start reading ----
+     Full header at the top of the page, compact bar after that:
+     the address line folds away and the logo drops to a chip, so
+     scrolling gets back about 90px of screen. It comes back the
+     moment you scroll up, which is when you want it. */
+  .topbar{
+    transition:max-height .3s var(--ease),opacity .25s var(--ease);
+    max-height:60px;overflow:hidden;
+  }
+  body.is-scrolled .topbar{max-height:0;opacity:0;border-bottom:0}
+  body.is-scrolled .nav{top:0}
+
+  .nav__in,.brand,.brand__logo,.brand__mark,.brand__sub{
+    transition:height .3s var(--ease),width .3s var(--ease),
+               font-size .3s var(--ease),opacity .25s var(--ease),margin .3s var(--ease);
+  }
+  body.is-scrolled .nav__in{min-height:58px;grid-template-rows:58px auto auto}
+  body.is-scrolled .brand{flex-direction:row;gap:.5rem}
+  body.is-scrolled .brand__logo{width:32px;height:32px;border-radius:10px}
+  body.is-scrolled .brand__mark{font-size:.88rem}
+  body.is-scrolled .brand__sub{max-height:0;opacity:0;overflow:hidden}
+  /* an open menu always shows the full header, or the logo jumps mid-tap */
+  body.is-scrolled .nav.is-open .nav__in{min-height:var(--nav-h)}
+
+  /* ---- 2. Cards two-up ----
+     Eleven rentals at one card per screen is a scroll, not a
+     catalogue. Two columns, image on top, the essentials under
+     it; the full copy still lives on each product's own page. */
+  /* only product grids go two-up. Applying it to every .grid--3 also caught
+     the reviews, which then rendered one word per line in a 100px column. */
+  #fleet-grid,#tour-grid,#adv-grid,#shop-grid,
+  .grid--3:has(> .card){grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .card{border-radius:var(--r-md)}
+  .card__media{aspect-ratio:4/3}
+  .card__body{padding:.75rem .75rem .85rem;gap:.15rem}
+  .card h3{font-size:.95rem;line-height:1.22;margin-bottom:.2rem}
+  .card p,.card .note,.card__meta{display:none}
+  .card__foot{
+    padding-top:.55rem;margin-top:auto;
+    display:flex;flex-direction:column;align-items:stretch;gap:.45rem;
+  }
+  .price{font-size:1.1rem;line-height:1}
+  .price small{font-size:.6rem;display:block;margin-top:.1rem}
+  .card__foot .btn{width:100%;padding:.6rem .5rem;font-size:.84rem;min-height:40px}
+  .card__tag{font-size:.58rem;padding:.26rem .5rem;top:.5rem;left:.5rem}
+
+  /* the three "most booked" and the landmark tiles stay one-up:
+     they are the sell, not the list */
+  .lm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  /* ---- 3. Route tiles: picture on top, text under it ----
+     A 76px thumbnail beside a wrapping title left the copy in a
+     column three words wide. */
+  .tile--shot{grid-template-columns:1fr;gap:.6rem}
+  .tile__shot{width:100%;aspect-ratio:16/9}
+  .tile--shot h3,.tile--shot .card__meta,.tile--shot p{grid-column:1}
+  .tile{padding:1rem}
+  .tile p{font-size:.92rem}
+
+  /* ---- 4. Twenty-three landmarks, browsable ----
+     Each stop was a 600px card. Thumbnail and name are the list;
+     the story opens on tap and stays in the page for crawlers. */
+  .lr-index__item{
+    display:grid;grid-template-columns:92px 1fr;align-items:start;
+    gap:.85rem;padding:.7rem;border-radius:var(--r-md);
+  }
+  .lr-index__media{
+    aspect-ratio:1/1;border-radius:var(--r-sm);width:92px;
+  }
+  .lr-index__body{padding:0;min-width:0}
+  .lr-index__body h3{font-size:1rem;line-height:1.2}
+  /* the subtitle carries the street address too, which ran to three bold
+     lines and swamped the name; the address is a tap away in the Maps link */
+  .lr-index__sub{
+    font-size:.78rem;margin:.15rem 0 .35rem;font-weight:600;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .lr-index__body > p:not(.lr-index__sub){
+    font-size:.86rem;line-height:1.5;margin:0;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .lr-index__map{margin-top:.5rem;font-size:.84rem}
+}
+
+/* very small phones keep one column for the cards — two would be 150px wide */
+@media(max-width:359px){
+  #fleet-grid,#tour-grid,#adv-grid,#shop-grid,
+  .grid--3:has(> .card),.lm-grid{grid-template-columns:1fr}
+  .lr-index__item{grid-template-columns:72px 1fr}
+  .lr-index__media{width:72px}
+}
+
+/* the group header only exists for the phone layout */
+.rate-head{display:none}
+
+@media(max-width:760px){
+  /* ---- 5. The rate table folds into blocks ----
+     Three columns in 350px meant every cell wrapped and the ride's name
+     repeated down four consecutive rows. One heading per ride, then its
+     rates as plain duration/price lines. */
+  .table-wrap{overflow:visible;border:0;box-shadow:none;background:none}
+  .table-wrap table{display:block;min-width:0;border-collapse:separate}
+  .table-wrap thead{display:none}
+  .table-wrap tbody{display:block}
+
+  .rate-head{
+    display:block;margin:1.1rem 0 0;padding:.6rem .9rem;
+    background:var(--ocean-ink);color:#fff;border-radius:var(--r-sm) var(--r-sm) 0 0;
+    font-family:var(--font-display);font-weight:800;font-size:.92rem;letter-spacing:.01em;
+  }
+  .rate-head td{display:block;padding:0;border:0;color:inherit}
+
+  .table-wrap tbody tr:not(.rate-head){
+    display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:.6rem;
+    padding:.62rem .9rem;background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+  .table-wrap tbody tr:not(.rate-head) td{display:block;padding:0;border:0}
+  /* the block heading already names the ride; the per-row copy would
+     otherwise repeat it and steal the column the price needs */
+  .table-wrap tbody tr td.rate-name{display:none}
+  .rate-dur{font-size:.9rem;color:var(--ink-soft)}
+  .rate-price{font-family:var(--font-display);font-weight:800;font-size:1rem;color:var(--ocean-ink);text-align:right}
+  /* round off the last line of each block */
+  .table-wrap tbody tr:not(.rate-head):has(+ .rate-head),
+  .table-wrap tbody tr:last-child{
+    border-bottom:0;border-radius:0 0 var(--r-sm) var(--r-sm);box-shadow:var(--shadow-s);
+  }
+}
+
+@media(max-width:760px){
+  /* ---- 6. The booking bar, two-up ----
+     Four full-width fields stacked put 500px of form between the hero and
+     the first thing worth reading. Paired, it is half that and still
+     thumb-sized. */
+  .finder__card{grid-template-columns:1fr 1fr;gap:.5rem;padding:.8rem}
+  .finder__card .btn{grid-column:1/-1;margin-top:.15rem}
+  .finder__field{padding:.3rem .65rem}
+  .finder__field label{font-size:.62rem;letter-spacing:.12em}
+  .finder__field select,.finder__field input{font-size:16px;padding:.15rem 0}
+}
+@media(max-width:340px){
+  .finder__card{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   Cards carry their own ink
+   A white card inside a dark band inherited the band's white text and
+   kept its own white background: the "Included on every tour" tiles and
+   the adventure cards on the home page were white on white, unreadable
+   on every screen size. A surface that sets its own background has to
+   set its own text colour too.
+   ============================================================ */
+.card,.tile,.review,.lr-index__item,.answer-box,.finder__card,.step{color:var(--ink)}
+.card h3,.card h4,.tile h3,.tile h4,.review h3,
+.lr-index__item h3,.answer-box h2,.answer-box h3,.step h3{color:var(--ocean-ink)}
+.card p,.tile p,.review blockquote,.review figcaption,
+.lr-index__item p,.answer-box p,.step p,.card .note{color:var(--ink-soft)}
+.card a:not(.btn),.tile a:not(.btn),.lr-index__item a:not(.btn){color:var(--ocean-deep)}
+.card__meta{color:var(--ink-soft)}
+/* the dark tiles that really are dark keep their own colours */
+.tile--dark,.tile--dark h3,.tile--dark p{color:#fff}
+
+/* The CTA band runs gold → coral → magenta → blue. White text is fine over
+   the right of it and weak over the gold at the left, so the band gets a
+   light scrim: the colour still reads, the words always do. */
+/* ::before already carries the dot texture, so the scrim goes on ::after,
+   above the gradient and below the copy (.cta-band > * is position:relative). */
+.cta-band::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(100deg,rgba(4,48,61,.40) 0%,rgba(4,48,61,.22) 45%,rgba(4,48,61,.06) 80%);
+}
+
+/* In the footer the brand line sits on navy, where --ink-soft is barely
+   there. */
+.footer .brand__sub{color:rgba(255,255,255,.72)}
+
+/* ::after paints after the positioned children, so without a stacking rank
+   the scrim washed over the copy it was meant to support. */
+.cta-band > *{position:relative;z-index:1}
+.cta-band::after{
+  background:linear-gradient(100deg,rgba(4,48,61,.34) 0%,rgba(4,48,61,.16) 46%,rgba(4,48,61,0) 82%);
+}

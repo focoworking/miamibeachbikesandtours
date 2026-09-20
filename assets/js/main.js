@@ -160,6 +160,28 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(setTopbarH);
   }
 
+  /* ---- Compact header once you start reading ----
+     The pinned header costs 130px of an 844px phone screen. Past the first
+     screenful it folds to a slim bar and gives most of that back; scrolling
+     up brings it straight back, because that is when people reach for it.
+
+     Names here are deliberately their own: `ticking` and `onScroll` already
+     exist in this scope for the parallax and the stuck-nav shadow, and
+     sharing the flag meant whichever listener ran first claimed it and the
+     other never got a frame. */
+  var hdrLastY = 0, hdrTicking = false;
+  var hdrScroll = function () {
+    var y = window.scrollY || 0;
+    var down = y > hdrLastY;
+    if (y > 180 && down) document.body.classList.add('is-scrolled');
+    else if (!down || y < 90) document.body.classList.remove('is-scrolled');
+    hdrLastY = y;
+    hdrTicking = false;
+  };
+  window.addEventListener('scroll', function () {
+    if (!hdrTicking) { hdrTicking = true; requestAnimationFrame(hdrScroll); }
+  }, { passive: true });
+
   /* ---- Every page opens at the top ----
      Browsers restore the previous scroll position on a back/forward and, on
      some, when following a link to a page you have already seen. Landing
