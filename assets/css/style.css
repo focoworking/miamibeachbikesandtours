@@ -1414,3 +1414,14 @@ html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
   }
   .nav.is-open::after{opacity:1;pointer-events:auto}
 }
+
+/* The language pills are deliberately small — the brief asked for a thinner
+   address bar — but 23px is not a target you hit one-handed on a bike. The
+   pill keeps its size; the hit area grows around it invisibly, to the 44px
+   the rest of the site uses. */
+.lang{position:relative}
+.lang::after{
+  content:"";position:absolute;left:0;right:0;
+  top:50%;transform:translateY(-50%);height:44px;
+}
+.langs{position:relative;z-index:1}
