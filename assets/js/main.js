@@ -18,11 +18,23 @@
         var open = nav.classList.toggle('is-open');
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
+      var close = function () {
+        if (!nav.classList.contains('is-open')) return;
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      };
       nav.querySelectorAll('.nav__link').forEach(function (a) {
-        a.addEventListener('click', function () {
-          nav.classList.remove('is-open');
-          toggle.setAttribute('aria-expanded', 'false');
-        });
+        a.addEventListener('click', close);
+      });
+      // an open menu covers the page, so give it the two ways out people
+      // already expect: tap anywhere outside it, or press Escape
+      document.addEventListener('click', function (ev) {
+        // ev.target is the bar itself when the tap lands on its scrim,
+        // which is a pseudo-element and so has no node of its own
+        if (!nav.contains(ev.target) || ev.target === nav) close();
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') close();
       });
     }
   }
