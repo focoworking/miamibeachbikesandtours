@@ -398,6 +398,12 @@ FAQ = [
      "No. On foot is one of the six options and the Art Deco district works perfectly at walking pace. You will want wheels for South Pointe, the Venetian Islands or Wynwood \u2014 and we are at the start line either way."),
     ("Does Live Route cost anything?",
      "No. It is free, there is no sign-up and it works in any phone browser. Live mode asks for your location so it can tell you how far the next stop is; you can decline and follow the written route instead."),
+    ("Can I extend my rental without coming back to the shop?",
+     "Yes. Open the assistant on any page, tap Extend my rental, enter the ticket number from your receipt and pick how much longer you want \u2014 an hour, two, four, a day or a week. You pay on your phone with Apple Pay, Google Pay, card or PayPal and your return time moves automatically. No need to ride back."),
+    ("What happens if I am already late returning?",
+     "Extend it anyway. The assistant shows the rental as overdue and the extension covers you from the original return time, so there is no late fee on top. If you would rather talk to someone, call +1-305-830-9440 and we will sort it in under a minute."),
+    ("Where do I find my ticket number?",
+     "It is on the paper receipt we hand you at the counter and in your confirmation email, in the format MBB-1234. If you cannot find it, call +1-305-830-9440 with the name on the booking and we will look it up."),
     ("Do you sell Segways and Trikkes?",
      "Yes. We are Miami's factory authorized Segway dealer, so we sell new Segway personal transporters with full warranty, plus pedal and electric Trikkes, electric bikes, bicycles and the complete Segway i2 parts range \u2014 cargo frames, reflective shields, integrated lighting, patroller bags, bumpers, comfort mats and the accessory bar. Call +1-305-830-9440 for current models and pricing."),
     ("Can I try a Segway or Trikke before buying one?",
@@ -641,4 +647,54 @@ DURATIONS = [
     {"id": "60",  "name": "1 hour",     "mins": 60},
     {"id": "120", "name": "2 hours",    "mins": 120},
     {"id": "240", "name": "Half a day", "mins": 240},
+]
+
+# --- Rental extension -------------------------------------------------------
+# What an extension costs, per vehicle family. Derived from the same rate card
+# as FLEET so the two can never drift apart.
+EXTEND_BLOCKS = [
+    {"id": "1h",  "label": "+1 hour",  "mins": 60},
+    {"id": "2h",  "label": "+2 hours", "mins": 120},
+    {"id": "4h",  "label": "+4 hours", "mins": 240},
+    {"id": "1d",  "label": "+1 day",   "mins": 660},   # 9am-8pm
+    {"id": "1w",  "label": "+1 week",  "mins": 4620},
+]
+
+# family -> {block id: price in USD}. None = quote at the counter.
+EXTEND_RATES = {
+    "cruiser":   {"1h": 12, "2h": 18, "4h": 22, "1d": 28,  "1w": 75},
+    "fat-tire":  {"1h": 18, "2h": 26, "4h": 35, "1d": 45,  "1w": 160},
+    "ebike":     {"1h": 25, "2h": 40, "4h": 55, "1d": 89,  "1w": 320},
+    "etandem":   {"1h": 45, "2h": 70, "4h": 95, "1d": 130, "1w": None},
+    "trikke":    {"1h": 35, "2h": 55, "4h": 79, "1d": None, "1w": None},
+    "sidebyside":{"1h": 39, "2h": 60, "4h": 75, "1d": 89,  "1w": None},
+    "tricycle":  {"1h": 18, "2h": 28, "4h": 35, "1d": 45,  "1w": 120},
+    "skates":    {"1h": 12, "2h": 18, "4h": 20, "1d": 25,  "1w": 65},
+    "longboard": {"1h": 14, "2h": 20, "4h": 26, "1d": 32,  "1w": None},
+    "kids":      {"1h": 10, "2h": 15, "4h": 18, "1d": 22,  "1w": None},
+    "tandem":    {"1h": 22, "2h": 34, "4h": 44, "1d": 55,  "1w": None},
+}
+
+EXTEND_FAMILIES = [
+    ("cruiser",    "Beach cruiser"),
+    ("fat-tire",   "Fat tire beach bike"),
+    ("ebike",      "Electric bike"),
+    ("etandem",    "Electric tandem"),
+    ("trikke",     "Trikke"),
+    ("sidebyside", "Side-by-side"),
+    ("tandem",     "Tandem"),
+    ("tricycle",   "Adult tricycle"),
+    ("skates",     "Rollerblades"),
+    ("longboard",  "Longboard"),
+    ("kids",       "Kids bike"),
+]
+
+# Payment methods offered at checkout. Every one of these hands off to the
+# provider's own hosted page — no card details are ever typed into this site.
+PAY_METHODS = [
+    # generic glyphs, not brand logos — the name beside them does the identifying
+    {"id": "applepay", "name": "Apple Pay",  "icon": '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>', "note": "One tap on iPhone"},
+    {"id": "googlepay","name": "Google Pay", "icon": '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="11" height="18" rx="3"/><path d="M18 9a5 5 0 0 1 0 6"/><path d="M20.5 6.5a8.5 8.5 0 0 1 0 11"/></svg>', "note": "One tap on Android"},
+    {"id": "card",     "name": "Card",       "icon": '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>', "note": "Visa, Mastercard, Amex"},
+    {"id": "paypal",   "name": "PayPal",     "icon": '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2"/><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="16.5" cy="13.5" r="1.4"/></svg>', "note": "Pay with your balance"},
 ]

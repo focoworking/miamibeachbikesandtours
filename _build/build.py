@@ -167,7 +167,7 @@ HOME_FAQ_KEYS = [
     "How much are the Segway tours?",
     "What is the happy hour special?",
     "What is Live Route?",
-    "Are the neighbourhood bike tours really free?",
+    "Can I extend my rental without coming back to the shop?",
     "What else do you book besides bikes and Segways?",
 ]
 HOME_FAQ = [f for f in FAQ if f[0] in HOME_FAQ_KEYS]
@@ -486,7 +486,7 @@ def page_rentals():
     <div class="tile" data-reveal data-delay="1"><div class="tile__ico">🏨</div><h3>Hotel delivery</h3><p>Free across South Beach on rentals of 24 hours or more. Mid-Beach, North Beach and Downtown by flat fee.</p></div>
     <div class="tile" data-reveal data-delay="2"><div class="tile__ico">🛠️</div><h3>Repair shop</h3><p>Flats, brakes, gears, batteries and full tune-ups for bikes, e-bikes and scooters. Most walk-ins same day.</p></div>
     <div class="tile" data-reveal data-delay="3"><div class="tile__ico">👨‍👩‍👧‍👦</div><h3>Family gear</h3><p>Baby seats, trailers, training wheels and tandems, so nobody stays behind at the hotel.</p></div>
-    <div class="tile" data-reveal data-delay="4"><div class="tile__ico">📞</div><h3>Support on the road</h3><p>Flat tire on the causeway? Call us. We answer while you ride and we come out for you.</p></div>
+    <div class="tile" data-reveal data-delay="4"><div class="tile__ico">⏳</div><h3>Extend from your phone</h3><p>Running long? Open the assistant, enter your ticket number and add an hour, a day or a week \u2014 paid on your phone, no ride back. <button class="tile__link" type="button" data-assistant="ex-lookup">Extend a rental &rarr;</button></p></div>
   </div>
 </section>
 
@@ -916,9 +916,6 @@ def page_live_route():
   <a href="https://www.google.com/maps/search/?api=1&amp;query={p['lat']},{p['lng']}" target="_blank" rel="noopener">Open in Maps &rarr;</a>
 </article>''' for p in POI if p["id"] != "shop")
 
-    poi_json = json.dumps(POI, ensure_ascii=False, separators=(",", ":"))
-    modes_json = json.dumps(MODES, ensure_ascii=False, separators=(",", ":"))
-
     return h + nav("live-route.html") + f'''
 <section class="phead phead--live">
   <div class="wrap phead__in" data-reveal>
@@ -938,47 +935,17 @@ def page_live_route():
 
 <section class="sec" id="plan">
   <div class="wrap">
-    <div class="lr-planner" data-reveal>
-      <div class="lr-step">
-        <h2><span class="lr-step__n">1</span> How are you moving?</h2>
-        <div class="lr-opts">{modes}</div>
-        <p class="lr-hint" id="lr-mode-cta">The default. Flat, easy, covers the whole island. <a href="rentals.html#beach-cruiser">Get one &rarr;</a></p>
+    <div class="lr-launch" data-reveal>
+      <div class="lr-launch__ico" aria-hidden="true">&#128205;</div>
+      <h2>Open the assistant</h2>
+      <p class="lead">Three questions and it builds your route. It opens in its own window so the plan stays in one place while you ride — nothing mixed in with the rest of the site.</p>
+      <div class="lr-launch__steps">
+        <span><b>1</b> How you move</span>
+        <span><b>2</b> How long you have</span>
+        <span><b>3</b> What you like</span>
       </div>
-
-      <div class="lr-step">
-        <h2><span class="lr-step__n">2</span> How long have you got?</h2>
-        <div class="lr-opts lr-opts--wrap">{durs}</div>
-      </div>
-
-      <div class="lr-step">
-        <h2><span class="lr-step__n">3</span> What are you into?</h2>
-        <div class="lr-opts lr-opts--wrap">{tags}</div>
-        <p class="lr-hint">Pick as many as you like, or none at all and we will give you the greatest hits.</p>
-      </div>
-
-      <button class="btn btn--block" id="lr-go" type="button">Build my route</button>
-    </div>
-
-    <div id="lr-result" class="lr-result" hidden></div>
-  </div>
-</section>
-
-<section class="sec--tight">
-  <div class="wrap">
-    <div class="lr-live" id="lr-live" hidden>
-      <div class="lr-live__head">
-        <span class="lr-live__dot" aria-hidden="true"></span>
-        <span id="lr-live-count">Stop 1</span>
-        <button class="lr-live__end" id="lr-live-end" type="button">End</button>
-      </div>
-      <h2 id="lr-live-name">—</h2>
-      <p class="lr-live__sub" id="lr-live-sub"></p>
-      <p class="lr-live__gps" id="lr-live-gps">Finding you…</p>
-      <p class="lr-live__story" id="lr-live-story"></p>
-      <div class="lr-live__actions">
-        <a class="btn btn--sm btn--sun" id="lr-live-nav" href="#" target="_blank" rel="noopener">Navigate</a>
-        <button class="btn btn--sm btn--ghost" id="lr-live-next" type="button">I'm here — next stop</button>
-      </div>
+      <button class="btn btn--block" type="button" data-assistant="lr-mode">Build my route</button>
+      <p class="note" style="margin-top:.9rem">Free &middot; no app &middot; no sign-up &middot; works in any phone browser</p>
     </div>
   </div>
 </section>
@@ -1011,9 +978,6 @@ def page_live_route():
 
 {cta_section("No bike? The route still works on foot",
  "Walking covers the deco strip fine. For South Pointe, the Venetian Islands or Wynwood you will want wheels — we are at the start line either way.")}
-
-<script>window.LR_POI={poi_json};window.LR_MODES={modes_json};</script>
-<script src="assets/js/live-route.js" defer></script>
 ''' + footer()
 
 
@@ -1442,6 +1406,16 @@ gives distance and riding time for each leg, and in live mode uses the phone's l
 the distance and compass direction to the next stop, advancing automatically on arrival.
 The whole route can be opened in Google Maps in one tap.
 Landmarks covered: {poi_names}.
+
+## The assistant — extend a rental from your phone ({SITE}/#assistant)
+Every page carries an assistant that opens in its own panel. Two tools:
+1. Live Route, the free self-guided tour builder described above.
+2. Extend my rental: the customer enters the ticket number from their receipt (format MBB-1234),
+   sees what they rented and when it is due back, picks +1 hour, +2 hours, +4 hours, +1 day or
+   +1 week at the published rate for that vehicle multiplied by the number of units, and pays with
+   Apple Pay, Google Pay, card or PayPal. The return time moves automatically; no return trip to
+   the shop is needed. A rental that is already overdue can still be extended, and the extension
+   covers the time from the original return time, so there is no late fee on top.
 
 ## Pages
 - [Home]({SITE}/index.html): overview, fleet, tours, adventures, routes, reviews.

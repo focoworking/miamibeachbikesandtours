@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """HTML shell: head (SEO/AEO/GEO/LLM), nav, footer."""
 import json
-from data import BIZ, SITE, BOOKING_URL
+import json as _json
+from data import (BIZ, SITE, BOOKING_URL, POI, MODES, INTERESTS, DURATIONS,
+                  EXTEND_BLOCKS, EXTEND_RATES, PAY_METHODS)
 
 NAV = [
     ("rentals.html", "Rentals"),
@@ -209,14 +211,28 @@ def nav(current):
 
 
 def footer():
+    _j = lambda o: _json.dumps(o, ensure_ascii=False, separators=(",", ":"))
+    booking = _j(BOOKING_URL)
+    phone = _j(BIZ["phone"])
+    phone_pretty = _j(BIZ["phone_pretty"])
+    poi = _j(POI)
+    modes = _j(MODES)
+    interests = _j(INTERESTS)
+    durations = _j(DURATIONS)
+    blocks = _j(EXTEND_BLOCKS)
+    rates = _j(EXTEND_RATES)
+    pay = _j(PAY_METHODS)
     return f'''
 </main>
 <div class="actionbar" role="group" aria-label="Quick actions">
   <a class="actionbar__btn actionbar__btn--ghost" href="tel:{BIZ['phone']}">
     <span aria-hidden="true">📞</span> Call
   </a>
-  <a class="actionbar__btn" href="{BOOKING_URL}" target="_blank" rel="noopener">Book now</a>
+  <button class="actionbar__btn" type="button" data-assistant="home">Assistant</button>
 </div>
+<button class="as-fab" type="button" data-assistant="home">
+  <span class="as-fab__dot" aria-hidden="true"></span> Assistant
+</button>
 <footer class="footer">
   <div class="wrap footer__grid">
     <div>
@@ -276,6 +292,23 @@ def footer():
     <span>Bikes · E-bikes · Trikkes · Segways · Skates · Tours · Everglades · Key West · South Beach, Florida</span>
   </div>
 </footer>
+<script>
+window.ASSIST_CONFIG={{
+  /* Wire these two to go live. Until lookupUrl is set the panel runs in
+     demo mode and says so on screen. */
+  lookupUrl:null,      /* e.g. "/api/rental/{{ref}}" -> rental JSON */
+  payUrl:null,         /* e.g. your hosted checkout; gets ref, block, method */
+  bookUrl:{booking},
+  phone:{phone},
+  phonePretty:{phone_pretty}
+}};
+window.LR_POI={poi};
+window.LR_MODES={modes};
+window.LR_INTERESTS={interests};
+window.LR_DURATIONS={durations};
+window.LR_EXTEND={{blocks:{blocks},rates:{rates},pay:{pay}}};
+</script>
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/assistant.js" defer></script>
 </body>
 </html>'''

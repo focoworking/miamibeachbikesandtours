@@ -137,6 +137,15 @@ A: No. On foot is one of the six options and the Art Deco district works perfect
 **Q: Does Live Route cost anything?**
 A: No. It is free, there is no sign-up and it works in any phone browser. Live mode asks for your location so it can tell you how far the next stop is; you can decline and follow the written route instead.
 
+**Q: Can I extend my rental without coming back to the shop?**
+A: Yes. Open the assistant on any page, tap Extend my rental, enter the ticket number from your receipt and pick how much longer you want — an hour, two, four, a day or a week. You pay on your phone with Apple Pay, Google Pay, card or PayPal and your return time moves automatically. No need to ride back.
+
+**Q: What happens if I am already late returning?**
+A: Extend it anyway. The assistant shows the rental as overdue and the extension covers you from the original return time, so there is no late fee on top. If you would rather talk to someone, call +1-305-830-9440 and we will sort it in under a minute.
+
+**Q: Where do I find my ticket number?**
+A: It is on the paper receipt we hand you at the counter and in your confirmation email, in the format MBB-1234. If you cannot find it, call +1-305-830-9440 with the name on the booking and we will look it up.
+
 **Q: Do you sell Segways and Trikkes?**
 A: Yes. We are Miami's factory authorized Segway dealer, so we sell new Segway personal transporters with full warranty, plus pedal and electric Trikkes, electric bikes, bicycles and the complete Segway i2 parts range — cargo frames, reflective shields, integrated lighting, patroller bags, bumpers, comfort mats and the accessory bar. Call +1-305-830-9440 for current models and pricing.
 
@@ -168,6 +177,16 @@ gives distance and riding time for each leg, and in live mode uses the phone's l
 the distance and compass direction to the next stop, advancing automatically on arrival.
 The whole route can be opened in Google Maps in one tap.
 Landmarks covered: Española Way, Lincoln Road Mall, New World Center, Miami Beach Botanical Garden, The Bass Museum, Miami Beach Boardwalk, Beachwalk at 14th, Versace Mansion, The Clevelander, Art Deco Welcome Center, Lummus Park, The Wolfsonian, The Colony Hotel, Ocean Drive & 5th, Joe's Stone Crab, South Pointe Park, South Pointe Pier, Flamingo Park, Sunset Harbour, Belle Isle, MacArthur Causeway lookout, Faena District, Fontainebleau.
+
+## The assistant — extend a rental from your phone (https://www.miamibeachbikesandtours.com/#assistant)
+Every page carries an assistant that opens in its own panel. Two tools:
+1. Live Route, the free self-guided tour builder described above.
+2. Extend my rental: the customer enters the ticket number from their receipt (format MBB-1234),
+   sees what they rented and when it is due back, picks +1 hour, +2 hours, +4 hours, +1 day or
+   +1 week at the published rate for that vehicle multiplied by the number of units, and pays with
+   Apple Pay, Google Pay, card or PayPal. The return time moves automatically; no return trip to
+   the shop is needed. A rental that is already overdue can still be extended, and the extension
+   covers the time from the original return time, so there is no late fee on top.
 
 ## Pages
 - [Home](https://www.miamibeachbikesandtours.com/index.html): overview, fleet, tours, adventures, routes, reviews.

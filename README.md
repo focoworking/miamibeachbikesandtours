@@ -29,7 +29,7 @@ contact.html        Booking form, map, hours, delivery zone
 
 assets/css/style.css    Design system: tokens, components, animations, responsive
 assets/js/main.js       Parallax, scroll reveals, sticky nav, filters, counters, open/closed status
-assets/js/live-route.js Route engine: nearest-neighbour planner, Haversine, Geolocation live mode
+assets/js/assistant.js  The assistant panel: Live Route engine + rental extension flow
 assets/img/*.svg        Generated artwork (hero scene + card scenes + favicon)
 
 llms.txt            Machine-readable business brief for AI answer engines
@@ -39,32 +39,53 @@ sitemap.xml         All indexable pages
 _build/             Page generator (data.py + shell.py + build.py)
 ```
 
-## Live Route
+## The assistant
 
-A free self-guided tour builder at `live-route.html`. The visitor picks three things — how they
-travel (6 modes), how long they have (4 budgets) and what they like (10 interests) — and the engine
-orders the matching landmarks into a loop from the shop and back.
+Every page carries an assistant that opens in its own full-screen panel (`assets/js/assistant.js`),
+so a flow never gets mixed into the page behind it. Launch it from the desktop pill bottom-right,
+the mobile action bar, any `data-assistant="<view>"` element, or a `#assistant=<view>` deep link.
+It traps focus, closes on Escape or scrim click, has a back stack, and restores scroll and focus.
 
-How it works, in `assets/js/live-route.js`:
+### Tool 1 — Live Route
 
-- **Planner.** Nearest-neighbour over the POIs whose tags match the chosen interests, with distances
-  by Haversine. Riding time is `distance / mode speed` padded 35% for lights, crossings and actually
-  looking at things. A stop is only added if there is still time for it *plus* the ride home.
-  Walking and skating drop the causeway stops automatically.
-- **Live mode.** `navigator.geolocation.watchPosition` gives distance and compass bearing to the next
-  stop, and advances the route when the visitor is within 45 m. Degrades cleanly: if permission is
-  denied or GPS cannot get a fix, it says so and the written route still works.
+A free self-guided tour builder. Three steps: how you travel (6 modes), how long you have (4
+budgets), what you like (10 interests). Then:
+
+- **Planner.** Nearest-neighbour over the POIs whose tags match, distances by Haversine. Riding time
+  is `distance / mode speed` padded 35% for lights and crossings. A stop is only added if there is
+  time for it *plus* the ride home. Walking and skating drop the causeway stops automatically.
+- **Live mode.** `watchPosition` gives distance and compass bearing to the next stop and advances
+  within 45 m. Degrades cleanly when permission is denied or GPS cannot fix.
 - **Maps handoff.** One tap builds a `google.com/maps/dir/` URL with every stop in order.
 
-No API key, no backend, no dependency. The 24 stops live in `POI` in `_build/data.py`; modes,
-interests and time budgets sit beside them.
+`live-route.html` stays as the SEO landing: it keeps all 24 stops as static HTML, the structured
+data and the answer box, and its CTA opens the assistant.
 
-**Before launch:** the coordinates are accurate to the block, derived from each landmark's street
-address, not surveyed. Check each one against Google Maps and nudge as needed — live mode's arrival
-radius is 45 m, so a block of drift matters.
+### Tool 2 — Extend my rental
 
-Every stop is also rendered as static HTML further down the page, so the content indexes and the
-page is useful with JavaScript off.
+Ticket number → see the rental and when it is due → pick +1h / +2h / +4h / +1 day / +1 week →
+pick a payment method → hand off to checkout. Prices come from `EXTEND_RATES` per vehicle family,
+multiplied by the number of units. An overdue rental is flagged and the copy states the extension
+covers the time from the original return, so there is no late fee stacked on top.
+
+**No card details are ever entered on this site.** The flow stops at method selection and hands off
+to the provider's own hosted page — keep it that way, it is what keeps PCI scope off this codebase.
+
+### Wiring it to the real system
+
+Two hooks, both in `ASSIST_CONFIG` (emitted by `_build/shell.py`):
+
+```js
+lookupUrl : "/api/rental/{ref}"   // GET -> { ref, name, family, item, qty, dueInMins }
+payUrl    : "https://…/checkout"  // receives ?ref=&block=&method=
+```
+
+`family` must match a key in `EXTEND_RATES`. Until `lookupUrl` is set the panel runs in **demo
+mode**, says so on screen in a yellow notice, and only resolves the three sample tickets
+(`MBB-4417`, `MBB-2098`, `MBB-7731`). Do not ship to customers with that notice showing.
+
+FareHarbor is the operator's booking system, so the likely shape is a small endpoint that proxies
+their API for the lookup, and their own checkout or a Stripe payment link for `payUrl`.
 
 ## Editing content
 
@@ -162,6 +183,8 @@ Greetwell, Wanderlog and the OTAs. **That means this is a faithful reconstructio
 - **Sales prices.** No Segway, Trikke, e-bike or parts pricing is public. Those cards show
   "Price on request" with a call button.
 - **Blog.** Their site runs one; no posts were recoverable. This is the biggest SEO gap — see below.
+- **Rental extension backend.** The assistant's extend flow is complete as an interface but runs in
+  demo mode until `lookupUrl` and `payUrl` are wired — see *The assistant* below.
 - **Photo gallery.** They have a tours gallery. Replaced here with illustrations.
 - **Shopping cart / e-commerce.** Their site has a real cart for parts and merchandise. Not rebuilt.
 - **Terms, waiver and rental requirements.** ID, deposit, credit card hold, damage and insurance
