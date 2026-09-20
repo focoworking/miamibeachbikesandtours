@@ -3,6 +3,28 @@
 answer boxes and section headings. English is the source."""
 
 PAGES = {
+# ===================== landmarks on the home page =====================
+"lm.eyebrow": {
+ "en": "What you came for",
+ "es": "A lo que viniste",
+ "pt": "O que você veio ver",
+ "it": "Quello per cui sei venuto"},
+"lm.h2": {
+ "en": "The South Beach you actually want to see",
+ "es": "El South Beach que de verdad quieres ver",
+ "pt": "A South Beach que você realmente quer ver",
+ "it": "La South Beach che vuoi davvero vedere"},
+"lm.lead": {
+ "en": "Twenty-three landmarks sit inside an hour of our door — Art Deco neon, the Versace steps, Gehry's concert hall, the pier where the cruise ships pass. Take the wheels, take the route, take your time.",
+ "es": "Veintitrés lugares emblemáticos están a menos de una hora de nuestra puerta: el neón art déco, las escaleras de Versace, el auditorio de Gehry, el muelle por donde pasan los cruceros. Coge las ruedas, coge la ruta y tómate tu tiempo.",
+ "pt": "Vinte e três pontos emblemáticos ficam a menos de uma hora da nossa porta: o neon art déco, a escadaria da Versace, a sala de concertos de Gehry, o píer por onde passam os cruzeiros. Pegue as rodas, pegue a rota e vá sem pressa.",
+ "it": "Ventitré luoghi simbolo sono a meno di un'ora dalla nostra porta: il neon art déco, la scalinata di Versace, l'auditorium di Gehry, il molo dove passano le navi da crociera. Prendi le ruote, prendi il percorso e prenditi il tuo tempo."},
+"lm.cta": {
+ "en": "See all 23 stops",
+ "es": "Ver las 23 paradas",
+ "pt": "Ver as 23 paradas",
+ "it": "Vedi tutte le 23 tappe"},
+
 # ===================== titles & descriptions =====================
 "t.index": {
  "en": "Miami Beach Bikes | Bike, E-Bike & Segway Rentals and Tours · South Beach",

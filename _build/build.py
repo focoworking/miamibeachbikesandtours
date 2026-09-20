@@ -32,6 +32,42 @@ def T(key):
     return _t(key, LANG)
 
 
+ROUTE_COVER = {
+    # six routes were all showing the same map illustration; each one now
+    # leads with the landmark it is actually named after
+    "the-beachwalk-classic": "poi-beachwalk14",
+    "art-deco-neon-loop": "poi-colony",
+    "star-island-&-the-causeway": "poi-macarthur",
+    "venetian-islands-sunset": "poi-belleisle",
+    "wynwood-mural-run": "tour-ebike-wynwood",
+    "north-beach-&-boardwalk": "poi-faena",
+}
+
+
+def route_cover(r, slug=None):
+    """Illustration for a route card, keyed off the English name so it
+    survives translation."""
+    key = slug or r.get("slug") or r["name"].lower().replace(" ", "-").replace("'", "")
+    return ROUTE_COVER.get(key, "routes-map")
+
+
+def poi_cover(p):
+    """The cover image for a landmark.
+
+    Default: the illustration drawn for that exact place. If the client fills
+    in STREETVIEW_KEY, every card switches to an official Google Street View
+    still at the landmark's own coordinates — which is the licensed way to put
+    a real photograph of these places on a commercial site. Scraping the same
+    image out of Google Maps is not.
+    """
+    key = getattr(data, "STREETVIEW_KEY", "")
+    if key:
+        return ("https://maps.googleapis.com/maps/api/streetview?size=1200x750"
+                "&location=%s,%s&fov=78&pitch=6&source=outdoor&key=%s"
+                % (p["lat"], p["lng"], key))
+    return "%sassets/img/poi-%s.svg" % ("../" if LANG != "en" else "", p["id"])
+
+
 def use_language(code):
     """Rebind LANG and swap every catalogue for its localised copy."""
     global LANG, FLEET, TOURS, ADVENTURES, SHOP, ROUTES, FAQ, POI
@@ -68,7 +104,7 @@ def offer(price, url):
 def price_tag(price, unit_label):
     """Money block. Items with no published price ask for a call instead."""
     if price is None:
-        return ('<span class="price price--ask">Price on request'
+        return ('<span class="price price--ask">' + T("u_ask") +
                 '<small>%s</small></span>' % unit_label)
     return '<span class="price">$%s<small>%s</small></span>' % (price, unit_label)
 
@@ -115,7 +151,7 @@ def tour_card(t, delay=0):
     <p>{t['hook']}</p>
     <p class="note"><strong>Stops:</strong> {" · ".join(t['stops'])}</p>
     <div class="card__foot">
-      {price_tag(t['price'], ('from · ' if t['price'] else '') + t['dur_pretty'])}
+      {price_tag(t['price'], ((T("u_from") + ' · ') if t['price'] else '') + t['dur_pretty'])}
       {book_btn(t['price'], extra='')}
     </div>
   </div>
@@ -197,6 +233,10 @@ def marquee():
     return f'<div class="marquee" aria-hidden="true"><div class="marquee__track">{row}{row}</div></div>'
 
 # ---------------------------------------------------------------- pages
+def _data_faq_en():
+    return data.FAQ
+
+
 HOME_FAQ_KEYS = [
     "Where can I rent a bike in South Beach?",
     "How much does it cost to rent a bike in Miami Beach?",
@@ -206,13 +246,23 @@ HOME_FAQ_KEYS = [
     "Can I extend my rental without coming back to the shop?",
     "What else do you book besides bikes and Segways?",
 ]
-HOME_FAQ = [f for f in FAQ if f[0] in HOME_FAQ_KEYS]
+_HOME_FAQ_IDX = [i for i, f in enumerate(_data_faq_en()) if f[0] in HOME_FAQ_KEYS]
+
+
+def home_faq():
+    """The seven questions the home page answers.
+
+    Picked by position, not by English text: this used to be evaluated once at
+    import time against the English catalogue, so every translated home page
+    shipped the English answers.
+    """
+    return [FAQ[i] for i in _HOME_FAQ_IDX if i < len(FAQ)]
 
 
 def page_index():
     extra = "".join([
         speakable(),
-        faq_ld(HOME_FAQ),
+        faq_ld(home_faq()),
         breadcrumbs([("Home", "")]),
         ld({"@context": "https://schema.org", "@type": "ItemList",
             "name": "Rentals and tours in Miami Beach",
@@ -235,12 +285,21 @@ def page_index():
     tours = "".join(tour_card(t, i % 3 + 1) for i, t in enumerate(TOURS[:3]))
     adventures = "".join(tour_card(a, i % 3 + 1) for i, a in enumerate(ADVENTURES[:3]))
     routes = "".join(f'''
-<article class="tile" data-reveal data-delay="{i%3+1}">
-  <div class="tile__ico">🗺️</div>
+<article class="tile tile--shot" data-reveal data-delay="{i%3+1}">
+  <span class="tile__shot"><img src="assets/img/{route_cover(r)}.svg" alt="" width="1200" height="750" loading="lazy" decoding="async"></span>
   <h3>{r['name']}</h3>
   <div class="card__meta"><span>{r['km']}</span><span>{r['time']}</span><span>{r['level']}</span></div>
   <p>{r['desc']}</p>
 </article>''' for i, r in enumerate(ROUTES[:3]))
+
+    landmark_ids = ("espanola", "lummus", "versace", "newworld",
+                    "boardwalk", "southpointepier", "faena", "fontainebleau")
+    by_id = {p["id"]: p for p in POI}
+    landmarks = "".join(f'''
+<a class="lm" href="live-route.html#stop-{lp['id']}" data-reveal data-delay="{i%4+1}">
+  <span class="lm__media"><img src="{poi_cover(lp)}" alt="{lp['name']} — {lp['sub']}" width="1200" height="750" loading="lazy" decoding="async"></span>
+  <span class="lm__body"><b>{lp['name']}</b><span>{lp['sub']}</span></span>
+</a>''' for i, lp in enumerate(by_id[k] for k in landmark_ids if k in by_id))
 
     return h + nav("index.html") + f'''
 <section class="hero">
@@ -419,6 +478,20 @@ def page_index():
   </div>
 </section>
 
+<section class="sec band-sand" id="landmarks">
+  <div class="wrap">
+    <div class="center" data-reveal>
+      <span class="eyebrow">{T("lm.eyebrow")}</span>
+      <h2>{T("lm.h2")}</h2>
+      <p class="lead">{T("lm.lead")}</p>
+    </div>
+    <div class="lm-grid">{landmarks}</div>
+    <div class="center" style="margin-top:2.4rem" data-reveal>
+      <a class="btn btn--ocean" href="live-route.html">{T("lm.cta")}</a>
+    </div>
+  </div>
+</section>
+
 {reviews_section()}
 
 <section class="sec">
@@ -427,7 +500,7 @@ def page_index():
       <span class="eyebrow">Good to know</span>
       <h2>Questions, answered</h2>
     </div>
-    <div style="margin-top:2.6rem">{faq_block(HOME_FAQ)}</div>
+    <div style="margin-top:2.6rem">{faq_block(home_faq())}</div>
     <div class="center" style="margin-top:2rem"><a class="btn btn--sm btn--ocean" href="faq.html">Read all FAQs</a></div>
   </div>
 </section>
@@ -578,7 +651,7 @@ def page_tours():
       <button class="chip" data-filter="bike">Bike</button>
       <button class="chip" data-filter="electric">E-bike</button>
       <button class="chip" data-filter="trikke">Trikke</button>
-      <button class="chip" data-filter="free">Free</button>
+      <button class="chip" data-filter="free">{T("u_free")}</button>
       <button class="chip" data-filter="short">Short</button>
       <button class="chip" data-filter="night">Night</button>
       <button class="chip" data-filter="private">Private</button>
@@ -770,6 +843,9 @@ def page_shop():
     h = head("shop.html",
              T("t.shop"),
              T("d.shop"),
+             "segway dealer miami, buy segway miami, trikke for sale miami, "
+             "electric bike shop miami beach, segway i2 parts, bike repair miami beach, "
+             "authorized segway dealer florida",
              extra, og_img="fleet-segway")
     cards = "".join(shop_card(p, i % 3 + 1) for i, p in enumerate(SHOP))
     return h + nav("shop.html") + f'''
@@ -897,6 +973,9 @@ def page_live_route():
     h = head("live-route.html",
              T("t.live"),
              T("d.live"),
+             "self guided tour south beach, free walking tour miami beach, "
+             "south beach art deco self guided tour, miami beach audio guide, "
+             "what to see in south beach, virtual tour guide miami beach",
              extra, og_img="routes-map")
 
     modes = "".join(
@@ -916,10 +995,15 @@ def page_live_route():
     # every stop is also rendered as static HTML, so it indexes without JS
     stop_cards = "".join(f'''
 <article class="lr-index__item" id="stop-{p['id']}">
-  <h3>{p['name']}</h3>
-  <p class="lr-index__sub">{p['sub']} &middot; {p['addr']}</p>
-  <p>{p['story']}</p>
-  <a href="https://www.google.com/maps/search/?api=1&amp;query={p['lat']},{p['lng']}" target="_blank" rel="noopener">Open in Maps &rarr;</a>
+  <figure class="lr-index__media">
+    <img src="{poi_cover(p)}" alt="{p['name']} — {p['sub']}" width="1200" height="750" loading="lazy" decoding="async">
+  </figure>
+  <div class="lr-index__body">
+    <h3>{p['name']}</h3>
+    <p class="lr-index__sub">{p['sub']} &middot; {p['addr']}</p>
+    <p>{p['story']}</p>
+    <a class="lr-index__map" href="https://www.google.com/maps/search/?api=1&amp;query={p['lat']},{p['lng']}" target="_blank" rel="noopener">{T("u_openmaps")} &rarr;</a>
+  </div>
 </article>''' for p in POI if p["id"] != "shop")
 
     return h + nav("live-route.html") + f'''
@@ -970,7 +1054,7 @@ def page_live_route():
   <div class="wrap">
     <div class="center" data-reveal>
       <span class="eyebrow">Every stop on the map</span>
-      <h2>The {len([p for p in POI if p["id"] != "shop"])} places Live Route can take you</h2>
+      <h2>{T("lr_places") % len([p for p in POI if p["id"] != "shop"])}</h2>
       <p class="lead">Written by people who ride past them every day — not scraped from a listings site.</p>
     </div>
     <div class="lr-index" style="margin-top:2.6rem">{stop_cards}</div>
@@ -985,7 +1069,7 @@ def page_live_route():
 def page_routes():
     cards = "".join(f'''
 <article class="card" data-reveal data-delay="{i%3+1}">
-  <div class="card__media"><span class="card__tag">{r['level']}</span>{img("routes-map", r['name'] + " cycling route in Miami Beach")}</div>
+  <div class="card__media"><span class="card__tag">{r['level']}</span>{img(route_cover(r), r['name'] + " cycling route in Miami Beach")}</div>
   <div class="card__body">
     <h3>{r['name']}</h3>
     <div class="card__meta"><span>📏 {r['km']}</span><span>⏱️ {r['time']}</span><span>📍 {r['to']}</span></div>
@@ -1466,6 +1550,43 @@ def build_sitemap_all():
     return "\n".join(out) + "\n"
 
 
+import t_copy as _copy
+
+_COPY_HIT = set()
+
+
+def localise_html(html, lang):
+    """Swap the page copy that lives inside the templates.
+
+    Longest first, so a heading never gets eaten by a shorter phrase that
+    happens to sit inside it. Every key that matches is recorded, and the
+    build prints the ones that never did — a reworded template shows up as a
+    stale entry rather than quietly reverting to English.
+    """
+    if lang == "en":
+        return html
+    for en in sorted(_copy.COPY, key=len, reverse=True):
+        for variant in (en, _entify(en), _entify(en).replace("'", "&#39;")):
+            if variant in html:
+                html = html.replace(variant, _entify(_copy.COPY[en][lang]))
+                _COPY_HIT.add(en)
+                break
+    return html
+
+
+# the templates write typography as named entities, so a key has to be
+# matched in both spellings
+_ENTS = (("\u2014", "&mdash;"), ("\u2013", "&ndash;"), ("\u00b7", "&middot;"),
+         ("\u00f1", "&ntilde;"), ("\u00e9", "&eacute;"), ("\u00e1", "&aacute;"),
+         ("\u00ed", "&iacute;"), ("\u00f3", "&oacute;"), ("\u00fa", "&uacute;"))
+
+
+def _entify(t):
+    for ch, ent in _ENTS:
+        t = t.replace(ch, ent)
+    return t
+
+
 if __name__ == "__main__":
     import builtins
     print("Building Miami Beach Bikes in %d languages..." % len(LANGS))
@@ -1475,11 +1596,16 @@ if __name__ == "__main__":
         os.makedirs(outdir, exist_ok=True)
         print(" [%s] -> %s" % (lg["short"], lg["dir"] or "/"))
         for page, fn in PAGES:
-            html = fn()
+            html = localise_html(fn(), lg["code"])
             open(os.path.join(outdir, page), "w", encoding="utf-8").write(html)
         if lg["dir"]:
             write(lg["dir"] + "llms.txt", build_llms())
     write("sitemap.xml", build_sitemap_all())
     write("robots.txt", build_robots())
     write("llms.txt", build_llms())
+    stale = sorted(set(_copy.COPY) - _COPY_HIT)
+    if stale:
+        print("  !! %d copy keys never matched the templates:" % len(stale))
+        for k in stale[:12]:
+            print("     %s" % k[:96])
     print("Done.")

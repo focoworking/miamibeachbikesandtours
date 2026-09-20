@@ -115,7 +115,23 @@ def breadcrumbs(items):
     })
 
 
+def _attr(v, field):
+    """Guard for anything that lands inside an HTML attribute.
+
+    A stray quote or an angle bracket here does not fail loudly — it silently
+    swallows the rest of <head> and dumps the raw markup on the page. That is
+    exactly how live-route.html and shop.html ended up printing their JSON-LD
+    to visitors, so the generator now refuses instead of shipping it.
+    """
+    v = "" if v is None else str(v)
+    if "<" in v or ">" in v:
+        raise ValueError("markup in the %s attribute: %r" % (field, v[:80]))
+    return v.replace("&", "&amp;").replace('"', "&quot;")
+
+
 def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lang="en"):
+    title = str(title)
+    desc, keywords = _attr(desc, "description"), _attr(keywords, "keywords")
     skip = _t("skip", lang)
     lang_meta = next((l for l in LANGS if l["code"] == lang), LANGS[0])
     prefix = "../" if lang != "en" else ""
@@ -249,6 +265,11 @@ def footer(lang="en", poi=None, modes=None, interests=None, durations=None):
     rates = _j(EXTEND_RATES)
     pay = _j(PAY_METHODS)
     ui = _j(T)
+    lang_links = "".join(
+        '<li><a href="%s%s" hreflang="%s"%s>%s</a></li>'
+        % ("../" if lang != "en" else "", l["dir"] + "index.html", l["code"],
+           ' aria-current="true"' if l["code"] == lang else "", l["name"])
+        for l in LANGS)
     langcode = _j(lang)
     langdir = _j(prefix)
     return f'''
@@ -259,10 +280,16 @@ def footer(lang="en", poi=None, modes=None, interests=None, durations=None):
     <span>WhatsApp</span>
   </a>
   <button class="actionbar__btn actionbar__btn--live" type="button" data-assistant="lr-mode">
-    <span class="actionbar__dot" aria-hidden="true"></span>
+    <span class="actionbar__ico">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 20 3 17V4l6 3 6-3 6 3v13l-6 3-6-3Z"/><path d="M9 7v13M15 4v13"/></svg>
+      <span class="actionbar__dot" aria-hidden="true"></span>
+    </span>
     <span>{t_live}</span>
   </button>
   <button class="actionbar__btn actionbar__btn--book" type="button" data-assistant="book">
+    <span class="actionbar__ico">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18M9 15l2 2 4-4"/></svg>
+    </span>
     <span>{t_book}</span>
   </button>
 </nav>
@@ -284,48 +311,67 @@ def footer(lang="en", poi=None, modes=None, interests=None, durations=None):
         <span class="badge">★ {T["f_reviews"]}</span>
         <span class="badge">🛠️ {T["f_repairs"]}</span>
       </div>
+      <address class="footer__addr">
+        <a href="https://www.google.com/maps/search/?api=1&amp;query={BIZ['lat']},{BIZ['lng']}" target="_blank" rel="noopener">{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</a>
+        <a href="tel:{BIZ['phone']}">{BIZ['phone_pretty']}</a>
+        <a href="mailto:{BIZ['email']}">{BIZ['email']}</a>
+        <span>{T["hours_pretty"]}</span>
+      </address>
     </div>
     <div>
-      <h4>{T["f_ride"]}</h4>
+      <h4>{T["f_rent"]}</h4>
       <ul>
-        <li><a href="rentals.html">Bike rentals</a></li>
-        <li><a href="rentals.html?ride=electric">Electric bikes</a></li>
-        <li><a href="rentals.html?ride=segways">Segways</a></li>
-        <li><a href="rentals.html?ride=trikke">Trikkes</a></li>
-        <li><a href="rentals.html?ride=skates">Rollerblades &amp; longboards</a></li>
-        <li><a href="rentals.html?ride=family">Family &amp; kids</a></li>
+        <li><a href="rentals.html?ride=bikes">{T["fl_bikes"]}</a></li>
+        <li><a href="rentals.html#fat-tire-bike">{T["fl_fat"]}</a></li>
+        <li><a href="rentals.html?ride=electric">{T["fl_electric"]}</a></li>
+        <li><a href="rentals.html?ride=trikke">{T["fl_trikke"]}</a></li>
+        <li><a href="rentals.html?ride=segways">{T["fl_segway"]}</a></li>
+        <li><a href="rentals.html?ride=skates">{T["fl_skates"]}</a></li>
+        <li><a href="rentals.html?ride=family">{T["fl_family"]}</a></li>
+        <li><a href="rentals.html#fleet-grid">{T["fl_rates"]}</a></li>
       </ul>
     </div>
     <div>
-      <h4>{T["f_explore"]}</h4>
+      <h4>{T["f_tourshead"]}</h4>
       <ul>
-        <li><a href="tours.html">All tours</a></li>
-        <li><a href="tours.html?ride=segway">Segway tours</a></li>
-        <li><a href="adventures.html">Adventures &amp; day trips</a></li>
-        <li><a href="adventures.html?ride=water">Jet ski &amp; parasailing</a></li>
-        <li><a href="tours.html?ride=free">Free neighbourhood tours</a></li>
-        <li><a href="shop.html">Buy a Segway or Trikke</a></li>
-        <li><a href="shop.html#repairs-service">Repairs &amp; service</a></li>
-        <li><a href="live-route.html">Live Route &middot; free guide</a></li>
-        <li><a href="routes.html">South Beach routes</a></li>
-        <li><a href="about.html">Our story</a></li>
-        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="tours.html">{T["fl_alltours"]}</a></li>
+        <li><a href="tours.html?ride=segway">{T["fl_segtours"]}</a></li>
+        <li><a href="tours.html?ride=bike">{T["fl_biketours"]}</a></li>
+        <li><a href="tours.html?ride=free">{T["fl_free"]}</a></li>
+        <li><a href="tours.html?ride=night">{T["fl_night"]}</a></li>
+        <li><a href="adventures.html#everglades-airboat-adventure">{T["fl_glades"]}</a></li>
+        <li><a href="adventures.html#key-west-day-trip">{T["fl_keywest"]}</a></li>
+        <li><a href="adventures.html?ride=water">{T["fl_water"]}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>{T["f_shop"]}</h4>
+      <ul>
+        <li><a href="shop.html#segway-sales">{T["fl_buyseg"]}</a></li>
+        <li><a href="shop.html#trikke-sales">{T["fl_buytrikke"]}</a></li>
+        <li><a href="shop.html#ebike-sales">{T["fl_buyebike"]}</a></li>
+        <li><a href="shop.html#segway-accessories">{T["fl_parts"]}</a></li>
+        <li><a href="shop.html#repairs-service">{T["fl_repairs"]}</a></li>
+      </ul>
+      <h4 style="margin-top:2rem">{T["f_langs"]}</h4>
+      <ul class="footer__langs">{lang_links}</ul>
+    </div>
+    <div>
+      <h4>{T["f_plan"]}</h4>
+      <ul>
+        <li><a href="live-route.html">{T["fl_live"]}</a></li>
+        <li><a href="index.html#landmarks">{T["fl_landmarks"]}</a></li>
+        <li><a href="routes.html">{T["fl_routes"]}</a></li>
+        <li><a href="faq.html">{T["fl_faq"]}</a></li>
+        <li><a href="about.html">{T["fl_about"]}</a></li>
+        <li><a href="contact.html">{T["fl_contact"]}</a></li>
         <li><a href="{BOOKING_URL}" target="_blank" rel="noopener">{T["f_bookonline"]}</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>{T["f_visit"]}</h4>
-      <ul>
-        <li>{BIZ['street']}<br>{BIZ['city']}, {BIZ['region']} {BIZ['zip']}</li>
-        <li><a href="tel:{BIZ['phone']}">{BIZ['phone_pretty']}</a></li>
-        <li><a href="mailto:{BIZ['email']}">{BIZ['email']}</a></li>
-        <li>{T["hours_pretty"]}</li>
       </ul>
     </div>
   </div>
   <div class="wrap footer__bottom">
     <span>© <span data-year></span> {BIZ['legal']}. {T["f_rights"]}</span>
-    <span>Bikes · E-bikes · Trikkes · Segways · Skates · Tours · Everglades · Key West · South Beach, Florida</span>
+    <span class="footer__by">Powered by <a href="https://focoworking.com/discover/" target="_blank" rel="noopener">FOCOworking Miami</a> &middot; Marketing Solutions</span>
   </div>
 </footer>
 <script>

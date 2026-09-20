@@ -1036,3 +1036,180 @@ body.as-open .as-fab{opacity:0;pointer-events:none}
 /* bigger glyphs now that the tiles have room */
 .as-tile__ico{height:46px}
 .as-tile__ico svg{width:44px;height:44px}
+
+/* ============================================================
+   Layout safety net
+   Everything below was found by a Playwright sweep over ten
+   pages at seven widths, not by eyeballing screenshots.
+   ============================================================ */
+
+/* 1. Top bar. At 430px the phone number and the four language
+   buttons did not fit on one line, so PT and IT were pushed past
+   the right edge and clipped away — two languages unreachable. */
+@media(max-width:760px){
+  .topbar__in{
+    flex-wrap:nowrap;gap:.6rem;justify-content:space-between;align-items:center;
+  }
+  .topbar__hours{
+    flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .topbar__tel{flex:none}
+  .langs{flex:none;margin-left:0;gap:.25rem}
+}
+/* below 480 the opening hours give up their seat: the languages win */
+@media(max-width:480px){ .topbar__hours{display:none} }
+
+/* 2. Grid and flex children default to a min-content floor, which is
+   what let the action bar grow wider than the screen. */
+.actionbar{grid-template-columns:repeat(3,minmax(0,1fr))}
+.actionbar__btn{min-width:0}
+.actionbar__btn > span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+/* 3. No word, price or URL may push its own box open. Headings get
+   balanced wrapping so a two-word orphan never hangs off a line. */
+h1,h2,h3,h4,p,li,summary,dt,dd,figcaption,.lead,.badge,.chip{overflow-wrap:break-word}
+h1,h2,h3{text-wrap:balance}
+/* a measure only where the block is actually centred — applying it
+   everywhere pushed left-aligned headings off their own paragraph */
+.sec__head h2,.sec__head h3,.cta h2,.phead h1{max-width:24ch;margin-inline:auto}
+.sec__head .lead,.cta p{max-width:62ch;margin-inline:auto}
+p{max-width:72ch}
+.card p,.tile p,.answer-box p,.as-panel p{max-width:none}
+
+/* 4. Air. The phone layout was packing sections shoulder to
+   shoulder; give the eye somewhere to rest between them. */
+@media(max-width:760px){
+  .wrap{width:min(100% - 2.75rem,var(--maxw))}
+  .sec{padding:4rem 0}
+  .sec--tight{padding:2.9rem 0}
+  .sec__head{margin-bottom:1.9rem}
+  .grid{gap:1.35rem}
+  h2{margin-bottom:.7rem}
+}
+
+/* 5. The swipe rows (badges, filter chips) bleed to the screen edge.
+   Deriving the bleed from the container instead of hard-coding
+   1.25rem keeps them exact whatever the gutter is. */
+@media(max-width:760px){
+  .badge-row,.chips{
+    --bleed:calc((100vw - 100%) / 2);
+    margin-inline:calc(var(--bleed) * -1);
+    padding-inline:var(--bleed);
+    max-width:100vw;
+  }
+  .chips{padding-block:.2rem 1.4rem}
+}
+
+/* 6. All three action-bar buttons now read the same way: icon on top,
+   one word under it. The live dot rides the route icon as a badge
+   instead of sitting in the label and throwing the row off balance. */
+@media(max-width:760px){
+  .actionbar__ico{position:relative;display:grid;place-items:center;line-height:0}
+  .actionbar__ico .actionbar__dot{
+    position:absolute;top:-2px;right:-4px;
+  }
+  .actionbar__btn svg{display:block}
+}
+
+/* ============================================================
+   Landmark cards — every stop leads with a picture of the place
+   ============================================================ */
+.lr-index__media{
+  margin:0;aspect-ratio:16/10;overflow:hidden;background:var(--sand-2);
+  border-radius:var(--r-md) var(--r-md) 0 0;
+}
+.lr-index__media img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+}
+.lr-index__item{overflow:hidden;padding:0}
+.lr-index__item:hover .lr-index__media img{transform:scale(1.05)}
+.lr-index__body{padding:1.3rem 1.35rem 1.45rem}
+.lr-index__body h3{margin:0 0 .2rem}
+.lr-index__map{display:inline-block;margin-top:.9rem;font-weight:700}
+
+/* ============================================================
+   Landmark grid — the attractions, sold on the home page
+   ============================================================ */
+.lm-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1.15rem;margin-top:2.8rem;
+}
+.lm{
+  position:relative;display:block;border-radius:var(--r-md);overflow:hidden;
+  background:var(--ocean-ink);box-shadow:var(--shadow-s);color:#fff;
+  text-decoration:none;isolation:isolate;
+}
+/* square, not portrait: the illustrations are 16:10, and a 4:5 crop
+   threw away half the scene along with the landmark in it */
+.lm__media{display:block;aspect-ratio:1/1;overflow:hidden}
+.lm__media img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 58%;display:block;
+  transition:transform .7s cubic-bezier(.22,1,.36,1);
+}
+.lm::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:62%;z-index:1;
+  background:linear-gradient(180deg,rgba(4,48,61,0) 0%,rgba(4,48,61,.82) 72%,rgba(4,48,61,.94) 100%);
+}
+.lm__body{
+  position:absolute;inset:auto 0 0 0;z-index:2;display:grid;gap:.15rem;
+  padding:1rem 1.05rem 1.1rem;
+}
+.lm__body b{font-family:var(--font-display);font-weight:800;font-size:1.02rem;line-height:1.2}
+.lm__body span{font-size:.82rem;opacity:.85;line-height:1.3}
+.lm:hover .lm__media img{transform:scale(1.07)}
+.lm:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+
+@media(max-width:1024px){ .lm-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media(max-width:760px){
+  /* two up on a phone: big enough to read from the saddle, small enough
+     that the whole set is two thumb-flicks away */
+  .lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:2rem}
+  .lm__media{aspect-ratio:1/1}
+  .lm__body{padding:.75rem .8rem .85rem}
+  .lm__body b{font-size:.92rem}
+  .lm__body span{font-size:.74rem}
+}
+
+/* route tiles lead with the place, not a generic map pin */
+.tile--shot{display:grid;grid-template-columns:104px 1fr;gap:1rem;align-items:start}
+.tile__shot{
+  display:block;width:104px;aspect-ratio:1/1;border-radius:var(--r-sm,14px);
+  overflow:hidden;background:var(--sand-2);
+}
+.tile__shot img{width:100%;height:100%;object-fit:cover;object-position:50% 58%;display:block}
+.tile--shot h3,.tile--shot .card__meta,.tile--shot p{grid-column:2}
+@media(max-width:560px){
+  .tile--shot{grid-template-columns:76px 1fr;gap:.85rem}
+  .tile__shot{width:76px}
+}
+
+/* ============================================================
+   Footer: four balanced link columns instead of one long list
+   ============================================================ */
+.footer__grid{grid-template-columns:1.45fr repeat(4,minmax(0,1fr));gap:2.4rem 2rem}
+.footer__addr{
+  display:grid;gap:.45rem;margin-top:1.3rem;font-style:normal;font-size:.93rem;line-height:1.5;
+}
+.footer__addr a{text-decoration:none}
+.footer__langs{gap:.45rem;font-size:.9rem}
+.footer__langs a[aria-current]{color:var(--sun);font-weight:700}
+/* the assistant button floats bottom-right; keep the credit out from under it */
+.footer__by{opacity:.9;padding-right:11rem}
+@media(max-width:860px){ .footer__by{padding-right:0} }
+.footer__by a{font-weight:700;color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4)}
+.footer__by a:hover{color:var(--sun);border-color:var(--sun)}
+
+@media(max-width:1100px){
+  .footer__grid{grid-template-columns:1fr 1fr 1fr;gap:2.2rem 1.6rem}
+  .footer__grid > :first-child{grid-column:1/-1}
+}
+@media(max-width:640px){
+  .footer__grid{grid-template-columns:1fr 1fr}
+  .footer__grid > :first-child{grid-column:1/-1}
+  .footer ul{font-size:.88rem;gap:.55rem}
+  .footer h4{margin-bottom:.85rem}
+}
+/* two columns all the way down: one column turned the footer into a
+   twelve-flick scroll on a phone */
+@media(max-width:340px){ .footer__grid{grid-template-columns:1fr} }

@@ -126,7 +126,9 @@
     var et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
     var h = et.getHours();
     var open = h >= 9 && h < 20;
-    el.textContent = open ? 'Open now · until 8 PM' : 'Closed · opens 9 AM';
+    var T = (window.ASSIST_CONFIG && window.ASSIST_CONFIG.t) || {};
+    el.textContent = open ? (T.open_now || 'Open now · until 8 PM')
+                          : (T.closed_now || 'Closed · opens 9 AM');
     el.style.color = open ? '#39d98a' : '#ffc531';
   });
 })();

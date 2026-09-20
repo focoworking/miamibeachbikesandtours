@@ -6,6 +6,15 @@ SITE = "https://www.miamibeachbikesandtours.com"
 # The operator's live booking feed. Every "Book" button points here.
 BOOKING_URL = "https://fareharbor.com/embeds/book/southfloridatrikketours/items/"
 
+# Landmark covers.
+#
+# Empty = every Live Route stop uses the illustration drawn for it, which is
+# ours, weighs about 6 KB and needs no attribution. Drop a Google Maps Static
+# API key in here and every one of them becomes an official Street View
+# photograph of that exact corner instead. That key is billed per request and
+# belongs to the client, not to this repository — leave it empty in git.
+STREETVIEW_KEY = ""
+
 # WhatsApp uses the shop line, digits only.
 WHATSAPP = "13058309440"
 WHATSAPP_URL = ("https://wa.me/13058309440?text="
@@ -353,27 +362,27 @@ ADVENTURES = [
 
 # --- Routes (GEO / local-intent content) -----------------------------------
 ROUTES = [
-    {"name": "The Beachwalk Classic", "km": "8 km · 5 mi", "time": "45 min", "level": "Easy",
+    {"name": "The Beachwalk Classic", "slug": "the-beachwalk-classic", "km": "8 km · 5 mi", "time": "45 min", "level": "Easy",
      "from": "233 14th St", "to": "South Pointe Park",
      "desc": "Straight down the paved Beachwalk to South Pointe Park and back. Flat, car-free, shaded in stretches, and the single best first ride in South Beach.",
      "stops": ["Lummus Park", "Ocean Drive", "South Pointe Pier", "Joe's Stone Crab"]},
-    {"name": "Art Deco Neon Loop", "km": "6 km · 3.7 mi", "time": "40 min", "level": "Easy",
+    {"name": "Art Deco Neon Loop", "slug": "art-deco-neon-loop", "km": "6 km · 3.7 mi", "time": "40 min", "level": "Easy",
      "from": "233 14th St", "to": "Española Way",
      "desc": "Ocean Drive, Collins, Washington and Española Way. Ride it after 7 PM when the neon fires up and the whole district turns pink and turquoise.",
      "stops": ["Colony Hotel", "Española Way", "Lincoln Road Mall", "Washington Ave"]},
-    {"name": "Star Island & the Causeway", "km": "16 km · 10 mi", "time": "1 h 15", "level": "Moderate",
+    {"name": "Star Island & the Causeway", "slug": "star-island-&-the-causeway", "km": "16 km · 10 mi", "time": "1 h 15", "level": "Moderate",
      "from": "233 14th St", "to": "Star Island",
      "desc": "Protected bike path along the MacArthur Causeway to Palm, Hibiscus and Star Island. Cruise-ship views on one side, mansions on the other.",
      "stops": ["MacArthur Causeway", "Star Island gate", "Terminal Island", "South Pointe"]},
-    {"name": "Venetian Islands Sunset", "km": "14 km · 8.7 mi", "time": "1 h", "level": "Moderate",
+    {"name": "Venetian Islands Sunset", "slug": "venetian-islands-sunset", "km": "14 km · 8.7 mi", "time": "1 h", "level": "Moderate",
      "from": "233 14th St", "to": "Belle Isle",
      "desc": "Low-traffic island hopping across the Venetian Causeway. The classic golden-hour route with the Downtown skyline straight ahead.",
      "stops": ["Belle Isle", "Di Lido Island", "Rivo Alto", "Sunset Harbour"]},
-    {"name": "Wynwood Mural Run", "km": "26 km · 16 mi", "time": "2 h", "level": "E-bike",
+    {"name": "Wynwood Mural Run", "slug": "wynwood-mural-run", "km": "26 km · 16 mi", "time": "2 h", "level": "E-bike",
      "from": "233 14th St", "to": "Wynwood Walls",
      "desc": "Our e-bike route across the bay into the street-art district, looping back through the Design District and Bayside. Take the battery.",
      "stops": ["Wynwood Walls", "NW 2nd Ave", "Design District", "Bayside Marketplace"]},
-    {"name": "North Beach & Boardwalk", "km": "20 km · 12.4 mi", "time": "1 h 30", "level": "Moderate",
+    {"name": "North Beach & Boardwalk", "slug": "north-beach-&-boardwalk", "km": "20 km · 12.4 mi", "time": "1 h 30", "level": "Moderate",
      "from": "233 14th St", "to": "North Beach Oceanside Park",
      "desc": "Head north along the boardwalk past Mid-Beach, the Faena District and the Fontainebleau all the way to the quiet end of the island.",
      "stops": ["Faena District", "Fontainebleau", "Indian Beach Park", "Oceanside Park"]},
