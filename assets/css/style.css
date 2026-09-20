@@ -1650,3 +1650,11 @@ html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
 @media(min-width:761px) and (max-width:1200px){
   .nav.is-open .nav__in{max-height:calc(100svh - var(--topbar-h))}
 }
+
+/* On a 360px screen the nine links plus the button ran just past the capped
+   menu, so the last item needed a scroll inside the panel. Slightly tighter
+   rows fit the whole menu on one screen and keep the 48px target. */
+@media(max-width:380px){
+  .nav__link{padding:.78rem .2rem;font-size:.98rem}
+  .nav__group--right .btn{margin:.7rem 0 .8rem;min-height:46px}
+}
