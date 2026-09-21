@@ -250,6 +250,16 @@ UI = {
                   "it": "I %d luoghi dove ti porta Percorso Live"},
     "nav_lang":  {"en": "Change language", "es": "Cambiar idioma",
                   "pt": "Mudar idioma", "it": "Cambia lingua"},
+    "hero_illo_alt": {
+        "en": "Sunset over the palm trees and Art Deco skyline of South Beach, Miami Beach",
+        "es": "Atardecer sobre las palmeras y el skyline art déco de South Beach, Miami Beach",
+        "pt": "Pôr do sol sobre as palmeiras e o skyline art déco de South Beach, Miami Beach",
+        "it": "Tramonto sulle palme e sullo skyline art déco di South Beach, Miami Beach"},
+    "hero_photo_alt": {
+        "en": "Two riders on an electric side-by-side trike in front of the SOBE sign on Ocean Drive, South Beach",
+        "es": "Dos personas en un triciclo eléctrico lado a lado frente al cartel SOBE en Ocean Drive, South Beach",
+        "pt": "Duas pessoas em um triciclo elétrico lado a lado em frente ao letreiro SOBE na Ocean Drive, South Beach",
+        "it": "Due persone su un triciclo elettrico affiancato davanti all'insegna SOBE su Ocean Drive, South Beach"},
     "u_from":    {"en": "from",  "es": "desde", "pt": "a partir de", "it": "da"},
     "u_ask":     {"en": "Price on request", "es": "Precio a consultar",
                   "pt": "Preço sob consulta", "it": "Prezzo su richiesta"},

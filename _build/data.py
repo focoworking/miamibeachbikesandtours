@@ -15,6 +15,23 @@ BOOKING_URL = "https://fareharbor.com/embeds/book/southfloridatrikketours/items/
 # belongs to the client, not to this repository — leave it empty in git.
 STREETVIEW_KEY = ""
 
+# Home page hero.
+#
+# Empty = the drawn South Beach scene. Point it at a photograph in
+# assets/img/ and the home page leads with that instead — the illustration
+# stays as the fallback and keeps serving the other pages. Give it the
+# original, not a crop: the hero is landscape on a desktop and nearly
+# portrait on a phone, so it is framed with object-position per breakpoint
+# rather than cut once and compromised for both.
+#
+# Two conditions before a photograph of customers goes up: the shop has to
+# own the shot, and anyone recognisable in it has to have signed a model
+# release for commercial use. A photo on a rental company's home page is
+# advertising, not a holiday snap.
+HERO_PHOTO = ""            # e.g. "hero-sobe.jpg"
+HERO_FOCUS = "50% 62%"     # desktop framing
+HERO_FOCUS_MOBILE = "56% 72%"
+
 # WhatsApp uses the shop line, digits only.
 WHATSAPP = "13058309440"
 WHATSAPP_URL = ("https://wa.me/13058309440?text="

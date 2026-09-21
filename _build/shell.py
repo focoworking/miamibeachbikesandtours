@@ -2,6 +2,7 @@
 """HTML shell: head (SEO/AEO/GEO/LLM), nav, footer."""
 import json
 import json as _json
+import data
 from i18n import t as _t, pack as _pack
 from data import (BIZ, SITE, BOOKING_URL, WHATSAPP_URL, LANGS, POI, MODES,
                   INTERESTS, DURATIONS, EXTEND_BLOCKS, EXTEND_RATES, PAY_METHODS)
@@ -131,6 +132,8 @@ def _attr(v, field):
 
 def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lang="en"):
     title = str(title)
+    hero_focus = getattr(data, "HERO_FOCUS", "50% 52%")
+    hero_focus_m = getattr(data, "HERO_FOCUS_MOBILE", "66% 84%")
     desc, keywords = _attr(desc, "description"), _attr(keywords, "keywords")
     skip = _t("skip", lang)
     lang_meta = next((l for l in LANGS if l["code"] == lang), LANGS[0])
@@ -153,6 +156,7 @@ def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lan
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta name="author" content="{BIZ['name']}">
 <meta name="theme-color" content="#0aa2c0">
+<style>:root{{--hero-focus:{hero_focus};--hero-focus-mobile:{hero_focus_m}}}</style>
 
 <!-- GEO: local + map signals -->
 <meta name="geo.region" content="US-FL">

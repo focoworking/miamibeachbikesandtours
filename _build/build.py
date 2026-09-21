@@ -51,6 +51,22 @@ def route_cover(r, slug=None):
     return ROUTE_COVER.get(key, "routes-map")
 
 
+def hero_media():
+    """The home page hero: the drawn scene, or a photograph if one is set.
+
+    Loaded eagerly and marked high priority either way — it is the largest
+    element above the fold, so it is what Largest Contentful Paint measures.
+    """
+    photo = getattr(data, "HERO_PHOTO", "")
+    if photo:
+        return ('<img src="assets/img/%s" alt="%s" width="1600" height="2400" '
+                'loading="eager" fetchpriority="high" decoding="async">'
+                % (photo, T("hero_photo_alt")))
+    return ('<img src="assets/img/hero-southbeach.svg" alt="%s" width="1200" '
+            'height="900" loading="eager" fetchpriority="high" decoding="async">'
+            % T("hero_illo_alt"))
+
+
 def poi_cover(p):
     """The cover image for a landmark.
 
@@ -303,7 +319,7 @@ def page_index():
 
     return h + nav("index.html") + f'''
 <section class="hero">
-  <div class="hero__media">{img("hero-southbeach", "Sunset over the palm trees and Art Deco skyline of South Beach, Miami Beach")}</div>
+  <div class="hero__media">{hero_media()}</div>
   <div class="hero__scrim"></div>
   <div class="wrap hero__in">
     <span class="eyebrow eyebrow--light">South Beach · 233 14th Street</span>

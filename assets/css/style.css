@@ -1729,3 +1729,11 @@ html{scroll-padding-top:calc(var(--nav-h) + var(--topbar-h) + 12px)}
 @media(max-width:760px){
   .nav__in{grid-template-rows:var(--nav-h) auto auto auto}
 }
+
+/* A photographic hero is framed, not cropped: the same file is landscape on
+   a desktop and nearly portrait on a phone, so the focal point moves per
+   breakpoint instead of the image being cut once and compromised for both. */
+.hero__media img{object-position:var(--hero-focus,50% 52%)}
+@media(max-width:760px){
+  .hero__media img{object-position:var(--hero-focus-mobile,66% 84%)}
+}
