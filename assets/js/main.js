@@ -162,6 +162,23 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(setTopbarH);
   }
 
+  /* ---- Language dropdown ----
+     <details> opens and closes itself, but it has no notion of "somewhere
+     else" — left alone it stays open behind whatever you click next. */
+  var langdrop = document.querySelector('.langdrop');
+  if (langdrop) {
+    document.addEventListener('click', function (ev) {
+      if (!langdrop.contains(ev.target)) langdrop.open = false;
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && langdrop.open) {
+        langdrop.open = false;
+        var s = langdrop.querySelector('summary');
+        if (s) s.focus();
+      }
+    });
+  }
+
   /* ---- Compact header once you start reading ----
      The pinned header costs 130px of an 844px phone screen. Past the first
      screenful it folds to a slim bar and gives most of that back; scrolling

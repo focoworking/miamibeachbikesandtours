@@ -282,7 +282,8 @@ add("Rental rates for bikes, electric bikes, Segways, skates and tricycles in Mi
     "Tarifas de alquiler de bicis, bicis eléctricas, Segways, patines y triciclos en Miami Beach",
     "Tarifas de aluguel de bikes, bikes elétricas, Segways, patins e triciclos em Miami Beach",
     "Tariffe di noleggio di bici, bici elettriche, Segway, pattini e tricicli a Miami Beach")
-add("Ask at the shop", "Pregunta en la tienda", "Pergunte na loja", "Chiedi in negozio")
+# ("Ask at the shop" used to be the empty-price label in the rate table;
+#  it now goes through i18n as u_ask, so no copy entry is needed.)
 add("Monthly and seasonal rates available on request. Group of 6 or more? Call (305) 830-9440 "
     "for group pricing.",
     "Tarifas mensuales y de temporada bajo petición. ¿Grupo de 6 o más? Llama al (305) 830-9440 "

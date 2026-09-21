@@ -248,6 +248,8 @@ UI = {
                   "es": "Los %d lugares a los que te lleva Ruta Viva",
                   "pt": "Os %d lugares aonde a Rota Ao Vivo te leva",
                   "it": "I %d luoghi dove ti porta Percorso Live"},
+    "nav_lang":  {"en": "Change language", "es": "Cambiar idioma",
+                  "pt": "Mudar idioma", "it": "Cambia lingua"},
     "u_from":    {"en": "from",  "es": "desde", "pt": "a partir de", "it": "da"},
     "u_ask":     {"en": "Price on request", "es": "Precio a consultar",
                   "pt": "Preço sob consulta", "it": "Prezzo su richiesta"},

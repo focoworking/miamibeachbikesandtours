@@ -210,6 +210,13 @@ def nav(current, lang="en", page=None):
             ("../" if lang != "en" else "") + l["dir"], page, l["code"], l["code"],
             ' aria-current="true"' if l["code"] == lang else "", l["short"])
         for l in LANGS)
+    lang_short = next((l["short"] for l in LANGS if l["code"] == lang), "EN")
+    langdrop_links = "".join(
+        '<li><a href="%s%s" hreflang="%s" lang="%s"%s>%s</a></li>' % (
+            ("../" if lang != "en" else "") + l["dir"], page, l["code"], l["code"],
+            ' aria-current="true"' if l["code"] == lang else "", l["name"])
+        for l in LANGS)
+
     def links(items):
         out = []
         for u, n in items:
@@ -226,6 +233,10 @@ def nav(current, lang="en", page=None):
 <header class="nav">
   <nav class="wrap nav__in" aria-label="Main">
     <button class="nav__toggle" aria-label="{_t("nav_menu", lang)}" aria-expanded="false"><span></span><span></span><span></span></button>
+    <details class="langdrop">
+      <summary aria-label="{_t("nav_lang", lang)}">{lang_short}<svg viewBox="0 0 12 8" width="11" height="8" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <ul class="langdrop__menu">{langdrop_links}</ul>
+    </details>
     <div class="nav__group">{links(left)}</div>
     <a class="brand" href="index.html" aria-label="{BIZ['name']} home">
       <img class="brand__logo" src="{prefix}assets/img/logo-mark.svg" width="52" height="52"
@@ -235,9 +246,8 @@ def nav(current, lang="en", page=None):
         <span class="brand__sub">Rentals &amp; Tours</span>
       </span>
     </a>
-    <div class="nav__group nav__group--right">{links(right)}
-      <button class="btn btn--sm" type="button" data-assistant="book">{_t("nav_book", lang)}</button>
-    </div>
+    <div class="nav__group nav__group--right">{links(right)}</div>
+    <button class="btn btn--sm nav__book" type="button" data-assistant="book">{_t("nav_book", lang)}</button>
   </nav>
 </header>
 <main id="main">
