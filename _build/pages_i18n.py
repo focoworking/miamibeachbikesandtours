@@ -150,11 +150,13 @@ PAGES.update({
  "es": "tours en Segway por el distrito Art Déco y Star Island, hidrodeslizadores en los Everglades, excursiones a Key West, motos de agua y parasailing. Para toda la familia, a pleno sol y sin medida.",
  "pt": "passeios de Segway pelo distrito Art Déco e Star Island, airboats nos Everglades, bate-voltas a Key West, jet skis e parasailing. Para a família toda, a pleno sol e sem moderação.",
  "it": "tour in Segway del distretto Art Déco e di Star Island, airboat nelle Everglades, gite a Key West, moto d'acqua e parasailing. Per tutta la famiglia, sotto il sole e senza misura."},
+# The phone hero sits over the photograph, so the short variant is kept to a
+# clause: any longer and it covered the riders the picture is there to show.
 "h.hero_sub_short": {
- "en": "guided tours, Everglades airboats and Key West day trips.",
- "es": "tours guiados, hidrodeslizadores en los Everglades y excursiones a Key West.",
- "pt": "passeios guiados, airboats nos Everglades e bate-voltas a Key West.",
- "it": "tour guidati, airboat nelle Everglades e gite a Key West."},
+ "en": "guided tours and day trips.",
+ "es": "tours guiados y excursiones.",
+ "pt": "passeios guiados e bate-voltas.",
+ "it": "tour guidati e gite."},
 "h.cta_rent": {"en": "Rent a ride · from $12", "es": "Alquila · desde 12 $",
                "pt": "Alugue · a partir de US$ 12", "it": "Noleggia · da 12 $"},
 "h.cta_tours": {"en": "See the tours", "es": "Ver los tours", "pt": "Ver os passeios", "it": "Vedi i tour"},

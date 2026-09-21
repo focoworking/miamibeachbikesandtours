@@ -59,9 +59,22 @@ def hero_media():
     """
     photo = getattr(data, "HERO_PHOTO", "")
     if photo:
-        return ('<img src="assets/img/%s" alt="%s" width="1600" height="2400" '
-                'loading="eager" fetchpriority="high" decoding="async">'
-                % (photo, T("hero_photo_alt")))
+        alt = T("hero_photo_alt")
+        def srcset(kind, widths, ext):
+            return ", ".join("assets/img/%s%s-%d.%s %dw" % (photo, kind, w, ext, w)
+                             for w in widths)
+        wide, tall = (900, 1400, 2000), (620, 900)
+        return (
+            '<picture>'
+            # a phone gets its own framing, not a hard crop of the wide frame
+            '<source media="(max-width:760px)" type="image/webp" sizes="100vw" srcset="%s">'
+            '<source media="(max-width:760px)" sizes="100vw" srcset="%s">'
+            '<source type="image/webp" sizes="100vw" srcset="%s">'
+            '<img src="assets/img/%s-1400.jpg" srcset="%s" sizes="100vw" alt="%s" '
+            'width="2000" height="1125" loading="eager" fetchpriority="high" decoding="async">'
+            '</picture>'
+            % (srcset("-tall", tall, "webp"), srcset("-tall", tall, "jpg"),
+               srcset("", wide, "webp"), photo, srcset("", wide, "jpg"), alt))
     return ('<img src="assets/img/hero-southbeach.svg" alt="%s" width="1200" '
             'height="900" loading="eager" fetchpriority="high" decoding="async">'
             % T("hero_illo_alt"))

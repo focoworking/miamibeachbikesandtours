@@ -130,8 +130,29 @@ def _attr(v, field):
     return v.replace("&", "&amp;").replace('"', "&quot;")
 
 
-def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lang="en"):
+def head(page, title, desc, keywords, extra_ld="", og_img=None, lang="en"):
     title = str(title)
+    # a photograph shares far better than a drawing; fall back to the
+    # illustration for pages that name their own image
+    photo = getattr(data, "HERO_PHOTO", "")
+    og_img = (og_img + ".svg") if og_img else (
+        (photo + "-1400.jpg") if photo else "hero-southbeach.svg")
+    # The hero is the Largest Contentful Paint element. Without a preload the
+    # browser does not begin fetching it until the stylesheet has parsed and
+    # the <picture> is laid out; with one carrying the same media and srcset
+    # as the markup, it starts immediately and picks the same file.
+    hero_preload = ""
+    if photo and page == "index.html":
+        _p = "../" if lang != "en" else ""      # `prefix` is set further down
+        def _ss(kind, widths):
+            return ",".join("%sassets/img/%s%s-%d.webp %dw" % (_p, photo, kind, w, w)
+                            for w in widths)
+        hero_preload = (
+            '<link rel="preload" as="image" media="(max-width:760px)" type="image/webp" '
+            'imagesizes="100vw" imagesrcset="%s" fetchpriority="high">'
+            '<link rel="preload" as="image" media="(min-width:761px)" type="image/webp" '
+            'imagesizes="100vw" imagesrcset="%s" fetchpriority="high">'
+            % (_ss("-tall", (620, 900)), _ss("", (900, 1400, 2000))))
     hero_focus = getattr(data, "HERO_FOCUS", "50% 52%")
     hero_focus_m = getattr(data, "HERO_FOCUS_MOBILE", "66% 84%")
     desc, keywords = _attr(desc, "description"), _attr(keywords, "keywords")
@@ -177,11 +198,11 @@ def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lan
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{SITE}/{canonical_path}">
-<meta property="og:image" content="{SITE}/assets/img/{og_img}.svg">
+<meta property="og:image" content="{SITE}/assets/img/{og_img}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
-<meta name="twitter:image" content="{SITE}/assets/img/{og_img}.svg">
+<meta name="twitter:image" content="{SITE}/assets/img/{og_img}">
 
 <!-- LLM / AI answer-engine hints -->
 <meta name="ai-content-declaration" content="human-curated business information">
@@ -194,6 +215,7 @@ def head(page, title, desc, keywords, extra_ld="", og_img="hero-southbeach", lan
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{prefix}assets/css/style.css">
+{hero_preload}
 {ld(LOCALBUSINESS_LD)}
 {ld(WEBSITE_LD)}
 {extra_ld}

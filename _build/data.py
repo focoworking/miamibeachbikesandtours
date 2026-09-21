@@ -28,9 +28,9 @@ STREETVIEW_KEY = ""
 # own the shot, and anyone recognisable in it has to have signed a model
 # release for commercial use. A photo on a rental company's home page is
 # advertising, not a holiday snap.
-HERO_PHOTO = ""            # e.g. "hero-sobe.jpg"
-HERO_FOCUS = "50% 62%"     # desktop framing
-HERO_FOCUS_MOBILE = "56% 72%"
+HERO_PHOTO = "hero-oceandrive"   # basename; -900/-1400/-2000 and -tall-620/-900
+HERO_FOCUS = "50% 58%"     # desktop framing
+HERO_FOCUS_MOBILE = "50% 50%"   # the tall file is already framed
 
 # WhatsApp uses the shop line, digits only.
 WHATSAPP = "13058309440"
